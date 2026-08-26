@@ -27,6 +27,8 @@ export const API = {
   SCAN_TEXT: "/api/scan/food-text",
   SCAN_QUOTA: "/api/scan/quota",
   SCAN_BUY: "/api/scan/buy",
+  SCAN_HISTORY: "/api/scan/history",
+  SCAN_INSIGHT: "/api/scan/insight",
 };
 
 export const SCAN_LIMITS = {

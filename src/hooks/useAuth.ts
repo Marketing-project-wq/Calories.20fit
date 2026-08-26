@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
-import { URLS } from "../lib/constants";
 
 export const useAuth = () => {
   const [user, setUser] = useState<any>(null);
@@ -23,17 +22,9 @@ export const useAuth = () => {
         history.replaceState(null, "", location.pathname + location.search);
       }
 
-      // Get current user
+      // Get current user (null jika belum login - subdomain ini bisa dipakai tanpa login)
       const { data } = await supabase.auth.getUser();
-      const currentUser = data.user ?? null;
-
-      if (!currentUser) {
-        // Redirect ke login jika tidak authenticated
-        window.location.href = URLS.LOGIN;
-        return;
-      }
-
-      setUser(currentUser);
+      setUser(data.user ?? null);
       setIsLoading(false);
     })();
 

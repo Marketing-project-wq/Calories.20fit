@@ -1,13 +1,11 @@
 import { useRef, useState } from "react";
 import { COLORS, URLS } from "../lib/constants";
-import { apiClient } from "../lib/api";
-import { CTACompact } from "../components/CTA";
+import { apiClient, ScanResult } from "../lib/api";
 import { useAuth } from "../hooks/useAuth";
 
 export const ScanPage = () => {
-  const { user, isLoading: authLoading } = useAuth();
-  const [scanResult, setScanResult] = useState<any>(null);
-  const [quota, setQuota] = useState<any>(null);
+  const { isAuthenticated, isLoading: authLoading } = useAuth();
+  const [scanResult, setScanResult] = useState<ScanResult | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -30,29 +28,22 @@ export const ScanPage = () => {
     setError(null);
 
     try {
-      // Check quota first
-      const q = await apiClient.getQuota();
-      setQuota(q);
-
-      if (q && q.remaining <= 0) {
-        setError("Kuota scan sudah habis. Top-up untuk melanjutkan.");
-        setIsLoading(false);
-        return;
+      // Kuota scan (topup credit) hanya berlaku untuk akun yang login.
+      if (isAuthenticated) {
+        const quota = await apiClient.getQuota();
+        if (quota && quota.remaining <= 0) {
+          setError("Kuota scan sudah habis. Top-up untuk melanjutkan.");
+          setIsLoading(false);
+          return;
+        }
       }
 
-      // Call real API
       const result = await apiClient.scanPhoto(file);
       setScanResult(result);
-
-      // Update quota after scan
-      const updatedQuota = await apiClient.getQuota();
-      setQuota(updatedQuota);
     } catch (err) {
       const errMsg = err instanceof Error ? err.message : "Gagal menganalisis foto";
       if (errMsg === "scan_limit") {
         setError("Kuota scan sudah habis. Top-up untuk melanjutkan.");
-      } else if (errMsg === "login_required") {
-        window.location.href = URLS.LOGIN;
       } else {
         setError(errMsg);
       }
@@ -86,19 +77,13 @@ export const ScanPage = () => {
     }
   };
 
-  if (authLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 rounded-full animate-spin inline-block" style={{ borderColor: COLORS.RED, borderTopColor: "transparent" }}></div>
-          <p className="mt-4 text-gray-600">Loading...</p>
-        </div>
-      </div>
-    );
-  }
+  const reset = () => {
+    setScanResult(null);
+    setError(null);
+  };
 
   // Before scan
-  if (!scanResult && !isLoading) {
+  if (!scanResult && !isLoading && !authLoading) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-8 md:py-12">
         <div
@@ -129,21 +114,32 @@ export const ScanPage = () => {
               <span className="font-semibold">2. AI analisis</span> - Identifikasi makanan dalam 3 detik
             </li>
             <li>
-              <span className="font-semibold">3. Lihat hasil</span> - Kalori, protein, karbo, lemak
+              <span className="font-semibold">3. Lihat hasil</span> - Total kalori langsung terlihat
             </li>
           </ol>
         </div>
 
         <div className="text-center text-xs text-gray-600">
-          <p>Hasil scan disimpan otomatis di akun kamu.</p>
-          <p>Kuota tersisa: {quota?.remaining ?? "..."} scan</p>
+          {isAuthenticated ? (
+            <p>Analisis gizi lengkap, riwayat, dan insight kalori harian tersedia di akun kamu.</p>
+          ) : (
+            <>
+              <p>Tanpa masuk, kamu tetap bisa scan dan lihat total kalorinya.</p>
+              <p>
+                <a href={URLS.LOGIN} className="underline font-semibold" style={{ color: COLORS.RED }}>
+                  Masuk
+                </a>{" "}
+                untuk analisis gizi lengkap, riwayat, dan tracking kebutuhan kalori harian.
+              </p>
+            </>
+          )}
         </div>
       </div>
     );
   }
 
   // Loading state
-  if (isLoading) {
+  if (isLoading || authLoading) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-12 text-center">
         <div className="mb-4">
@@ -166,14 +162,7 @@ export const ScanPage = () => {
             ⚠️ Gagal Menganalisis
           </h2>
           <p className="text-sm mb-4">{error}</p>
-          <button
-            onClick={() => {
-              setError(null);
-              setScanResult(null);
-            }}
-            className="px-4 py-2 rounded-lg font-semibold text-white"
-            style={{ backgroundColor: COLORS.RED }}
-          >
+          <button onClick={reset} className="px-4 py-2 rounded-lg font-semibold text-white" style={{ backgroundColor: COLORS.RED }}>
             Coba Lagi
           </button>
         </div>
@@ -194,19 +183,46 @@ export const ScanPage = () => {
         </h2>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-          {[
-            { label: "Kalori", value: scanResult.calories, unit: "kcal" },
-            { label: "Protein", value: scanResult.protein, unit: "g" },
-            { label: "Karbo", value: scanResult.carbs, unit: "g" },
-            { label: "Lemak", value: scanResult.fat, unit: "g" },
-          ].map((nutrient) => (
-            <div key={nutrient.label} className="rounded-lg p-4 text-center" style={{ backgroundColor: COLORS.PINK_ACCENT }}>
-              <div className="font-semibold text-lg">{nutrient.value}</div>
-              <div className="text-xs text-gray-600">{nutrient.label}</div>
-              <div className="text-xs text-gray-500">{nutrient.unit}</div>
-            </div>
-          ))}
+          <div className="rounded-lg p-4 text-center" style={{ backgroundColor: COLORS.PINK_ACCENT }}>
+            <div className="font-semibold text-lg">{scanResult.calories}</div>
+            <div className="text-xs text-gray-600">Kalori</div>
+            <div className="text-xs text-gray-500">kcal</div>
+          </div>
+
+          {isAuthenticated ? (
+            [
+              { label: "Protein", value: scanResult.protein, unit: "g" },
+              { label: "Karbo", value: scanResult.carbs, unit: "g" },
+              { label: "Lemak", value: scanResult.fat, unit: "g" },
+            ].map((nutrient) => (
+              <div key={nutrient.label} className="rounded-lg p-4 text-center" style={{ backgroundColor: COLORS.PINK_ACCENT }}>
+                <div className="font-semibold text-lg">{nutrient.value}</div>
+                <div className="text-xs text-gray-600">{nutrient.label}</div>
+                <div className="text-xs text-gray-500">{nutrient.unit}</div>
+              </div>
+            ))
+          ) : (
+            ["Protein", "Karbo", "Lemak"].map((label) => (
+              <div key={label} className="rounded-lg p-4 text-center relative overflow-hidden" style={{ backgroundColor: COLORS.PINK_ACCENT }}>
+                <div className="blur-content h-6 rounded mb-1"></div>
+                <div className="text-xs text-gray-600">{label}</div>
+                <div className="text-xs text-gray-500">🔒 terkunci</div>
+              </div>
+            ))
+          )}
         </div>
+
+        {!isAuthenticated && (
+          <div className="rounded-lg p-4 mb-6" style={{ backgroundColor: COLORS.RED }}>
+            <p className="text-white text-sm font-semibold mb-1">Mau lihat analisis gizi lengkap?</p>
+            <p className="text-white text-xs opacity-90 mb-3">
+              Masuk untuk breakdown protein/karbo/lemak, riwayat scan, dan tracking kebutuhan kalori harian kamu.
+            </p>
+            <a href={URLS.LOGIN} className="block text-center py-2 px-4 bg-white rounded-lg font-semibold transition-opacity hover:opacity-90" style={{ color: COLORS.RED }}>
+              Masuk / Daftar
+            </a>
+          </div>
+        )}
 
         <div className="text-center text-xs text-gray-600 mb-6 p-3 bg-gray-50 rounded-lg">
           ⚠️ Ini estimasi, bukan pengukuran akurat. Untuk keputusan kesehatan, konsultasikan dengan ahli gizi.
@@ -214,10 +230,7 @@ export const ScanPage = () => {
 
         <div className="mt-6 flex gap-3">
           <button
-            onClick={() => {
-              setScanResult(null);
-              setError(null);
-            }}
+            onClick={reset}
             className="flex-1 py-3 px-4 rounded-lg font-semibold border transition-colors hover:bg-gray-100"
             style={{ color: COLORS.BLACK, borderColor: "#DCDCDC" }}
           >
