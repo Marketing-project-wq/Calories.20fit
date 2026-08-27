@@ -208,62 +208,6 @@ export const ScanPage = () => {
         </div>
       </div>
 
-      {/* ─── Hasil analisis (result detail, below hero on all screens) ─── */}
-      {scanResult && (
-        <div style={{ borderBottom: `1px solid ${BORDER}` }}>
-          <div style={{ maxWidth: W, margin: "0 auto", padding: "28px 24px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 24, alignItems: "start" }}>
-            {/* Deep gating cards */}
-            <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
-              <span style={{ fontFamily: "Anton, sans-serif", fontSize: 18, textTransform: "uppercase", letterSpacing: ".03em" }}>{isAuthenticated ? "Lanjutan untuk kamu" : "Yang butuh akun"}</span>
-              <span style={{ fontSize: 13, lineHeight: 1.55, color: "#4A4A4A" }}>{isAuthenticated ? "Sudah aktif di akun kamu." : "Disusun dari riwayat yang tersimpan di akun."}</span>
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))", gap: 10 }}>
-                {DEEPER_DEFS.map(d => (
-                  <div key={d.title} style={{ border: `1px solid ${BORDER}`, borderRadius: 12, background: isAuthenticated ? "#FFFFFF" : "#FAF9F7", overflow: "hidden" }}>
-                    <div style={{ padding: "13px 14px", display: "flex", flexDirection: "column", gap: 6 }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: 8 }}>
-                        <span style={{ fontSize: 13, fontWeight: "bold" }}>{d.title}</span>
-                        <span style={{ fontSize: 9, fontWeight: "bold", letterSpacing: ".06em", textTransform: "uppercase", color: isAuthenticated ? "#1F5E43" : RED, background: isAuthenticated ? "#E9F3EE" : TINT, borderRadius: 999, padding: "3px 7px", whiteSpace: "nowrap" }}>
-                          {isAuthenticated ? "Terbuka" : "Perlu akun"}
-                        </span>
-                      </div>
-                      <span style={{ fontSize: 12, lineHeight: 1.45, color: "#5A5A5A" }}>{d.body}</span>
-                    </div>
-                    <div style={{ padding: "9px 14px", background: isAuthenticated ? "#FFFFFF" : TINT, borderTop: `1px solid ${BORDER}` }}>
-                      <span style={{ fontSize: 11, fontWeight: "bold", color: RED }}>{isAuthenticated ? "Buka sekarang" : "Buat akun untuk membuka"}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            {/* CTA / saved confirmation */}
-            {!isAuthenticated
-              ? <div style={{ border: `2px solid ${BLACK}`, borderRadius: 14, overflow: "hidden" }}>
-                  <div style={{ background: BLACK, padding: "18px 18px", display: "flex", flexDirection: "column", gap: 7 }}>
-                    <span style={{ fontFamily: "Anton, sans-serif", fontSize: 20, lineHeight: 1.1, textTransform: "uppercase", color: "#FFFFFF" }}>Satu scan tidak cukup untuk rencana</span>
-                    <span style={{ fontSize: 13, lineHeight: 1.5, color: "#BDBDBD" }}>Meal plan dan analytics dihitung dari riwayat, bukan satu foto.</span>
-                  </div>
-                  <div style={{ background: TINT, padding: 16, display: "flex", flexDirection: "column", gap: 10 }}>
-                    {["Riwayat tersimpan, bisa dibuka kapan saja", "Terhubung data 20FIT di satu akun", "Tanpa batas di web dan aplikasi"].map(p => (
-                      <div key={p} style={{ display: "flex", gap: 8, alignItems: "flex-start" }}>
-                        <span style={{ width: 5, height: 5, borderRadius: "50%", background: RED, marginTop: 7, flexShrink: 0, display: "block" }} />
-                        <span style={{ fontSize: 13, lineHeight: 1.5 }}>{p}</span>
-                      </div>
-                    ))}
-                    <a href={URLS.LOGIN} style={{ display: "flex", alignItems: "center", justifyContent: "center", background: RED, color: "#FFFFFF", borderRadius: 10, height: 48, fontFamily: "inherit", fontSize: 14, fontWeight: "bold", textDecoration: "none" }}>Buat akun di my.20fit.id</a>
-                    <span style={{ fontSize: 11, color: "#9A7A7A" }}>Gratis. Hasil di atas tetap bisa dibaca tanpa akun.</span>
-                  </div>
-                </div>
-              : <div style={{ border: `1px solid ${BORDER}`, borderRadius: 12, background: "#F4F2F0", padding: 16, display: "flex", flexDirection: "column", gap: 7 }}>
-                  <span style={{ fontSize: 13, fontWeight: "bold" }}>Tersimpan ke akun kamu</span>
-                  <span style={{ fontSize: 12, lineHeight: 1.55, color: "#4A4A4A" }}>Scan ini masuk ke riwayat. Meal plan dan analytics ikut diperbarui.</span>
-                  <a href={URLS.MY_20FIT} style={{ fontSize: 12, fontWeight: "bold", color: RED }}>Buka di my.20fit.id →</a>
-                </div>
-            }
-          </div>
-        </div>
-      )}
-
       {/* ─── Cara kerja + Features (2-col desktop) ─── */}
       <div style={{ borderBottom: `1px solid ${BORDER}` }}>
         <div style={{ maxWidth: W, margin: "0 auto", padding: "32px 24px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 32 }}>
