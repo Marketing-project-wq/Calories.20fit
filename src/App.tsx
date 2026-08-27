@@ -28,6 +28,7 @@ export function App() {
               <button
                 key={tab.key}
                 onClick={() => setPage(tab.key)}
+                className="sc-tab"
                 style={{
                   padding: "12px 16px",
                   fontFamily: "Barlow Condensed, sans-serif",

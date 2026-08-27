@@ -91,11 +91,11 @@ function FaqItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
   return (
     <div style={{ borderBottom: `1px solid #F0EDEA` }}>
-      <button onClick={() => setOpen(!open)} style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, background: "transparent", border: 0, padding: "14px 16px", cursor: "pointer", fontFamily: "inherit", textAlign: "left" }}>
+      <button onClick={() => setOpen(!open)} className="sc-faq-btn" style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, background: "transparent", border: 0, padding: "14px 16px", cursor: "pointer", fontFamily: "inherit", textAlign: "left" }}>
         <span style={{ flex: 1, fontSize: 14, fontWeight: "bold", lineHeight: 1.35 }}>{q}</span>
-        <span style={{ fontSize: 16, color: "#A8A8A8", flexShrink: 0 }}>{open ? "−" : "+"}</span>
+        <span className="sc-faq-icon" style={{ fontSize: 16, color: open ? "#D62828" : "#A8A8A8", flexShrink: 0, transform: open ? "rotate(180deg)" : "none" }}>{open ? "−" : "+"}</span>
       </button>
-      {open && <div style={{ padding: "0 16px 14px", fontSize: 13, lineHeight: 1.6, color: "#4A4A4A" }}>{a}</div>}
+      {open && <div className="sc-faq-answer" style={{ padding: "0 16px 14px", fontSize: 13, lineHeight: 1.6, color: "#4A4A4A" }}>{a}</div>}
     </div>
   );
 }
@@ -143,7 +143,7 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
 
   const ToolPanel = () => {
     if (isLoading || authLoading) return (
-      <div style={{ background: "#F4F2F0", border: `1px solid ${BORDER}`, borderRadius: 16, padding: "32px 20px", display: "flex", flexDirection: "column", alignItems: "center", gap: 14, textAlign: "center" }}>
+      <div style={{ background: "#F4F2F0", border: `1px solid ${BORDER}`, borderRadius: 16, padding: "32px 20px", display: "flex", flexDirection: "column", alignItems: "center", gap: 14, textAlign: "center", boxShadow: "0 4px 16px rgba(20,20,20,0.05)" }}>
         <span style={{ width: 40, height: 40, borderRadius: "50%", border: `3px solid ${BORDER}`, borderTopColor: RED, display: "block", animation: "scSpin .9s linear infinite" }} />
         <span style={{ fontSize: 14, fontWeight: "bold", color: BLACK }}>{tr.analyzing}</span>
         <span style={{ fontSize: 12, color: "#8A8A8A" }}>{tr.analyzingSub}</span>
@@ -152,10 +152,10 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
     );
 
     if (error) return (
-      <div style={{ background: "#FFF5F5", border: `1.5px solid #FFCDD2`, borderRadius: 16, padding: 20, display: "flex", flexDirection: "column", gap: 12 }}>
+      <div style={{ background: "#FFF5F5", border: `1.5px solid #FFCDD2`, borderRadius: 16, padding: 20, display: "flex", flexDirection: "column", gap: 12, boxShadow: "0 4px 16px rgba(20,20,20,0.05)" }}>
         <span style={{ fontSize: 13, fontWeight: "bold", color: RED }}>{tr.failedTitle}</span>
         <span style={{ fontSize: 12, color: "#4A4A4A" }}>{error}</span>
-        <button onClick={() => setError(null)} style={{ background: RED, color: "#fff", border: "none", borderRadius: 8, padding: "8px 14px", fontFamily: "inherit", fontSize: 12, fontWeight: "bold", cursor: "pointer", alignSelf: "flex-start" }}>{tr.retryBtn}</button>
+        <button onClick={() => setError(null)} className="sc-btn-primary" style={{ background: RED, color: "#fff", border: "none", borderRadius: 8, padding: "8px 14px", fontFamily: "inherit", fontSize: 12, fontWeight: "bold", cursor: "pointer", alignSelf: "flex-start" }}>{tr.retryBtn}</button>
       </div>
     );
 
@@ -164,14 +164,14 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
       const fillingRate = scanResult.satiety_score;
       const healthColor = healthScore >= 70 ? "#2F7D5B" : healthScore >= 40 ? "#D97706" : RED;
       const fillingColor = fillingRate >= 70 ? "#2F7D5B" : fillingRate >= 40 ? "#D97706" : RED;
-      const proteinPct = scanResult.calories > 0 ? Math.round((scanResult.protein * 4 / scanResult.calories) * 100) : 0;
-      const carbsPct = scanResult.calories > 0 ? Math.round((scanResult.carbs * 4 / scanResult.calories) * 100) : 0;
-      const fatPct = scanResult.calories > 0 ? Math.round((scanResult.fat * 9 / scanResult.calories) * 100) : 0;
+      const proteinPct = scanResult.calories > 0 ? Math.min(100, Math.round((scanResult.protein * 4 / scanResult.calories) * 100)) : 0;
+      const carbsPct = scanResult.calories > 0 ? Math.min(100, Math.round((scanResult.carbs * 4 / scanResult.calories) * 100)) : 0;
+      const fatPct = scanResult.calories > 0 ? Math.min(100, Math.round((scanResult.fat * 9 / scanResult.calories) * 100)) : 0;
       const fiberScore = Math.round(Math.min(scanResult.fiber / 5, 1) * 100);
 
       return (
         <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
-        <div style={{ background: "#FFFFFF", border: `1px solid ${BORDER}`, borderRadius: "16px 16px 0 0", overflow: "hidden" }}>
+        <div style={{ background: "#FFFFFF", border: `1px solid ${BORDER}`, borderRadius: "16px 16px 0 0", overflow: "hidden", boxShadow: "0 4px 16px rgba(20,20,20,0.05)" }}>
           {photoPreview && <div style={{ height: 160, backgroundImage: `url(${photoPreview})`, backgroundSize: "cover", backgroundPosition: "center" }} />}
           <div style={{ padding: "16px 18px", display: "flex", flexDirection: "column", gap: 12 }}>
             {/* Name + calories */}
@@ -187,18 +187,18 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
             {/* Macros — always visible */}
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               {[
-                { label: tr.protein, value: scanResult.protein, unit: "g", pct: Math.round(proteinPct * 100) },
-                { label: tr.carbs, value: scanResult.carbs, unit: "g", pct: Math.round((scanResult.carbs * 4 / (scanResult.calories || 1)) * 100) },
-                { label: tr.fat, value: scanResult.fat, unit: "g", pct: Math.round(fatPct * 100) },
-                { label: lang === "id" ? "Serat" : "Fiber", value: scanResult.fiber, unit: "g", pct: Math.round(fiberScore * 100) },
+                { label: tr.protein, value: scanResult.protein, unit: "g", pct: proteinPct },
+                { label: tr.carbs, value: scanResult.carbs, unit: "g", pct: carbsPct },
+                { label: tr.fat, value: scanResult.fat, unit: "g", pct: fatPct },
+                { label: lang === "id" ? "Serat" : "Fiber", value: scanResult.fiber, unit: "g", pct: fiberScore },
               ].map(m => (
                 <div key={m.label} style={{ display: "flex", flexDirection: "column", gap: 3 }}>
                   <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12 }}>
                     <span style={{ color: "#6A6A6A" }}>{m.label}</span>
                     <span style={{ color: BLACK, fontWeight: 600 }}>{m.value}g</span>
                   </div>
-                  <div style={{ height: 4, borderRadius: 999, background: BORDER }}>
-                    <div style={{ height: 4, width: `${m.pct}%`, borderRadius: 999, background: RED }} />
+                  <div style={{ height: 4, borderRadius: 999, background: BORDER, overflow: "hidden" }}>
+                    <div className="sc-bar-fill" style={{ height: 4, width: `${m.pct}%`, borderRadius: 999, background: RED }} />
                   </div>
                 </div>
               ))}
@@ -214,8 +214,8 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
                   <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 24, color: healthColor, lineHeight: 1 }}>{healthScore}</span>
                   <span style={{ fontSize: 10, color: "#8A8A8A" }}>/100</span>
                 </div>
-                <div style={{ height: 4, borderRadius: 999, background: BORDER, marginTop: 6 }}>
-                  <div style={{ height: 4, width: `${healthScore}%`, borderRadius: 999, background: healthColor }} />
+                <div style={{ height: 4, borderRadius: 999, background: BORDER, marginTop: 6, overflow: "hidden" }}>
+                  <div className="sc-bar-fill" style={{ height: 4, width: `${Math.min(100, Math.max(0, healthScore))}%`, borderRadius: 999, background: healthColor }} />
                 </div>
               </div>
               <div style={{ border: `1px solid ${BORDER}`, borderRadius: 10, padding: "10px 12px" }}>
@@ -226,8 +226,8 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
                   <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 24, color: fillingColor, lineHeight: 1 }}>{fillingRate}</span>
                   <span style={{ fontSize: 10, color: "#8A8A8A" }}>/100</span>
                 </div>
-                <div style={{ height: 4, borderRadius: 999, background: BORDER, marginTop: 6 }}>
-                  <div style={{ height: 4, width: `${fillingRate}%`, borderRadius: 999, background: fillingColor }} />
+                <div style={{ height: 4, borderRadius: 999, background: BORDER, marginTop: 6, overflow: "hidden" }}>
+                  <div className="sc-bar-fill" style={{ height: 4, width: `${Math.min(100, Math.max(0, fillingRate))}%`, borderRadius: 999, background: fillingColor }} />
                 </div>
               </div>
             </div>
@@ -260,8 +260,8 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
             )}
 
             <div style={{ display: "flex", gap: 8 }}>
-              <button onClick={scanAgain} style={{ flex: 1, background: RED, color: "#fff", border: "none", borderRadius: 8, padding: "9px 0", fontFamily: "inherit", fontSize: 12, fontWeight: "bold", cursor: "pointer" }}>{tr.scanAgain}</button>
-              <button onClick={resetAll} style={{ background: "transparent", border: `1px solid ${BORDER}`, color: "#6A6A6A", borderRadius: 8, padding: "9px 12px", fontFamily: "inherit", fontSize: 12, cursor: "pointer" }}>{tr.reset}</button>
+              <button onClick={scanAgain} className="sc-btn-primary" style={{ flex: 1, background: RED, color: "#fff", border: "none", borderRadius: 8, padding: "9px 0", fontFamily: "inherit", fontSize: 12, fontWeight: "bold", cursor: "pointer" }}>{tr.scanAgain}</button>
+              <button onClick={resetAll} className="sc-btn-ghost" style={{ background: "transparent", border: `1px solid ${BORDER}`, color: "#6A6A6A", borderRadius: 8, padding: "9px 12px", fontFamily: "inherit", fontSize: 12, cursor: "pointer" }}>{tr.reset}</button>
             </div>
           </div>
         </div>
@@ -353,7 +353,7 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         {!photoFile
-          ? <label onDragEnter={handleDrag} onDragLeave={handleDrag} onDragOver={handleDrag} onDrop={handleDrop}
+          ? <label onDragEnter={handleDrag} onDragLeave={handleDrag} onDragOver={handleDrag} onDrop={handleDrop} className={dragActive ? "" : "sc-dropzone"}
               style={{ border: `1.5px dashed ${dragActive ? RED : BORDER}`, borderRadius: 14, background: dragActive ? TINT : "#FAFAF9", padding: "28px 18px", display: "flex", flexDirection: "column", alignItems: "center", gap: 10, textAlign: "center", cursor: "pointer" }}>
               <span style={{ width: 40, height: 40, borderRadius: 10, background: TINT, color: RED, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Barlow Condensed, sans-serif", fontSize: 22 }}>+</span>
               <span style={{ fontSize: 14, fontWeight: "bold", color: BLACK }}>{tr.dropzone}</span>
@@ -364,11 +364,11 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
               <div style={{ height: 160, backgroundImage: `url(${photoPreview!})`, backgroundSize: "cover", backgroundPosition: "center" }} />
               <div style={{ padding: "10px 14px", display: "flex", alignItems: "center", gap: 10 }}>
                 <span style={{ flex: 1, fontSize: 12, color: "#6A6A6A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{photoFile.name}</span>
-                <button onClick={resetAll} style={{ background: "transparent", border: 0, color: RED, fontFamily: "inherit", fontSize: 12, fontWeight: "bold", textDecoration: "underline", cursor: "pointer" }}>{tr.changePhoto}</button>
+                <button onClick={resetAll} className="sc-link-btn" style={{ background: "transparent", border: 0, color: RED, fontFamily: "inherit", fontSize: 12, fontWeight: "bold", textDecoration: "underline", cursor: "pointer" }}>{tr.changePhoto}</button>
               </div>
             </div>
         }
-        <button onClick={startAnalyze} disabled={!photoFile}
+        <button onClick={startAnalyze} disabled={!photoFile} className={photoFile ? "sc-btn-primary" : ""}
           style={{ border: 0, borderRadius: 10, height: 48, fontFamily: "inherit", fontSize: 14, fontWeight: "bold", cursor: photoFile ? "pointer" : "not-allowed", background: photoFile ? RED : BORDER, color: photoFile ? "#FFFFFF" : "#9A9A9A" }}>
           {tr.analyzeBtn}
         </button>
@@ -386,7 +386,7 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
     <div style={{ background: "#FFFFFF" }}>
 
       {/* Hero + Tool */}
-      <div style={{ background: "#FFFFFF", borderBottom: `1px solid ${BORDER}` }}>
+      <div style={{ background: "radial-gradient(circle at 88% 15%, #FDECEC 0%, #FFFFFF 55%)", borderBottom: `1px solid ${BORDER}` }}>
         <div style={{ maxWidth: W, margin: "0 auto", padding: "32px 24px 36px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 32, alignItems: "start" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             <span style={{ alignSelf: "flex-start", fontSize: 11, fontWeight: "bold", letterSpacing: ".08em", textTransform: "uppercase", color: "#FFFFFF", background: RED, borderRadius: 999, padding: "5px 11px" }}>{tr.badge}</span>
@@ -396,7 +396,7 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
             <p style={{ margin: 0, fontSize: 14, lineHeight: 1.55, color: "#4A4A4A", maxWidth: "44ch" }}>{tr.heroSub}</p>
             {/* Download buttons */}
             <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 4 }}>
-              <a href="https://apps.apple.com/app/20fit/id1234567890" target="_blank" rel="noopener noreferrer"
+              <a href="https://apps.apple.com/app/20fit/id1234567890" target="_blank" rel="noopener noreferrer" className="sc-link-btn"
                 style={{ display: "flex", alignItems: "center", gap: 8, background: BLACK, color: "#FFFFFF", borderRadius: 10, padding: "8px 14px", textDecoration: "none" }}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
                 <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.2 }}>
@@ -404,7 +404,7 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
                   <span style={{ fontSize: 13, fontWeight: "bold" }}>App Store</span>
                 </div>
               </a>
-              <a href="https://play.google.com/store/apps/details?id=id.fit20" target="_blank" rel="noopener noreferrer"
+              <a href="https://play.google.com/store/apps/details?id=id.fit20" target="_blank" rel="noopener noreferrer" className="sc-link-btn"
                 style={{ display: "flex", alignItems: "center", gap: 8, background: BLACK, color: "#FFFFFF", borderRadius: 10, padding: "8px 14px", textDecoration: "none" }}>
                 <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3,20.5v-17c0-0.83,0.94-1.3,1.6-0.8l14,8.5c0.6,0.37,0.6,1.23,0,1.6l-14,8.5C3.94,21.8,3,21.33,3,20.5z"/></svg>
                 <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.2 }}>
@@ -446,8 +446,8 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
             <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 20, textTransform: "uppercase" }}>{tr.whatYouCan}</span>
             <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
               {features.map(f => (
-                <div key={f.title} style={{ border: `1px solid ${BORDER}`, borderRadius: 10, padding: "11px 13px", display: "flex", gap: 12, alignItems: "flex-start" }}>
-                  <span style={{ fontSize: 20, flexShrink: 0 }}>{f.icon}</span>
+                <div key={f.title} className="sc-card" style={{ border: `1px solid ${BORDER}`, borderRadius: 10, padding: "11px 13px", display: "flex", gap: 12, alignItems: "flex-start", background: "#FFFFFF" }}>
+                  <span style={{ width: 34, height: 34, borderRadius: 9, background: TINT, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>{f.icon}</span>
                   <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
                     <span style={{ fontSize: 13, fontWeight: "bold" }}>{f.title}</span>
                     <span style={{ fontSize: 12, lineHeight: 1.5, color: "#6A6A6A" }}>{f.body}</span>
@@ -468,8 +468,8 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 10 }}>
             {eco.map(e => (
-              <a key={e.host} href={`https://${e.host}`} style={{ border: `1px solid ${BORDER}`, borderRadius: 12, background: "#FFFFFF", padding: 13, display: "flex", flexDirection: "column", gap: 8, textDecoration: "none", color: "inherit" }}>
-                <span style={{ width: 30, height: 30, borderRadius: 8, background: e.accent, color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Barlow Condensed, sans-serif", fontSize: 12 }}>{e.initial}</span>
+              <a key={e.host} href={`https://${e.host}`} className="sc-card" style={{ border: `1px solid ${BORDER}`, borderRadius: 12, background: "#FFFFFF", padding: 13, display: "flex", flexDirection: "column", gap: 8, textDecoration: "none", color: "inherit" }}>
+                <span className="sc-eco-icon" style={{ width: 30, height: 30, borderRadius: 8, background: e.accent, color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Barlow Condensed, sans-serif", fontSize: 12 }}>{e.initial}</span>
                 <span style={{ fontSize: 13, fontWeight: "bold" }}>{e.name}</span>
                 <span style={{ fontSize: 11, lineHeight: 1.45, color: "#6A6A6A", flex: 1 }}>{e.desc}</span>
                 <span style={{ fontSize: 10, color: "#9A9A9A" }}>{e.host}</span>
@@ -488,9 +488,9 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 12 }}>
             {testimonials.map((tm) => (
-              <div key={tm.name} style={{ background: "#FFFFFF", border: `1px solid ${BORDER}`, borderRadius: 14, padding: 18, display: "flex", flexDirection: "column", gap: 12 }}>
+              <div key={tm.name} className="sc-card" style={{ background: "#FFFFFF", border: `1px solid ${BORDER}`, borderRadius: 14, padding: 18, display: "flex", flexDirection: "column", gap: 12 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <span style={{ width: 38, height: 38, borderRadius: "50%", background: tm.color, color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Barlow Condensed, sans-serif", fontSize: 15, flexShrink: 0 }}>{tm.initial}</span>
+                  <span className="sc-testi-icon" style={{ width: 38, height: 38, borderRadius: "50%", background: tm.color, color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Barlow Condensed, sans-serif", fontSize: 15, flexShrink: 0 }}>{tm.initial}</span>
                   <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
                     <span style={{ fontSize: 13, fontWeight: "bold", color: BLACK }}>{tm.name}</span>
                     <div style={{ display: "flex", gap: 2 }}>
@@ -523,13 +523,13 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
 
       {/* Bottom CTA (anon only) */}
       {!isAuthenticated && (
-        <div style={{ background: RED }}>
+        <div style={{ background: `linear-gradient(120deg, ${RED} 0%, #A81212 100%)` }}>
           <div style={{ maxWidth: W, margin: "0 auto", padding: "28px 24px", display: "flex", flexWrap: "wrap", gap: 20, alignItems: "center", justifyContent: "space-between" }}>
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 24, lineHeight: 1.05, textTransform: "uppercase", color: "#FFFFFF" }}>{tr.ctaTitle}</span>
               <span style={{ fontSize: 13, lineHeight: 1.5, color: "#FBD9D9", maxWidth: "52ch" }}>{tr.ctaSub}</span>
             </div>
-            <a href={URLS.LOGIN} style={{ background: "#FFFFFF", color: RED, borderRadius: 10, height: 48, padding: "0 22px", fontFamily: "inherit", fontSize: 14, fontWeight: "bold", cursor: "pointer", display: "flex", alignItems: "center", textDecoration: "none", whiteSpace: "nowrap" }}>{tr.ctaBtn}</a>
+            <a href={URLS.LOGIN} className="sc-link-btn" style={{ background: "#FFFFFF", color: RED, borderRadius: 10, height: 48, padding: "0 22px", fontFamily: "inherit", fontSize: 14, fontWeight: "bold", cursor: "pointer", display: "flex", alignItems: "center", textDecoration: "none", whiteSpace: "nowrap" }}>{tr.ctaBtn}</a>
           </div>
         </div>
       )}

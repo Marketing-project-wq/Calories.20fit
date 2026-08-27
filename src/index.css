@@ -104,3 +104,90 @@ textarea:focus {
     font-size: 14px;
   }
 }
+
+/* ---- ScanPage beautification helpers ---- */
+
+.sc-card {
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.sc-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 24px rgba(20, 20, 20, 0.08);
+  border-color: #D62828;
+}
+
+.sc-btn-primary {
+  transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+.sc-btn-primary:hover:not(:disabled) {
+  background-color: #B01F1F !important;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(214, 40, 40, 0.28);
+}
+.sc-btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+  box-shadow: none;
+}
+
+.sc-btn-ghost {
+  transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
+}
+.sc-btn-ghost:hover {
+  border-color: #D62828 !important;
+  color: #D62828 !important;
+  background-color: #FDECEC !important;
+}
+
+.sc-link-btn {
+  transition: opacity 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
+}
+.sc-link-btn:hover {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 16px rgba(20, 20, 20, 0.18);
+}
+
+.sc-bar-fill {
+  transition: width 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sc-faq-btn {
+  transition: background-color 0.15s ease;
+}
+.sc-faq-btn:hover {
+  background-color: #FAFAF9;
+}
+.sc-faq-icon {
+  transition: transform 0.2s ease, color 0.2s ease;
+}
+.sc-faq-answer {
+  animation: scFadeIn 0.22s ease;
+}
+@keyframes scFadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.sc-tab {
+  transition: color 0.2s ease, border-color 0.2s ease;
+}
+.sc-tab:hover {
+  color: #141414;
+}
+
+.sc-dropzone {
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+.sc-dropzone:hover {
+  border-color: #D62828;
+  background-color: #FDECEC;
+}
+
+.sc-eco-icon,
+.sc-testi-icon {
+  transition: transform 0.2s ease;
+}
+.sc-card:hover .sc-eco-icon,
+.sc-card:hover .sc-testi-icon {
+  transform: scale(1.08);
+}
