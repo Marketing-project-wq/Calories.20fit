@@ -6,4 +6,7 @@ export default defineConfig({
   server: {
     port: 3000,
   },
+  preview: {
+    allowedHosts: ['calorietracker.20fit.id', 'calories.20fit.id'],
+  },
 })
