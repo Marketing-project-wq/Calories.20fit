@@ -131,6 +131,32 @@ function TestimonialMarquee({ testimonials }: { testimonials: (typeof TESTIMONIA
   );
 }
 
+function EcosystemPhoneMockup({ eco }: { eco: (typeof ECOSYSTEM)["id"] }) {
+  return (
+    <div style={{ display: "flex", justifyContent: "center" }}>
+      <div className="sc-phone-float" style={{ width: 230, borderRadius: 38, border: `10px solid ${BLACK}`, background: BLACK, boxShadow: "0 30px 60px -20px rgba(20,20,20,0.35)", position: "relative" }}>
+        <span style={{ position: "absolute", top: 10, left: "50%", transform: "translateX(-50%)", width: 66, height: 16, borderRadius: 10, background: BLACK, zIndex: 2 }} />
+        <div style={{ background: "linear-gradient(160deg, #FDF6F2 0%, #FFFFFF 65%)", borderRadius: 28, overflow: "hidden", paddingTop: 30, paddingBottom: 16 }}>
+          <div style={{ padding: "0 16px 14px", textAlign: "center" }}>
+            <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 15, letterSpacing: ".04em", color: BLACK }}>20FIT</span>
+          </div>
+          <div style={{ padding: "0 14px", display: "flex", flexDirection: "column", gap: 8 }}>
+            {eco.map((e) => (
+              <div key={e.host} style={{ ...glass(0.75), borderRadius: 14, padding: "9px 10px", display: "flex", alignItems: "center", gap: 10 }}>
+                <span style={{ width: 26, height: 26, borderRadius: 8, background: e.accent, color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Barlow Condensed, sans-serif", fontSize: 11, flexShrink: 0 }}>{e.initial}</span>
+                <span style={{ fontSize: 11, fontWeight: "bold", color: BLACK }}>{e.name}</span>
+              </div>
+            ))}
+          </div>
+          <div style={{ marginTop: 16, display: "flex", justifyContent: "center" }}>
+            <span style={{ width: 90, height: 4, borderRadius: 999, background: "rgba(20,20,20,0.15)" }} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 function FaqItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
   return (
@@ -539,20 +565,23 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
           <span className="sc-orb" style={{ width: 300, height: 300, top: -100, left: "10%", background: "radial-gradient(circle, #F5A3A3 0%, transparent 70%)" }} />
           <span className="sc-orb" style={{ width: 260, height: 260, bottom: -100, right: "8%", background: "radial-gradient(circle, #A8C7E8 0%, transparent 70%)", animationDelay: "-8s" }} />
         </div>
-        <div style={{ position: "relative", zIndex: 1, maxWidth: W, margin: "0 auto", padding: "28px 24px", display: "flex", flexDirection: "column", gap: 18 }}>
-          <div>
-            <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 20, textTransform: "uppercase" }}>{tr.ecoTitle}</span>
-            <span style={{ fontSize: 13, lineHeight: 1.5, color: "#4A4A4A", display: "block", marginTop: 5 }}>{tr.ecoSub}</span>
-          </div>
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 10 }}>
-            {eco.map(e => (
-              <a key={e.host} href={`https://${e.host}`} className="sc-card" style={{ ...glass(0.55), borderRadius: 16, padding: 13, display: "flex", flexDirection: "column", gap: 8, textDecoration: "none", color: "inherit" }}>
-                <span className="sc-eco-icon" style={{ width: 30, height: 30, borderRadius: 8, background: e.accent, color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Barlow Condensed, sans-serif", fontSize: 12 }}>{e.initial}</span>
-                <span style={{ fontSize: 13, fontWeight: "bold" }}>{e.name}</span>
-                <span style={{ fontSize: 11, lineHeight: 1.45, color: "#6A6A6A", flex: 1 }}>{e.desc}</span>
-                <span style={{ fontSize: 10, color: "#9A9A9A" }}>{e.host}</span>
-              </a>
-            ))}
+        <div style={{ position: "relative", zIndex: 1, maxWidth: W, margin: "0 auto", padding: "28px 24px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 32, alignItems: "center" }}>
+          <EcosystemPhoneMockup eco={eco} />
+          <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+            <div>
+              <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 20, textTransform: "uppercase" }}>{tr.ecoTitle}</span>
+              <span style={{ fontSize: 13, lineHeight: 1.5, color: "#4A4A4A", display: "block", marginTop: 5 }}>{tr.ecoSub}</span>
+            </div>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 10 }}>
+              {eco.map(e => (
+                <a key={e.host} href={`https://${e.host}`} className="sc-card" style={{ ...glass(0.55), borderRadius: 16, padding: 13, display: "flex", flexDirection: "column", gap: 8, textDecoration: "none", color: "inherit" }}>
+                  <span className="sc-eco-icon" style={{ width: 30, height: 30, borderRadius: 8, background: e.accent, color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Barlow Condensed, sans-serif", fontSize: 12 }}>{e.initial}</span>
+                  <span style={{ fontSize: 13, fontWeight: "bold" }}>{e.name}</span>
+                  <span style={{ fontSize: 11, lineHeight: 1.45, color: "#6A6A6A", flex: 1 }}>{e.desc}</span>
+                  <span style={{ fontSize: 10, color: "#9A9A9A" }}>{e.host}</span>
+                </a>
+              ))}
+            </div>
           </div>
         </div>
       </div>

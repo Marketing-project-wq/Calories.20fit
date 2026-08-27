@@ -253,3 +253,16 @@ textarea:focus {
   backdrop-filter: blur(18px) saturate(180%);
   -webkit-backdrop-filter: blur(18px) saturate(180%);
 }
+
+.sc-phone-float {
+  animation: scPhoneFloat 6s ease-in-out infinite;
+}
+@keyframes scPhoneFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sc-phone-float {
+    animation: none;
+  }
+}
