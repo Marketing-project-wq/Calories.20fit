@@ -158,43 +158,106 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
       </div>
     );
 
-    if (scanResult) return (
-      <div style={{ background: "#FFFFFF", border: `1px solid ${BORDER}`, borderRadius: 16, overflow: "hidden" }}>
-        {photoPreview && <div style={{ height: 160, backgroundImage: `url(${photoPreview})`, backgroundSize: "cover", backgroundPosition: "center" }} />}
-        <div style={{ padding: "16px 18px", display: "flex", flexDirection: "column", gap: 10 }}>
-          <span style={{ fontSize: 13, fontWeight: "bold", color: BLACK }}>{scanResult.food_name}</span>
-          <div style={{ display: "flex", alignItems: "baseline", gap: 6 }}>
-            <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 36, color: RED, lineHeight: 1 }}>{scanResult.calories}</span>
-            <span style={{ fontSize: 12, color: "#8A8A8A" }}>{tr.kcal}</span>
-          </div>
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            {isAuthenticated
-              ? [{ label: tr.protein, value: `${scanResult.protein}g`, pct: Math.round((scanResult.protein * 4 / scanResult.calories) * 100) },
-                 { label: tr.carbs, value: `${scanResult.carbs}g`, pct: Math.round((scanResult.carbs * 4 / scanResult.calories) * 100) },
-                 { label: tr.fat, value: `${scanResult.fat}g`, pct: Math.round((scanResult.fat * 9 / scanResult.calories) * 100) }]
-                .map(m => (
-                  <div key={m.label} style={{ display: "flex", flexDirection: "column", gap: 4 }}>
-                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12 }}>
-                      <span style={{ color: "#6A6A6A" }}>{m.label}</span>
-                      <span style={{ color: BLACK, fontWeight: "bold" }}>{m.value}</span>
-                    </div>
-                    <div style={{ height: 5, borderRadius: 999, background: BORDER }}><div style={{ height: 5, width: `${m.pct}%`, borderRadius: 999, background: RED }} /></div>
+    if (scanResult) {
+      // Calculate health meter (0-100): higher protein%, fiber, lower sat fat = better
+      const proteinPct = scanResult.calories > 0 ? (scanResult.protein * 4 / scanResult.calories) : 0;
+      const fiberScore = Math.min(scanResult.fiber / 5, 1); // 5g fiber = max score
+      const fatPct = scanResult.calories > 0 ? (scanResult.fat * 9 / scanResult.calories) : 0;
+      const healthScore = Math.round(Math.min(100, Math.max(0,
+        proteinPct * 40 + fiberScore * 30 + (1 - fatPct) * 30
+      )));
+      // Filling rate (0-100): protein + fiber are most satiating
+      const fillingRate = Math.round(Math.min(100, Math.max(0,
+        proteinPct * 50 + fiberScore * 50
+      )));
+      const healthColor = healthScore >= 70 ? "#2F7D5B" : healthScore >= 40 ? "#D97706" : RED;
+      const fillingColor = fillingRate >= 70 ? "#2F7D5B" : fillingRate >= 40 ? "#D97706" : RED;
+
+      return (
+        <div style={{ background: "#FFFFFF", border: `1px solid ${BORDER}`, borderRadius: 16, overflow: "hidden" }}>
+          {photoPreview && <div style={{ height: 160, backgroundImage: `url(${photoPreview})`, backgroundSize: "cover", backgroundPosition: "center" }} />}
+          <div style={{ padding: "16px 18px", display: "flex", flexDirection: "column", gap: 12 }}>
+            {/* Name + calories */}
+            <div>
+              <span style={{ fontSize: 13, fontWeight: "bold", color: BLACK, display: "block", marginBottom: 4 }}>{scanResult.food_name}</span>
+              <div style={{ display: "flex", alignItems: "baseline", gap: 6 }}>
+                <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 36, color: RED, lineHeight: 1 }}>{scanResult.calories}</span>
+                <span style={{ fontSize: 12, color: "#8A8A8A" }}>{tr.kcal}</span>
+                {scanResult.total_grams > 0 && <span style={{ fontSize: 11, color: "#9A9A9A", marginLeft: 4 }}>· {scanResult.total_grams}g</span>}
+              </div>
+            </div>
+
+            {/* Macros — always visible */}
+            <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+              {[
+                { label: tr.protein, value: scanResult.protein, unit: "g", pct: Math.round(proteinPct * 100) },
+                { label: tr.carbs, value: scanResult.carbs, unit: "g", pct: Math.round((scanResult.carbs * 4 / (scanResult.calories || 1)) * 100) },
+                { label: tr.fat, value: scanResult.fat, unit: "g", pct: Math.round(fatPct * 100) },
+                { label: lang === "id" ? "Serat" : "Fiber", value: scanResult.fiber, unit: "g", pct: Math.round(fiberScore * 100) },
+              ].map(m => (
+                <div key={m.label} style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12 }}>
+                    <span style={{ color: "#6A6A6A" }}>{m.label}</span>
+                    <span style={{ color: BLACK, fontWeight: 600 }}>{m.value}g</span>
                   </div>
-                ))
-              : [tr.protein, tr.carbs, tr.fat].map(label => (
-                <div key={label} style={{ display: "flex", justifyContent: "space-between", fontSize: 12 }}>
-                  <span style={{ color: "#6A6A6A" }}>{label}</span>
-                  <span style={{ color: RED, fontSize: 11 }}>{tr.locked}</span>
+                  <div style={{ height: 4, borderRadius: 999, background: BORDER }}>
+                    <div style={{ height: 4, width: `${m.pct}%`, borderRadius: 999, background: RED }} />
+                  </div>
                 </div>
               ))}
-          </div>
-          <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
-            <button onClick={scanAgain} style={{ flex: 1, background: RED, color: "#fff", border: "none", borderRadius: 8, padding: "9px 0", fontFamily: "inherit", fontSize: 12, fontWeight: "bold", cursor: "pointer" }}>{tr.scanAgain}</button>
-            <button onClick={resetAll} style={{ background: "transparent", border: `1px solid ${BORDER}`, color: "#6A6A6A", borderRadius: 8, padding: "9px 12px", fontFamily: "inherit", fontSize: 12, cursor: "pointer" }}>{tr.reset}</button>
+            </div>
+
+            {/* Health meter + Filling rate */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+              <div style={{ border: `1px solid ${BORDER}`, borderRadius: 10, padding: "10px 12px" }}>
+                <span style={{ fontSize: 10, color: "#8A8A8A", textTransform: "uppercase", letterSpacing: ".06em", display: "block", marginBottom: 4 }}>
+                  {lang === "id" ? "Health Meter" : "Health Meter"}
+                </span>
+                <div style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
+                  <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 24, color: healthColor, lineHeight: 1 }}>{healthScore}</span>
+                  <span style={{ fontSize: 10, color: "#8A8A8A" }}>/100</span>
+                </div>
+                <div style={{ height: 4, borderRadius: 999, background: BORDER, marginTop: 6 }}>
+                  <div style={{ height: 4, width: `${healthScore}%`, borderRadius: 999, background: healthColor }} />
+                </div>
+              </div>
+              <div style={{ border: `1px solid ${BORDER}`, borderRadius: 10, padding: "10px 12px" }}>
+                <span style={{ fontSize: 10, color: "#8A8A8A", textTransform: "uppercase", letterSpacing: ".06em", display: "block", marginBottom: 4 }}>
+                  {lang === "id" ? "Filling Rate" : "Filling Rate"}
+                </span>
+                <div style={{ display: "flex", alignItems: "baseline", gap: 4 }}>
+                  <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 24, color: fillingColor, lineHeight: 1 }}>{fillingRate}</span>
+                  <span style={{ fontSize: 10, color: "#8A8A8A" }}>/100</span>
+                </div>
+                <div style={{ height: 4, borderRadius: 999, background: BORDER, marginTop: 6 }}>
+                  <div style={{ height: 4, width: `${fillingRate}%`, borderRadius: 999, background: fillingColor }} />
+                </div>
+              </div>
+            </div>
+
+            {/* Per-item breakdown if multiple items */}
+            {scanResult.items.length > 1 && (
+              <div style={{ borderTop: `1px solid ${BORDER}`, paddingTop: 10 }}>
+                <span style={{ fontSize: 11, color: "#8A8A8A", display: "block", marginBottom: 6 }}>
+                  {lang === "id" ? "Rincian" : "Breakdown"}
+                </span>
+                {scanResult.items.map((item, i) => (
+                  <div key={i} style={{ display: "flex", justifyContent: "space-between", fontSize: 11, padding: "3px 0", borderBottom: i < scanResult.items.length - 1 ? `1px solid #F4F2F0` : "none" }}>
+                    <span style={{ color: "#4A4A4A" }}>{item.name} {item.portion && <span style={{ color: "#9A9A9A" }}>({item.portion})</span>}</span>
+                    <span style={{ color: BLACK, fontWeight: 600 }}>{item.kcal} {tr.kcal}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            <div style={{ display: "flex", gap: 8 }}>
+              <button onClick={scanAgain} style={{ flex: 1, background: RED, color: "#fff", border: "none", borderRadius: 8, padding: "9px 0", fontFamily: "inherit", fontSize: 12, fontWeight: "bold", cursor: "pointer" }}>{tr.scanAgain}</button>
+              <button onClick={resetAll} style={{ background: "transparent", border: `1px solid ${BORDER}`, color: "#6A6A6A", borderRadius: 8, padding: "9px 12px", fontFamily: "inherit", fontSize: 12, cursor: "pointer" }}>{tr.reset}</button>
+            </div>
           </div>
         </div>
-      </div>
-    );
+      );
+    }
 
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>

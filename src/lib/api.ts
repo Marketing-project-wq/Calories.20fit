@@ -3,13 +3,26 @@ import { supabase } from "./supabase";
 
 export interface ScanResult {
   id: string;
+  food_name: string;
   calories: number;
   protein: number;
   carbs: number;
   fat: number;
+  fiber: number;
+  total_grams: number;
   image_url: string;
-  food_name: string;
   created_at: string;
+  items: ScanItem[];
+}
+
+export interface ScanItem {
+  name: string;
+  portion: string;
+  kcal: number;
+  protein_g: number;
+  carbs_g: number;
+  fat_g: number;
+  fiber_g: number;
 }
 
 export interface QuotaData {
@@ -128,10 +141,7 @@ export const apiClient = {
   },
 };
 
-// Normalize the AI response shape into our ScanResult interface.
-// /api/pub/scan and /api/scan/ai return { result: { name, items, ... } }
 function normalizeResult(data: any): ScanResult {
-  // If already in flat ScanResult shape, return as-is
   if (typeof data.calories === "number") return data as ScanResult;
 
   const result = data.result ?? data;
@@ -142,8 +152,10 @@ function normalizeResult(data: any): ScanResult {
       protein: acc.protein + (item.protein_g ?? item.protein ?? 0),
       carbs: acc.carbs + (item.carbs_g ?? item.carbs ?? 0),
       fat: acc.fat + (item.fat_g ?? item.fat ?? 0),
+      fiber: acc.fiber + (item.fiber_g ?? item.fiber ?? 0),
+      grams: acc.grams + parseGrams(item.portion),
     }),
-    { calories: 0, protein: 0, carbs: 0, fat: 0 }
+    { calories: 0, protein: 0, carbs: 0, fat: 0, fiber: 0, grams: 0 }
   );
 
   return {
@@ -153,7 +165,23 @@ function normalizeResult(data: any): ScanResult {
     protein: Math.round(totals.protein * 10) / 10,
     carbs: Math.round(totals.carbs * 10) / 10,
     fat: Math.round(totals.fat * 10) / 10,
+    fiber: Math.round(totals.fiber * 10) / 10,
+    total_grams: Math.round(totals.grams),
     image_url: data.image_url ?? "",
     created_at: data.created_at ?? new Date().toISOString(),
+    items: items.map((i: any) => ({
+      name: i.name ?? "",
+      portion: i.portion ?? "",
+      kcal: Math.round(i.kcal ?? i.calories ?? 0),
+      protein_g: Math.round((i.protein_g ?? i.protein ?? 0) * 10) / 10,
+      carbs_g: Math.round((i.carbs_g ?? i.carbs ?? 0) * 10) / 10,
+      fat_g: Math.round((i.fat_g ?? i.fat ?? 0) * 10) / 10,
+      fiber_g: Math.round((i.fiber_g ?? i.fiber ?? 0) * 10) / 10,
+    })),
   };
+}
+
+function parseGrams(portion: string): number {
+  const m = String(portion || "").match(/(\d+(?:\.\d+)?)\s*(?:gram|gr|g)\b/i);
+  return m ? parseFloat(m[1]) : 0;
 }
