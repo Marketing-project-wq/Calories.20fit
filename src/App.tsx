@@ -1,6 +1,5 @@
 import { useState } from "react";
 import { COLORS } from "./lib/constants";
-import { Header } from "./components/Header";
 import { ScanPage } from "./pages/ScanPage";
 import { HistoryPage } from "./pages/HistoryPage";
 import { InsightPage } from "./pages/InsightPage";
@@ -15,15 +14,13 @@ const TABS: { key: Page; label: string }[] = [
 ];
 
 export function App() {
-  const { user, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
   const [page, setPage] = useState<Page>("scan");
 
   return (
     <div className="min-h-screen" style={{ background: "#EFEDEA" }}>
-      <Header subdomainKey="calories" isAuthenticated={isAuthenticated} user={user} />
-
       {/* Tab nav */}
-      <div style={{ borderBottom: "2px solid #141414", background: "#EFEDEA" }}>
+      <div style={{ borderBottom: "2px solid #141414", background: "#FFFFFF", position: "sticky", top: 0, zIndex: 50 }}>
         <div className="flex max-w-2xl mx-auto px-4">
           {TABS.map((tab) => (
             <button
