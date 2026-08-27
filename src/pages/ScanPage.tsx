@@ -166,6 +166,7 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
       const proteinPct = scanResult.calories > 0 ? Math.round((scanResult.protein * 4 / scanResult.calories) * 100) : 0;
       const carbsPct = scanResult.calories > 0 ? Math.round((scanResult.carbs * 4 / scanResult.calories) * 100) : 0;
       const fatPct = scanResult.calories > 0 ? Math.round((scanResult.fat * 9 / scanResult.calories) * 100) : 0;
+      const fiberScore = Math.round(Math.min(scanResult.fiber / 5, 1) * 100);
 
       return (
         <div style={{ background: "#FFFFFF", border: `1px solid ${BORDER}`, borderRadius: 16, overflow: "hidden" }}>
