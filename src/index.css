@@ -192,78 +192,33 @@ textarea:focus {
   transform: scale(1.08);
 }
 
-/* Testimonial carousel */
-.sc-testi-track {
+/* Testimonial marquee: two rows, auto-scrolling, pause on hover */
+.sc-marquee-wrap {
+  position: relative;
+  overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0, #000 48px, #000 calc(100% - 48px), transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0, #000 48px, #000 calc(100% - 48px), transparent 100%);
+}
+.sc-marquee-row {
   display: flex;
   gap: 12px;
-  overflow-x: auto;
-  scroll-snap-type: x mandatory;
-  scroll-padding-left: 4px;
-  -ms-overflow-style: none;
-  scrollbar-width: none;
-  padding: 2px 2px 4px;
+  width: max-content;
+  animation-name: scMarqueeScroll;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
 }
-.sc-testi-track::-webkit-scrollbar {
-  display: none;
+.sc-marquee-row:hover {
+  animation-play-state: paused;
 }
-.sc-testi-card {
-  scroll-snap-align: start;
-  flex: 0 0 100%;
-  min-width: 0;
+.sc-marquee-card {
+  flex: 0 0 300px;
 }
-@media (min-width: 640px) {
-  .sc-testi-card {
-    flex-basis: calc(50% - 6px);
+@keyframes scMarqueeScroll {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sc-marquee-row {
+    animation: none;
   }
-}
-@media (min-width: 960px) {
-  .sc-testi-card {
-    flex-basis: calc(33.333% - 8px);
-  }
-}
-
-.sc-carousel-arrow {
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
-  background: #FFFFFF;
-  border: 1px solid #E4E0DB;
-  color: #141414;
-  font-size: 20px;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  box-shadow: 0 6px 16px rgba(20, 20, 20, 0.12);
-  transition: background-color 0.2s ease, color 0.2s ease, transform 0.15s ease;
-}
-.sc-carousel-arrow:hover {
-  background: #D62828;
-  color: #FFFFFF;
-  border-color: #D62828;
-}
-.sc-carousel-arrow-left {
-  left: -14px;
-}
-.sc-carousel-arrow-right {
-  right: -14px;
-}
-@media (max-width: 640px) {
-  .sc-carousel-arrow {
-    display: none;
-  }
-}
-
-.sc-dot {
-  height: 7px;
-  width: 7px;
-  border-radius: 999px;
-  border: none;
-  padding: 0;
-  cursor: pointer;
-  transition: width 0.25s ease, background-color 0.25s ease;
 }

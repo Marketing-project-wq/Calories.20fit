@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { URLS } from "../lib/constants";
 import { apiClient, ScanResult } from "../lib/api";
 import { useAuth } from "../hooks/useAuth";
@@ -87,86 +87,38 @@ const FEATURES = {
   ],
 };
 
-function TestimonialCarousel({ testimonials, lang }: { testimonials: (typeof TESTIMONIALS)["id"]; lang: Lang }) {
-  const trackRef = useRef<HTMLDivElement>(null);
-  const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
-  const [active, setActive] = useState(0);
-  const activeRef = useRef(0);
-  const [paused, setPaused] = useState(false);
-
-  useEffect(() => { activeRef.current = active; }, [active]);
-
-  const scrollToIndex = (i: number) => {
-    const track = trackRef.current;
-    const card = cardRefs.current[i];
-    if (track && card) track.scrollTo({ left: card.offsetLeft - track.offsetLeft, behavior: "smooth" });
-  };
-
-  const handleScroll = () => {
-    const track = trackRef.current;
-    if (!track) return;
-    let closest = 0;
-    let minDist = Infinity;
-    cardRefs.current.forEach((card, i) => {
-      if (!card) return;
-      const dist = Math.abs(card.offsetLeft - track.offsetLeft - track.scrollLeft);
-      if (dist < minDist) { minDist = dist; closest = i; }
-    });
-    setActive(closest);
-  };
-
-  const scrollByPage = (dir: 1 | -1) => {
-    trackRef.current?.scrollBy({ left: dir * trackRef.current.clientWidth * 0.9, behavior: "smooth" });
-  };
-
-  // Auto-advance one card at a time; pauses on hover/touch so it never fights the reader.
-  useEffect(() => {
-    if (paused) return;
-    const id = setInterval(() => {
-      scrollToIndex((activeRef.current + 1) % testimonials.length);
-    }, 4000);
-    return () => clearInterval(id);
-  }, [paused, testimonials.length]);
-
+function TestimonialCard({ tm }: { tm: (typeof TESTIMONIALS)["id"][number] }) {
   return (
-    <div
-      style={{ position: "relative" }}
-      onMouseEnter={() => setPaused(true)}
-      onMouseLeave={() => setPaused(false)}
-      onTouchStart={() => setPaused(true)}
-      onTouchEnd={() => setPaused(false)}
-    >
-      <div ref={trackRef} onScroll={handleScroll} className="sc-testi-track">
-        {testimonials.map((tm, i) => (
-          <div key={tm.name} ref={(el) => (cardRefs.current[i] = el)} className="sc-testi-card">
-            <div className="sc-card" style={{ background: "#FFFFFF", border: `1px solid ${BORDER}`, borderRadius: 14, padding: 18, display: "flex", flexDirection: "column", gap: 12, height: "100%" }}>
-              <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                <span className="sc-testi-icon" style={{ width: 38, height: 38, borderRadius: "50%", background: tm.color, color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Barlow Condensed, sans-serif", fontSize: 15, flexShrink: 0 }}>{tm.initial}</span>
-                <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
-                  <span style={{ fontSize: 13, fontWeight: "bold", color: BLACK }}>{tm.name}</span>
-                  <div style={{ display: "flex", gap: 2 }}>
-                    {Array.from({ length: 5 }).map((_, r) => (
-                      <span key={r} style={{ fontSize: 11, color: r < tm.rating ? "#F59E0B" : "#D4D0CB" }}>★</span>
-                    ))}
-                  </div>
-                </div>
-              </div>
-              <p style={{ margin: 0, fontSize: 13, lineHeight: 1.6, color: "#3A3A3A", flex: 1 }}>"{tm.text}"</p>
-              <span style={{ fontSize: 11, color: "#9A9A9A", background: "#F4F2F0", borderRadius: 999, padding: "4px 10px", alignSelf: "flex-start" }}>{tm.food}</span>
+    <div className="sc-marquee-card">
+      <div className="sc-card" style={{ background: "#FFFFFF", border: `1px solid ${BORDER}`, borderRadius: 14, padding: 18, display: "flex", flexDirection: "column", gap: 12, height: "100%" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+          <span className="sc-testi-icon" style={{ width: 38, height: 38, borderRadius: "50%", background: tm.color, color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Barlow Condensed, sans-serif", fontSize: 15, flexShrink: 0 }}>{tm.initial}</span>
+          <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+            <span style={{ fontSize: 13, fontWeight: "bold", color: BLACK }}>{tm.name}</span>
+            <div style={{ display: "flex", gap: 2 }}>
+              {Array.from({ length: 5 }).map((_, r) => (
+                <span key={r} style={{ fontSize: 11, color: r < tm.rating ? "#F59E0B" : "#D4D0CB" }}>★</span>
+              ))}
             </div>
           </div>
-        ))}
+        </div>
+        <p style={{ margin: 0, fontSize: 13, lineHeight: 1.6, color: "#3A3A3A", flex: 1 }}>"{tm.text}"</p>
+        <span style={{ fontSize: 11, color: "#9A9A9A", background: "#F4F2F0", borderRadius: 999, padding: "4px 10px", alignSelf: "flex-start" }}>{tm.food}</span>
       </div>
+    </div>
+  );
+}
 
-      <button onClick={() => scrollByPage(-1)} className="sc-carousel-arrow sc-carousel-arrow-left" aria-label={lang === "id" ? "Sebelumnya" : "Previous"}>‹</button>
-      <button onClick={() => scrollByPage(1)} className="sc-carousel-arrow sc-carousel-arrow-right" aria-label={lang === "id" ? "Berikutnya" : "Next"}>›</button>
-
-      <div style={{ display: "flex", gap: 6, justifyContent: "center", marginTop: 16 }}>
-        {testimonials.map((tm, i) => (
-          <button key={tm.name} onClick={() => scrollToIndex(i)} aria-label={`${i + 1}`}
-            className="sc-dot" style={{ background: active === i ? RED : BORDER, width: active === i ? 18 : 7 }} />
-        ))}
-      </div>
+function TestimonialMarquee({ testimonials }: { testimonials: (typeof TESTIMONIALS)["id"] }) {
+  const mid = Math.ceil(testimonials.length / 2);
+  const rows = [testimonials.slice(0, mid), testimonials.slice(mid)];
+  return (
+    <div className="sc-marquee-wrap">
+      {rows.map((row, ri) => (
+        <div key={ri} className="sc-marquee-row" style={{ marginTop: ri === 0 ? 0 : 12, animationDuration: ri === 0 ? "34s" : "40s" }}>
+          {[...row, ...row].map((tm, i) => <TestimonialCard key={`${tm.name}-${i}`} tm={tm} />)}
+        </div>
+      ))}
     </div>
   );
 }
@@ -442,6 +394,7 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
               <span style={{ width: 40, height: 40, borderRadius: 10, background: TINT, color: RED, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Barlow Condensed, sans-serif", fontSize: 22 }}>+</span>
               <span style={{ fontSize: 14, fontWeight: "bold", color: BLACK }}>{tr.dropzone}</span>
               <span style={{ fontSize: 12, color: "#8A8A8A" }}>{tr.dropzoneSub}</span>
+              <span className="sc-btn-primary" style={{ background: RED, color: "#FFFFFF", borderRadius: 8, padding: "8px 20px", fontSize: 12, fontWeight: "bold", marginTop: 4 }}>{tr.dropzoneChoose}</span>
               <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" onChange={e => e.target.files?.[0] && handleFile(e.target.files[0])} style={{ display: "none" }} />
             </label>
           : <div style={{ border: `1.5px solid ${BORDER}`, borderRadius: 14, overflow: "hidden", background: "#FFFFFF" }}>
@@ -497,6 +450,15 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
                 </div>
               </a>
             </div>
+            {/* Trust row */}
+            <div style={{ display: "flex", alignItems: "center", gap: 10, marginTop: 6 }}>
+              <div style={{ display: "flex" }}>
+                {testimonials.slice(0, 5).map((tm, i) => (
+                  <span key={tm.name} style={{ width: 26, height: 26, borderRadius: "50%", background: tm.color, color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Barlow Condensed, sans-serif", fontSize: 11, border: "2px solid #FFFFFF", marginLeft: i === 0 ? 0 : -8 }}>{tm.initial}</span>
+                ))}
+              </div>
+              <span style={{ fontSize: 12, color: "#6A6A6A" }}>{tr.heroTrust}</span>
+            </div>
           </div>
           <ToolPanel />
         </div>
@@ -506,6 +468,21 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
       <div style={{ borderBottom: `1px solid ${BORDER}` }}>
         <div style={{ maxWidth: W, margin: "0 auto", padding: "14px 24px" }}>
           <span style={{ fontSize: 12, lineHeight: 1.55, color: "#6A6A6A", borderLeft: `3px solid ${RED}`, paddingLeft: 12, display: "block" }}>{tr.framingNote}</span>
+        </div>
+      </div>
+
+      {/* Who this is for */}
+      <div style={{ borderBottom: `1px solid ${BORDER}` }}>
+        <div style={{ maxWidth: 640, margin: "0 auto", padding: "32px 24px", display: "flex", flexDirection: "column", alignItems: "center", gap: 18, textAlign: "center" }}>
+          <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 22, textTransform: "uppercase" }}>{tr.whoForTitle}</span>
+          <div style={{ display: "flex", flexDirection: "column", gap: 12, alignItems: "flex-start" }}>
+            {tr.whoForItems.map((item) => (
+              <div key={item} style={{ display: "flex", gap: 10, alignItems: "flex-start", textAlign: "left" }}>
+                <span style={{ width: 20, height: 20, borderRadius: "50%", background: TINT, color: RED, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: "bold", flexShrink: 0, marginTop: 1 }}>✓</span>
+                <span style={{ fontSize: 14, lineHeight: 1.5, color: "#3A3A3A" }}>{item}</span>
+              </div>
+            ))}
+          </div>
         </div>
       </div>
 
@@ -529,9 +506,9 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 20, textTransform: "uppercase" }}>{tr.whatYouCan}</span>
             <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
-              {features.map(f => (
-                <div key={f.title} className="sc-card" style={{ border: `1px solid ${BORDER}`, borderRadius: 10, padding: "11px 13px", display: "flex", gap: 12, alignItems: "flex-start", background: "#FFFFFF" }}>
-                  <span style={{ width: 34, height: 34, borderRadius: 9, background: TINT, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>{f.icon}</span>
+              {features.map((f, i) => (
+                <div key={f.title} className="sc-card" style={{ border: `1px solid ${i === 0 ? RED : BORDER}`, borderRadius: 10, padding: "11px 13px", display: "flex", gap: 12, alignItems: "flex-start", background: i === 0 ? TINT : "#FFFFFF" }}>
+                  <span style={{ width: 34, height: 34, borderRadius: 9, background: i === 0 ? "#FFFFFF" : TINT, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>{f.icon}</span>
                   <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
                     <span style={{ fontSize: 13, fontWeight: "bold" }}>{f.title}</span>
                     <span style={{ fontSize: 12, lineHeight: 1.5, color: "#6A6A6A" }}>{f.body}</span>
@@ -570,7 +547,7 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
             <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 20, textTransform: "uppercase" }}>{tr.testimonialTitle}</span>
             <span style={{ fontSize: 12, color: "#8A8A8A" }}>{tr.testimonialSub}</span>
           </div>
-          <TestimonialCarousel testimonials={testimonials} lang={lang} />
+          <TestimonialMarquee testimonials={testimonials} />
         </div>
       </div>
 
