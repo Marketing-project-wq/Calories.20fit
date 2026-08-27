@@ -9,7 +9,7 @@ import { useAuth } from "./hooks/useAuth";
 type Page = "scan" | "history" | "insight";
 
 const TABS: { key: Page; label: string }[] = [
-  { key: "scan", label: "Scan" },
+  { key: "scan", label: "Scan Kalori" },
   { key: "history", label: "Riwayat" },
   { key: "insight", label: "Insight" },
 ];
@@ -19,20 +19,27 @@ export function App() {
   const [page, setPage] = useState<Page>("scan");
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen" style={{ background: "#EFEDEA" }}>
       <Header subdomainKey="calories" isAuthenticated={isAuthenticated} user={user} />
 
-      <div className="border-b" style={{ borderColor: "#E8E8E8" }}>
-        <div className="flex max-w-6xl mx-auto">
+      {/* Tab nav */}
+      <div style={{ borderBottom: "2px solid #141414", background: "#EFEDEA" }}>
+        <div className="flex max-w-2xl mx-auto px-4">
           {TABS.map((tab) => (
             <button
               key={tab.key}
               onClick={() => setPage(tab.key)}
-              className="flex-1 py-3 font-semibold text-center transition-colors"
               style={{
-                borderBottomColor: page === tab.key ? COLORS.RED : "transparent",
-                color: page === tab.key ? COLORS.RED : "#606060",
-                borderBottomWidth: page === tab.key ? "2px" : "0",
+                padding: "12px 16px",
+                fontFamily: "Anton, sans-serif",
+                fontSize: "13px",
+                letterSpacing: "0.08em",
+                textTransform: "uppercase",
+                borderBottom: page === tab.key ? `2px solid ${COLORS.RED}` : "2px solid transparent",
+                color: page === tab.key ? COLORS.RED : "#6A6A6A",
+                marginBottom: "-2px",
+                background: "none",
+                cursor: "pointer",
               }}
             >
               {tab.label}
@@ -47,7 +54,7 @@ export function App() {
         {page === "insight" && <InsightPage />}
       </main>
 
-      <footer className="border-t py-6 px-4 text-center text-xs text-gray-600" style={{ borderColor: "#E8E8E8" }}>
+      <footer style={{ borderTop: "1px solid #D8D6D2", padding: "24px 16px", textAlign: "center", fontSize: "12px", color: "#8A8A8A" }}>
         <p>© 2024 20FIT. Semua hak dilindungi.</p>
       </footer>
     </div>
