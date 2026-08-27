@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
+<script src="./image-slot.js"></script>
+<style>
+  body { margin: 0; background: #0E0F10; font-family: "IBM Plex Sans", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  * { box-sizing: border-box; }
+  a { color: inherit; text-decoration: none; }
+  a:hover { color: inherit; }
+  @keyframes pulseDot { 0%,100% { opacity: .35; } 50% { opacity: 1; } }
+</style>
+</helmet>
+
+<div style="min-height:100vh;padding:28px 24px 64px;display:flex;flex-direction:column;align-items:center;gap:20px">
+
+  <div style="width:100%;max-width:1320px;display:flex;flex-wrap:wrap;align-items:center;gap:16px;justify-content:space-between">
+    <div style="display:flex;align-items:baseline;gap:12px">
+      <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:20px;letter-spacing:-.02em;color:#F7F6F3">20FIT</span>
+      <span style="font-size:13px;color:#7C8085">public subdomains &mdash; anonymous visitor</span>
+    </div>
+    <div style="display:flex;gap:8px">
+      <div style="display:flex;background:#1A1C1E;border:1px solid #26292C;border-radius:999px;padding:3px;gap:2px">
+        <button onClick="{{ setDesktop }}" style="{{ deskBtn }}">Desktop</button>
+        <button onClick="{{ setMobile }}" style="{{ mobBtn }}">Mobile</button>
+      </div>
+      <div style="display:flex;background:#1A1C1E;border:1px solid #26292C;border-radius:999px;padding:3px;gap:2px">
+        <button onClick="{{ setID }}" style="{{ idBtn }}">ID</button>
+        <button onClick="{{ setEN }}" style="{{ enBtn }}">EN</button>
+      </div>
+    </div>
+  </div>
+
+  <div style="width:100%;max-width:1320px;display:flex;gap:8px;flex-wrap:wrap">
+    <button onClick="{{ goCalories }}" style="{{ tabCal }}">calories.20fit.id</button>
+    <button onClick="{{ goMenu }}" style="{{ tabMenu }}">menu.20fit.id</button>
+    <button onClick="{{ goMcu }}" style="{{ tabMcu }}">medicalcheckup.20fit.id</button>
+  </div>
+
+  <div style="width:100%;display:flex;justify-content:center">
+  <div style="width:{{ frameWidth }};max-width:100%;background:#F7F6F3;border-radius:18px;overflow:hidden;box-shadow:0 40px 80px -30px rgba(0,0,0,.7);border:1px solid #26292C">
+
+    <div style="display:flex;align-items:center;gap:10px;padding:10px 14px;background:#1A1C1E;border-bottom:1px solid #26292C">
+      <div style="display:flex;gap:6px">
+        <span style="width:9px;height:9px;border-radius:50%;background:#3A3D40;display:block"></span>
+        <span style="width:9px;height:9px;border-radius:50%;background:#3A3D40;display:block"></span>
+        <span style="width:9px;height:9px;border-radius:50%;background:#3A3D40;display:block"></span>
+      </div>
+      <div style="flex:1;background:#0E0F10;border:1px solid #26292C;border-radius:8px;padding:5px 12px;font-size:12px;color:#9AA0A6;font-family:'IBM Plex Sans',monospace">{{ url }}</div>
+    </div>
+
+    <div style="background:#101112;color:#F7F6F3;padding:0 20px">
+      <div style="display:flex;align-items:center;gap:14px;height:64px">
+        <a href="#" style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:19px;letter-spacing:-.02em">20FIT</a>
+        <span style="width:1px;height:22px;background:#2A2D30"></span>
+        <span style="font-size:14px;font-weight:600;color:{{ accent }}">{{ t.brandLabel }}</span>
+        <div style="flex:1"></div>
+        <div style="position:relative">
+          <button onClick="{{ toggleSwitcher }}" style="display:flex;align-items:center;gap:8px;background:#1A1C1E;border:1px solid #2A2D30;color:#F7F6F3;border-radius:10px;padding:9px 13px;font-size:13px;font-family:inherit;cursor:pointer;min-height:44px" style-hover="border-color:#4A4E52">
+            <span style="display:grid;grid-template-columns:repeat(3,3px);gap:2px">
+              <i style="width:3px;height:3px;background:#F7F6F3;display:block"></i><i style="width:3px;height:3px;background:#F7F6F3;display:block"></i><i style="width:3px;height:3px;background:#F7F6F3;display:block"></i>
+              <i style="width:3px;height:3px;background:#F7F6F3;display:block"></i><i style="width:3px;height:3px;background:#F7F6F3;display:block"></i><i style="width:3px;height:3px;background:#F7F6F3;display:block"></i>
+              <i style="width:3px;height:3px;background:#F7F6F3;display:block"></i><i style="width:3px;height:3px;background:#F7F6F3;display:block"></i><i style="width:3px;height:3px;background:#F7F6F3;display:block"></i>
+            </span>
+            <span>{{ t.apps }}</span>
+          </button>
+          <sc-if value="{{ switcherOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="position:absolute;top:52px;right:0;width:290px;background:#16181A;border:1px solid #2A2D30;border-radius:14px;padding:8px;z-index:20;box-shadow:0 24px 48px -18px rgba(0,0,0,.8)">
+              <sc-for list="{{ apps }}" as="app" hint-placeholder-count="4">
+                <button onClick="{{ app.go }}" style="width:100%;display:flex;align-items:center;gap:12px;background:transparent;border:0;color:#F7F6F3;padding:11px;border-radius:10px;cursor:pointer;text-align:left;font-family:inherit" style-hover="background:#1F2225">
+                  <span style="width:32px;height:32px;border-radius:9px;background:{{ app.color }};display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:600;color:#101112;flex:none">{{ app.initial }}</span>
+                  <span style="display:flex;flex-direction:column;gap:2px">
+                    <span style="font-size:13px;font-weight:600">{{ app.name }}</span>
+                    <span style="font-size:11px;color:#8A9096">{{ app.host }}</span>
+                  </span>
+                </button>
+              </sc-for>
+            </div>
+          </sc-if>
+        </div>
+        <button style="background:{{ accent }};color:#101112;border:0;border-radius:10px;padding:11px 18px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;min-height:44px">{{ t.signIn }}</button>
+      </div>
+    </div>
+
+    <sc-if value="{{ isCalories }}" hint-placeholder-val="{{ true }}">
+      <div style="padding:44px 20px 0;background:#F7F6F3">
+        <div style="max-width:960px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:28px;align-items:center">
+          <div style="display:flex;flex-direction:column;gap:14px">
+            <span style="align-self:flex-start;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#FF5A1F;background:#FFEDE5;border-radius:999px;padding:6px 12px">{{ t.calEyebrow }}</span>
+            <h1 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(32px,4.4vw,52px);line-height:1.02;letter-spacing:-.03em;margin:0;color:#101112;max-width:16ch;text-wrap:pretty">{{ t.calTitle }}</h1>
+            <p style="margin:0;font-size:17px;line-height:1.5;color:#4C5155;max-width:46ch;text-wrap:pretty">{{ t.calSub }}</p>
+          </div>
+          <div style="position:relative;width:100%;aspect-ratio:4/3;border-radius:18px;overflow:hidden;background:#EDEAE3">
+            <image-slot id="cal-hero" shape="rect" placeholder="Foto makanan Indonesia di atas meja"></image-slot>
+          </div>
+        </div>
+
+        <div style="max-width:960px;margin:28px auto 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:14px">
+          <sc-for list="{{ howSteps }}" as="st" hint-placeholder-count="3">
+            <div style="background:#FFFFFF;border:1px solid #E4E1DA;border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:8px">
+              <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:13px;color:#FF5A1F">{{ st.num }}</span>
+              <span style="font-size:15px;font-weight:600;color:#101112;text-wrap:pretty">{{ st.title }}</span>
+              <span style="font-size:13px;line-height:1.55;color:#4C5155;text-wrap:pretty">{{ st.body }}</span>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="max-width:960px;margin:14px auto 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px">
+          <div style="background:#FFFFFF;border:1px solid #E4E1DA;border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:10px">
+            <span style="font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#101112">{{ t.getTitle }}</span>
+            <sc-for list="{{ getPoints }}" as="gp" hint-placeholder-count="4">
+              <div style="display:flex;gap:9px;align-items:flex-start">
+                <span style="width:5px;height:5px;border-radius:50%;background:#FF5A1F;margin-top:7px;flex:none"></span>
+                <span style="font-size:13px;line-height:1.5;color:#4C5155;text-wrap:pretty">{{ gp }}</span>
+              </div>
+            </sc-for>
+          </div>
+          <div style="background:#F1EFE9;border:1px solid #E4E1DA;border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:10px">
+            <span style="font-size:13px;font-weight:600;letter-spacing:.04em;text-transform:uppercase;color:#101112">{{ t.limitTitle }}</span>
+            <sc-for list="{{ limitPoints }}" as="lp2" hint-placeholder-count="3">
+              <div style="display:flex;gap:9px;align-items:flex-start">
+                <span style="width:5px;height:5px;border-radius:50%;background:#9AA0A6;margin-top:7px;flex:none"></span>
+                <span style="font-size:13px;line-height:1.5;color:#4C5155;text-wrap:pretty">{{ lp2 }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="max-width:960px;margin:28px auto 8px;display:flex;align-items:center;gap:14px">
+          <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:20px;letter-spacing:-.02em;color:#101112;white-space:nowrap">{{ t.tryTitle }}</span>
+          <span style="flex:1;height:1px;background:#E4E1DA"></span>
+        </div>
+
+        <div style="max-width:960px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;align-items:start">
+          <div style="background:#FFFFFF;border:1px solid #E4E1DA;border-radius:16px;padding:20px;display:flex;flex-direction:column;gap:14px">
+            <div style="display:flex;align-items:center;justify-content:space-between">
+              <span style="font-size:13px;font-weight:600;color:#101112">{{ t.scanCardTitle }}</span>
+              <span style="font-size:12px;color:#6B7075">{{ quotaLabel }}</span>
+            </div>
+            <div style="border:1.5px dashed #CFCBC2;border-radius:12px;background:#FAF9F6;padding:28px 18px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center">
+              <span style="width:40px;height:40px;border-radius:12px;background:#FFEDE5;display:flex;align-items:center;justify-content:center;font-size:17px;color:#FF5A1F;font-weight:600">+</span>
+              <span style="font-size:14px;color:#4C5155;max-width:26ch;text-wrap:pretty">{{ t.dropzone }}</span>
+            </div>
+            <button onClick="{{ runScan }}" style="background:#FF5A1F;color:#FFFFFF;border:0;border-radius:11px;padding:14px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;min-height:48px" style-hover="background:#E64B12">{{ scanBtnLabel }}</button>
+            <p style="margin:0;font-size:12px;line-height:1.5;color:#7C8085">{{ t.estimateNote }}</p>
+          </div>
+
+          <sc-if value="{{ scanned }}" hint-placeholder-val="{{ false }}">
+            <div style="background:#FFFFFF;border:1px solid #E4E1DA;border-radius:16px;overflow:hidden">
+              <div style="position:relative;width:100%;height:170px;background:#EDEAE3">
+                <image-slot id="cal-result" shape="rect" placeholder="Foto hasil scan"></image-slot>
+              </div>
+              <div style="padding:18px 20px;border-bottom:1px solid #EDEAE3;display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
+                <div style="display:flex;flex-direction:column;gap:4px">
+                  <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:22px;letter-spacing:-.02em;color:#101112">{{ t.foodName }}</span>
+                  <span style="font-size:13px;color:#6B7075">{{ t.foodPortion }}</span>
+                </div>
+                <span style="font-size:11px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:#1F7A4C;background:#E4F5EB;border-radius:999px;padding:6px 10px;white-space:nowrap">{{ t.fullResult }}</span>
+              </div>
+              <div style="padding:18px 20px;display:flex;flex-direction:column;gap:16px">
+                <div style="display:flex;align-items:baseline;gap:8px">
+                  <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:40px;letter-spacing:-.03em;color:#101112">620</span>
+                  <span style="font-size:14px;color:#6B7075">{{ t.kcalEst }}</span>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:10px">
+                  <sc-for list="{{ macros }}" as="m" hint-placeholder-count="3">
+                    <div style="display:flex;flex-direction:column;gap:5px">
+                      <div style="display:flex;justify-content:space-between;font-size:13px;color:#4C5155">
+                        <span>{{ m.label }}</span>
+                        <span style="font-weight:600;color:#101112">{{ m.value }}</span>
+                      </div>
+                      <div style="height:6px;border-radius:999px;background:#EDEAE3;overflow:hidden">
+                        <div style="height:6px;width:{{ m.pct }};border-radius:999px;background:{{ m.color }}"></div>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+                <div style="border-top:1px solid #EDEAE3;padding-top:14px;display:flex;flex-direction:column;gap:8px">
+                  <span style="font-size:12px;font-weight:600;color:#101112">{{ t.micro }}</span>
+                  <div style="display:flex;flex-wrap:wrap;gap:6px">
+                    <sc-for list="{{ micros }}" as="mi" hint-placeholder-count="4">
+                      <span style="font-size:12px;color:#4C5155;background:#F4F2ED;border-radius:999px;padding:5px 10px">{{ mi }}</span>
+                    </sc-for>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+
+        <sc-if value="{{ scanned }}" hint-placeholder-val="{{ false }}">
+          <div style="max-width:960px;margin:16px auto 0;background:#101112;border-radius:16px;padding:24px;display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:20px;align-items:center">
+            <div style="display:flex;flex-direction:column;gap:8px">
+              <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:22px;letter-spacing:-.02em;color:#F7F6F3;text-wrap:pretty">{{ t.convTitle }}</span>
+              <span style="font-size:14px;line-height:1.5;color:#A6ACB2;max-width:44ch;text-wrap:pretty">{{ t.convSub }}</span>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:10px">
+              <sc-for list="{{ convPoints }}" as="p" hint-placeholder-count="3">
+                <div style="display:flex;gap:10px;align-items:flex-start">
+                  <span style="width:6px;height:6px;border-radius:50%;background:#FF5A1F;margin-top:7px;flex:none"></span>
+                  <span style="font-size:14px;line-height:1.45;color:#DDE1E4">{{ p }}</span>
+                </div>
+              </sc-for>
+              <button style="margin-top:6px;align-self:flex-start;background:#FF5A1F;color:#FFFFFF;border:0;border-radius:11px;padding:13px 20px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;min-height:46px">{{ t.createAccount }}</button>
+            </div>
+          </div>
+        </sc-if>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isMenu }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:44px 20px 0;background:#F7F6F3">
+        <div style="max-width:1100px;margin:0 auto;display:flex;flex-direction:column;gap:14px">
+          <span style="align-self:flex-start;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#1F7A4C;background:#E4F5EB;border-radius:999px;padding:6px 12px">{{ t.menuEyebrow }}</span>
+          <h1 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(32px,5vw,54px);line-height:1.02;letter-spacing:-.03em;margin:0;color:#101112;max-width:18ch;text-wrap:pretty">{{ t.menuTitle }}</h1>
+          <p style="margin:0;font-size:17px;line-height:1.5;color:#4C5155;max-width:56ch;text-wrap:pretty">{{ t.menuSub }}</p>
+          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:6px">
+            <sc-for list="{{ filters }}" as="f" hint-placeholder-count="5">
+              <button onClick="{{ f.go }}" style="{{ f.style }}">{{ f.label }}</button>
+            </sc-for>
+          </div>
+        </div>
+
+        <div style="max-width:1100px;margin:26px auto 0;display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px">
+          <sc-for list="{{ menuItems }}" as="item" hint-placeholder-count="9">
+            <a href="#" style="background:#FFFFFF;border:1px solid #E4E1DA;border-radius:14px;overflow:hidden;display:flex;flex-direction:column" style-hover="border-color:#1F7A4C">
+              <div style="position:relative;width:100%;height:132px;background:#EDEAE3;flex:none">
+                <image-slot id="{{ item.slotId }}" shape="rect" placeholder="Foto menu"></image-slot>
+              </div>
+              <div style="padding:16px;display:flex;flex-direction:column;gap:10px;flex:1">
+              <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+                <span style="font-size:15px;font-weight:600;color:#101112;line-height:1.3;text-wrap:pretty">{{ item.name }}</span>
+                <span style="font-size:11px;color:#1F7A4C;background:#E4F5EB;border-radius:999px;padding:4px 8px;white-space:nowrap">{{ item.tag }}</span>
+              </div>
+              <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:24px;letter-spacing:-.02em;color:#101112">{{ item.kcal }}</span>
+              <span style="font-size:12px;color:#6B7075">{{ item.macro }}</span>
+              <span style="font-size:12px;line-height:1.5;color:#4C5155;text-wrap:pretty">{{ item.desc }}</span>
+              <span style="margin-top:auto;font-size:13px;font-weight:600;color:#1F7A4C">{{ t.viewRecipe }}</span>
+              </div>
+            </a>
+          </sc-for>
+        </div>
+
+        <div style="max-width:1100px;margin:20px auto 0">
+          <sc-if value="{{ gateClosed }}" hint-placeholder-val="{{ true }}">
+            <div style="display:flex;flex-direction:column;align-items:center;gap:10px;padding:8px 0">
+              <span style="font-size:13px;color:#6B7075">{{ t.showingCount }}</span>
+              <button onClick="{{ loadMore }}" style="background:#101112;color:#F7F6F3;border:0;border-radius:11px;padding:14px 24px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;min-height:48px" style-hover="background:#26292C">{{ t.loadMore }}</button>
+            </div>
+          </sc-if>
+          <sc-if value="{{ gateOpen }}" hint-placeholder-val="{{ false }}">
+            <div style="border:1px solid #E4E1DA;border-radius:16px;background:#FFFFFF;overflow:hidden">
+              <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px;padding:14px;background:#F1EFE9">
+                <sc-for list="{{ lockedPlaceholders }}" as="lp" hint-placeholder-count="3">
+                  <div style="background:#FFFFFF;border:1px solid #E4E1DA;border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:10px;filter:blur(3px);user-select:none">
+                    <div style="height:14px;width:70%;background:#E4E1DA;border-radius:6px"></div>
+                    <div style="height:26px;width:45%;background:#E4E1DA;border-radius:6px"></div>
+                    <div style="height:10px;width:85%;background:#EDEAE3;border-radius:6px"></div>
+                    <div style="height:10px;width:60%;background:#EDEAE3;border-radius:6px"></div>
+                  </div>
+                </sc-for>
+              </div>
+              <div style="padding:24px;display:flex;flex-direction:column;gap:10px;align-items:center;text-align:center">
+                <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:24px;letter-spacing:-.02em;color:#101112;text-wrap:pretty">{{ t.gateTitle }}</span>
+                <span style="font-size:14px;line-height:1.5;color:#4C5155;max-width:46ch;text-wrap:pretty">{{ t.gateSub }}</span>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:center;margin-top:6px">
+                  <button style="background:#1F7A4C;color:#FFFFFF;border:0;border-radius:11px;padding:13px 20px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;min-height:46px">{{ t.createAccount }}</button>
+                  <button onClick="{{ closeGate }}" style="background:transparent;color:#4C5155;border:1px solid #E4E1DA;border-radius:11px;padding:13px 20px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;min-height:46px">{{ t.later }}</button>
+                </div>
+                <span style="font-size:12px;color:#7C8085;margin-top:6px">{{ t.gateNote }}</span>
+              </div>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </sc-if>
+
+    <sc-if value="{{ isMcu }}" hint-placeholder-val="{{ false }}">
+      <div style="padding:44px 20px 0;background:#F7F6F3">
+        <div style="max-width:960px;margin:0 auto;display:flex;flex-direction:column;gap:14px">
+          <span style="align-self:flex-start;font-size:12px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:#2F6BFF;background:#E7EDFF;border-radius:999px;padding:6px 12px">{{ t.mcuEyebrow }}</span>
+          <h1 style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:clamp(32px,5vw,54px);line-height:1.02;letter-spacing:-.03em;margin:0;color:#101112;max-width:20ch;text-wrap:pretty">{{ t.mcuTitle }}</h1>
+          <p style="margin:0;font-size:17px;line-height:1.5;color:#4C5155;max-width:58ch;text-wrap:pretty">{{ t.mcuSub }}</p>
+          <div style="margin-top:6px;border-left:3px solid #2F6BFF;background:#FFFFFF;border-radius:0 12px 12px 0;padding:14px 16px">
+            <span style="font-size:13px;line-height:1.55;color:#4C5155;display:block;text-wrap:pretty">{{ t.mcuDisclaimer }}</span>
+          </div>
+          <div style="position:relative;width:100%;height:240px;border-radius:18px;overflow:hidden;background:#EDEAE3;margin-top:10px">
+            <image-slot id="mcu-hero" shape="rect" placeholder="Foto lembar hasil lab / konsultasi dokter"></image-slot>
+          </div>
+        </div>
+
+        <div style="max-width:960px;margin:32px auto 0;display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px">
+          <sc-for list="{{ guides }}" as="g" hint-placeholder-count="4">
+            <div style="background:#FFFFFF;border:1px solid #E4E1DA;border-radius:14px;padding:18px;display:flex;flex-direction:column;gap:8px">
+              <span style="font-size:12px;font-weight:600;color:#2F6BFF">{{ g.num }}</span>
+              <span style="font-size:16px;font-weight:600;color:#101112;text-wrap:pretty">{{ g.title }}</span>
+              <span style="font-size:13px;line-height:1.55;color:#4C5155;text-wrap:pretty">{{ g.body }}</span>
+            </div>
+          </sc-for>
+        </div>
+
+        <div style="max-width:960px;margin:28px auto 0;background:#FFFFFF;border:1px solid #E4E1DA;border-radius:16px;overflow:hidden">
+          <div style="padding:16px 20px;background:#E7EDFF;display:flex;align-items:center;gap:10px;flex-wrap:wrap">
+            <span style="width:8px;height:8px;border-radius:50%;background:#2F6BFF;animation:pulseDot 2s infinite"></span>
+            <span style="font-size:13px;font-weight:600;color:#1B3B99">{{ t.sampleBadge }}</span>
+            <span style="flex:1 1 200px;min-width:0;font-size:13px;line-height:1.45;color:#3A5199;text-wrap:pretty">{{ t.sampleNote }}</span>
+          </div>
+          <div style="padding:8px 12px 12px">
+            <sc-for list="{{ markers }}" as="mk" hint-placeholder-count="5">
+              <div style="border-bottom:1px solid #EDEAE3">
+                <button onClick="{{ mk.toggle }}" style="width:100%;display:flex;flex-wrap:wrap;align-items:center;gap:8px 12px;background:transparent;border:0;padding:14px 8px;cursor:pointer;font-family:inherit;text-align:left;min-height:48px" style-hover="background:#FAF9F6">
+                  <span style="flex:1 1 140px;font-size:14px;font-weight:600;color:#101112">{{ mk.name }}</span>
+                  <span style="font-size:14px;color:#101112;font-variant-numeric:tabular-nums">{{ mk.value }}</span>
+                  <span style="font-size:12px;color:#6B7075">{{ mk.range }}</span>
+                  <span style="font-size:11px;font-weight:600;border-radius:999px;padding:4px 9px;white-space:nowrap;color:{{ mk.statusFg }};background:{{ mk.statusBg }}">{{ mk.status }}</span>
+                  <span style="font-size:16px;color:#9AA0A6;width:14px;text-align:center">{{ mk.caret }}</span>
+                </button>
+                <sc-if value="{{ mk.open }}" hint-placeholder-val="{{ false }}">
+                  <div style="padding:0 8px 16px;display:flex;flex-direction:column;gap:6px">
+                    <span style="font-size:13px;line-height:1.6;color:#4C5155;max-width:74ch;text-wrap:pretty">{{ mk.note }}</span>
+                  </div>
+                </sc-if>
+              </div>
+            </sc-for>
+          </div>
+          <div style="padding:22px 20px;background:#FAF9F6;display:flex;flex-direction:column;gap:10px;align-items:flex-start">
+            <span style="font-size:15px;font-weight:600;color:#101112;text-wrap:pretty">{{ t.mcuCtaTitle }}</span>
+            <span style="font-size:13px;line-height:1.55;color:#4C5155;max-width:56ch;text-wrap:pretty">{{ t.mcuCtaSub }}</span>
+            <button style="background:#2F6BFF;color:#FFFFFF;border:0;border-radius:11px;padding:13px 20px;font-size:14px;font-weight:600;font-family:inherit;cursor:pointer;min-height:46px">{{ t.mcuCtaBtn }}</button>
+            <span style="font-size:12px;color:#7C8085">{{ t.mcuCtaNote }}</span>
+          </div>
+        </div>
+      </div>
+    </sc-if>
+
+    <div style="background:#F7F6F3;padding:44px 20px 8px">
+      <div style="max-width:960px;margin:0 auto;display:flex;flex-direction:column;gap:6px">
+        <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:600;font-size:26px;letter-spacing:-.02em;color:#101112;text-wrap:pretty">{{ t.learnTitle }}</span>
+        <span style="font-size:15px;line-height:1.5;color:#4C5155;max-width:52ch;text-wrap:pretty">{{ t.learnSub }}</span>
+      </div>
+      <div style="max-width:960px;margin:20px auto 0;background:#FFFFFF;border:1px solid #E4E1DA;border-radius:16px;overflow:hidden">
+        <sc-for list="{{ faqs }}" as="q" hint-placeholder-count="4">
+          <div style="border-bottom:1px solid #EDEAE3">
+            <button onClick="{{ q.toggle }}" style="width:100%;display:flex;align-items:center;gap:12px;background:transparent;border:0;padding:16px 18px;cursor:pointer;font-family:inherit;text-align:left;min-height:52px" style-hover="background:#FAF9F6">
+              <span style="flex:1 1 auto;font-size:15px;font-weight:600;color:#101112;text-wrap:pretty">{{ q.q }}</span>
+              <span style="font-size:18px;color:#9AA0A6;width:14px;text-align:center;flex:none">{{ q.caret }}</span>
+            </button>
+            <sc-if value="{{ q.open }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:0 18px 18px">
+                <span style="font-size:14px;line-height:1.6;color:#4C5155;max-width:72ch;display:block;text-wrap:pretty">{{ q.a }}</span>
+              </div>
+            </sc-if>
+          </div>
+        </sc-for>
+        <div style="padding:18px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;background:#FAF9F6">
+          <span style="font-size:14px;color:#4C5155;text-wrap:pretty">{{ t.learnMoreNote }}</span>
+          <a href="#" style="font-size:14px;font-weight:600;color:{{ accentInk }}">{{ t.learnMoreLink }}</a>
+        </div>
+      </div>
+    </div>
+
+    <div style="margin-top:36px;background:#101112;color:#8A9096;padding:28px 20px 32px">
+      <div style="max-width:1100px;margin:0 auto;display:flex;flex-wrap:wrap;gap:20px;justify-content:space-between;align-items:flex-start">
+        <div style="display:flex;flex-direction:column;gap:6px">
+          <span style="font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:17px;color:#F7F6F3">20FIT</span>
+          <span style="font-size:12px;max-width:34ch;line-height:1.5">{{ t.footerNote }}</span>
+        </div>
+        <div style="display:flex;gap:28px;flex-wrap:wrap">
+          <sc-for list="{{ apps }}" as="a" hint-placeholder-count="4">
+            <a href="#" onClick="{{ a.go }}" style="font-size:13px;color:#C7CCD0">{{ a.name }}</a>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;freeScanQuota&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:5,&quot;tsType&quot;:&quot;number&quot;,&quot;min&quot;:1,&quot;max&quot;:20,&quot;section&quot;:&quot;Gating&quot;}}">
+const COPY = {
+  id: {
+    apps: "Aplikasi", signIn: "Masuk",
+    calEyebrow: "Scan kalori", menuEyebrow: "Menu diet", mcuEyebrow: "Panduan MCU",
+    calTitle: "Foto makanan, lihat estimasi kalorinya",
+    calSub: "Scan pertama gratis dan hasilnya penuh. Tanpa perlu akun.",
+    getTitle: "Yang kamu dapat", limitTitle: "Yang tidak bisa dilakukan alat ini", tryTitle: "Coba sekarang",
+    scanCardTitle: "Scan makanan", dropzone: "Tarik foto ke sini, atau ambil dari kamera",
+    estimateNote: "Angka di halaman ini adalah estimasi, bukan pengukuran akurat. Tidak dimaksudkan sebagai saran medis atau target kalori.",
+    foodName: "Nasi Goreng Ayam", foodPortion: "Porsi contoh: 1 piring (± 300 g)",
+    fullResult: "Hasil penuh", kcalEst: "kkal (estimasi)", micro: "Catatan lain",
+    convTitle: "Scan berikutnya lebih berguna kalau tersimpan",
+    convSub: "Akun 20FIT menyimpan setiap scan ke satu tempat, jadi kamu bisa lihat polanya, bukan cuma angka hari ini.",
+    createAccount: "Buat akun gratis", later: "Nanti saja",
+    menuTitle: "Menu diet yang bisa kamu masak minggu ini",
+    menuSub: "Semua menu di halaman ini bisa dibaca penuh: bahan, langkah, dan estimasi kalorinya. Tidak ada yang disembunyikan.",
+    viewRecipe: "Lihat resep",
+    showingCount: "Menampilkan 24 dari 200+ menu",
+    loadMore: "Muat lebih banyak",
+    gateTitle: "Sisanya terbuka setelah kamu punya akun",
+    gateSub: "24 menu di atas tetap bisa dibaca penuh kapan pun. Untuk 180+ menu lainnya, plus filter kalori dan simpan favorit, buat akun dulu.",
+    gateNote: "Gratis. Tanpa kartu kredit.",
+    mcuTitle: "Cara membaca hasil medical check-up kamu",
+    mcuSub: "Penjelasan istilah, rentang rujukan, dan apa yang perlu ditanyakan ke dokter. Ditulis untuk orang yang baru pertama kali pegang hasil lab.",
+    mcuDisclaimer: "Halaman ini alat bantu pemahaman, bukan diagnosis. Rentang rujukan bisa berbeda antar laboratorium. Untuk keputusan kesehatan, konsultasikan dengan dokter.",
+    sampleBadge: "Data sampel", sampleNote: "Ini contoh, bukan data Anda. Angka di bawah fiktif.",
+    mcuCtaTitle: "Mau lihat penjelasan untuk hasil kamu sendiri?",
+    mcuCtaSub: "Upload hasil MCU hanya bisa dilakukan di area member, setelah kamu login. Kami tidak memproses file kesehatan dari pengunjung anonim.",
+    mcuCtaBtn: "Daftar untuk upload hasil", mcuCtaNote: "Kamu akan diarahkan ke halaman pendaftaran, bukan form upload.",
+    learnTitle: "Pelajari lebih lanjut", learnSub: "Pertanyaan yang paling sering muncul sebelum orang mencoba fitur ini.",
+    learnMoreNote: "Masih ada yang mau ditanyakan?", learnMoreLink: "Lihat semua pertanyaan",
+    footerNote: "Satu akun untuk scan kalori, menu diet, dan panduan MCU.",
+    brandCal: "Scan Kalori", brandMenu: "Menu Diet", brandMcu: "Panduan MCU"
+  },
+  en: {
+    apps: "Apps", signIn: "Sign in",
+    calEyebrow: "Calorie scan", menuEyebrow: "Diet menu", mcuEyebrow: "MCU guide",
+    calTitle: "Photograph a meal, see its calorie estimate",
+    calSub: "Your first scan is free and shows the full result. No account needed.",
+    getTitle: "What you get", limitTitle: "What this tool cannot do", tryTitle: "Try it now",
+    scanCardTitle: "Scan a meal", dropzone: "Drop a photo here, or take one with your camera",
+    estimateNote: "Numbers on this page are estimates, not accurate measurements. They are not medical advice or a calorie target.",
+    foodName: "Chicken Fried Rice", foodPortion: "Sample portion: 1 plate (approx. 300 g)",
+    fullResult: "Full result", kcalEst: "kcal (estimate)", micro: "Other notes",
+    convTitle: "Your next scan is more useful when it is saved",
+    convSub: "A 20FIT account keeps every scan in one place, so you can read the pattern instead of a single day's number.",
+    createAccount: "Create a free account", later: "Maybe later",
+    menuTitle: "Diet menus you can actually cook this week",
+    menuSub: "Every menu on this page can be read in full: ingredients, steps, and calorie estimates. Nothing is hidden.",
+    viewRecipe: "View recipe",
+    showingCount: "Showing 24 of 200+ menus",
+    loadMore: "Load more",
+    gateTitle: "The rest opens once you have an account",
+    gateSub: "The 24 menus above stay fully readable any time. For the other 180+, plus calorie filters and saved favourites, create an account first.",
+    gateNote: "Free. No credit card.",
+    mcuTitle: "How to read your medical check-up results",
+    mcuSub: "Plain explanations of the terms, the reference ranges, and what to ask your doctor. Written for someone holding lab results for the first time.",
+    mcuDisclaimer: "This page helps you understand results. It is not a diagnosis. Reference ranges differ between laboratories. Consult a doctor for any health decision.",
+    sampleBadge: "Sample data", sampleNote: "This is an example, not your data. The figures below are fictional.",
+    mcuCtaTitle: "Want these explanations for your own results?",
+    mcuCtaSub: "Uploading MCU results happens in the member area, after you sign in. We do not process health files from anonymous visitors.",
+    mcuCtaBtn: "Sign up to upload results", mcuCtaNote: "This takes you to the sign-up page, not an upload form.",
+    learnTitle: "Learn more", learnSub: "The questions people ask most before trying this feature.",
+    learnMoreNote: "Still something you want to ask?", learnMoreLink: "See all questions",
+    footerNote: "One account for calorie scanning, diet menus, and the MCU guide.",
+    brandCal: "Calorie Scan", brandMenu: "Diet Menu", brandMcu: "MCU Guide"
+  }
+};
+
+const MENUS = [
+  ["Ayam Panggang Bumbu Kuning", "Turmeric Grilled Chicken", 380, "P 42g · K 12g · L 16g", "makan", "Ayam fillet dipanggang tanpa minyak tambahan, disajikan dengan tumis buncis."],
+  ["Bubur Oat Pisang", "Banana Oat Porridge", 290, "P 11g · K 46g · L 6g", "sarapan", "Oat rendam semalam, pisang, dan sedikit kayu manis. Siap dalam lima menit."],
+  ["Pepes Ikan Kembung", "Steamed Mackerel Pepes", 240, "P 28g · K 6g · L 11g", "makan", "Ikan kembung dibungkus daun, dikukus dengan kemangi dan cabai hijau."],
+  ["Salad Tempe Kacang", "Tempeh Peanut Salad", 310, "P 22g · K 24g · L 14g", "makan", "Tempe panggang, selada, timun, saus kacang encer tanpa gula tambahan."],
+  ["Telur Dadar Sayur", "Vegetable Omelette", 260, "P 19g · K 8g · L 17g", "sarapan", "Dua telur, wortel, bayam, dimasak dengan sedikit minyak zaitun."],
+  ["Soto Ayam Bening", "Clear Chicken Soto", 220, "P 24g · K 14g · L 7g", "makan", "Kuah bening tanpa santan, ayam kampung, bihun sedikit."],
+  ["Smoothie Bayam Nanas", "Spinach Pineapple Smoothie", 170, "P 5g · K 32g · L 2g", "snack", "Bayam, nanas, air kelapa. Tanpa gula tambahan."],
+  ["Nasi Merah Ayam Kecap", "Red Rice Soy Chicken", 420, "P 34g · K 48g · L 9g", "makan", "Nasi merah setengah porsi, ayam kecap rendah gula, tumis kangkung."],
+  ["Sup Tahu Jamur", "Tofu Mushroom Soup", 190, "P 16g · K 12g · L 8g", "makan", "Tahu putih, jamur kancing, kaldu ayam rendah sodium."],
+  ["Roti Gandum Alpukat", "Avocado Wholegrain Toast", 280, "P 9g · K 30g · L 14g", "sarapan", "Dua lembar roti gandum, alpukat tumbuk, perasan lemon."],
+  ["Gado-gado Saus Ringan", "Light Gado-gado", 340, "P 15g · K 34g · L 16g", "makan", "Sayur rebus, tahu, telur, saus kacang porsi setengah."],
+  ["Udang Bakar Jeruk Nipis", "Lime Grilled Prawns", 210, "P 30g · K 5g · L 7g", "makan", "Udang bakar, perasan jeruk nipis, salad tomat."],
+  ["Yogurt Buah Potong", "Yoghurt Fruit Bowl", 180, "P 12g · K 24g · L 4g", "snack", "Yogurt plain, pepaya, jambu, sedikit chia."],
+  ["Capcay Kuah Rendah Minyak", "Low-oil Capcay", 200, "P 13g · K 22g · L 6g", "makan", "Sayur campur, ayam sedikit, kuah kaldu bening."],
+  ["Bihun Goreng Sayur", "Vegetable Rice Noodles", 330, "P 12g · K 52g · L 8g", "makan", "Bihun porsi terukur, banyak sayur, kecap rendah gula."],
+  ["Edamame Rebus", "Steamed Edamame", 130, "P 12g · K 10g · L 5g", "snack", "Edamame kukus, sedikit garam laut. Camilan tinggi protein."],
+  ["Sate Ayam Tanpa Kecap", "Plain Chicken Satay", 270, "P 32g · K 8g · L 12g", "makan", "Sate ayam bumbu kunyit, saus kacang di samping."],
+  ["Overnight Chia Kelapa", "Coconut Chia Pudding", 210, "P 7g · K 20g · L 12g", "sarapan", "Chia, susu kelapa tanpa gula, topping mangga."],
+  ["Tumis Brokoli Bawang Putih", "Garlic Broccoli Stir-fry", 120, "P 6g · K 12g · L 5g", "makan", "Brokoli, bawang putih, sedikit minyak. Pendamping apa pun."],
+  ["Ikan Dori Panggang Lemon", "Lemon Baked Dory", 250, "P 29g · K 4g · L 12g", "makan", "Dori panggang oven, asparagus, irisan lemon."],
+  ["Bubur Kacang Hijau Ringan", "Light Mung Bean Porridge", 240, "P 11g · K 42g · L 4g", "snack", "Kacang hijau, santan encer, gula palem sedikit."],
+  ["Omelet Putih Telur Tuna", "Tuna Egg White Omelette", 200, "P 28g · K 5g · L 7g", "sarapan", "Empat putih telur, tuna kaleng dalam air, daun bawang."],
+  ["Pecel Sayur Porsi Terukur", "Portioned Pecel", 290, "P 13g · K 30g · L 13g", "makan", "Sayur rebus lengkap, sambal pecel dua sendok."],
+  ["Kolak Labu Tanpa Gula", "Sugar-free Pumpkin Kolak", 160, "P 3g · K 32g · L 3g", "snack", "Labu kuning, santan encer, pemanis dari kurma."]
+];
+
+const MARKERS = [
+  ["Glukosa puasa", "Fasting glucose", "96 mg/dL", "70 – 99 mg/dL", "normal",
+    "Gula darah setelah tidak makan 8 jam. Angka di rentang normal berarti tubuh mengelola gula darah dengan baik saat istirahat. Satu pengukuran tidak menggambarkan kondisi jangka panjang.",
+    "Blood sugar after eight hours without food. A value in range means glucose was well managed at rest. A single reading does not describe a long-term pattern."],
+  ["Kolesterol total", "Total cholesterol", "214 mg/dL", "< 200 mg/dL", "tinggi",
+    "Jumlah semua kolesterol dalam darah. Di atas rentang rujukan biasanya perlu dilihat bersama HDL dan LDL, bukan sendirian. Dokter akan menimbang faktor lain seperti tekanan darah dan riwayat keluarga.",
+    "The sum of all cholesterol in the blood. Above the reference range it is usually read alongside HDL and LDL rather than on its own. A doctor weighs other factors such as blood pressure and family history."],
+  ["HDL", "HDL", "48 mg/dL", "> 40 mg/dL", "normal",
+    "Sering disebut kolesterol baik karena membantu membawa kolesterol keluar dari pembuluh darah. Nilai yang lebih tinggi umumnya dinilai lebih baik.",
+    "Often called good cholesterol because it helps carry cholesterol out of the blood vessels. Higher values are generally seen as better."],
+  ["LDL", "LDL", "142 mg/dL", "< 130 mg/dL", "tinggi",
+    "Kolesterol yang bisa menumpuk di dinding pembuluh darah. Target aman berbeda per orang, tergantung risiko kardiovaskular masing-masing.",
+    "The cholesterol that can build up in vessel walls. A safe target differs per person depending on individual cardiovascular risk."],
+  ["Trigliserida", "Triglycerides", "128 mg/dL", "< 150 mg/dL", "normal",
+    "Bentuk lemak yang dipakai tubuh sebagai cadangan energi. Nilainya cukup sensitif terhadap makanan beberapa hari sebelum tes.",
+    "The fat the body stores as energy reserve. The value is fairly sensitive to what you ate in the days before the test."],
+  ["HbA1c", "HbA1c", "5.4 %", "< 5.7 %", "normal",
+    "Rata-rata gula darah dua sampai tiga bulan terakhir. Lebih stabil dibanding glukosa puasa karena tidak terpengaruh makanan hari itu.",
+    "Average blood sugar over the past two to three months. More stable than fasting glucose because it is not affected by that day's meals."],
+  ["SGPT (ALT)", "SGPT (ALT)", "31 U/L", "< 41 U/L", "normal",
+    "Enzim hati. Nilai yang naik bisa berarti hati sedang bekerja keras, tapi juga bisa dipengaruhi olahraga berat atau obat tertentu sebelum tes.",
+    "A liver enzyme. A raised value can mean the liver is under strain, but heavy exercise or certain medication before the test can also affect it."]
+];
+
+class Component extends DCLogic {
+  state = { domain: "calories", lang: "id", device: "desktop", switcher: false, scanned: false, gate: false, filter: "all", openMarker: null, openFaq: 0 };
+
+  set(patch) { this.setState(patch); }
+
+  renderVals() {
+    const s = this.state;
+    const lang = s.lang;
+    const t = { ...COPY[lang] };
+    const isCal = s.domain === "calories", isMenu = s.domain === "menu", isMcu = s.domain === "mcu";
+    const accent = isCal ? "#FF8A5B" : isMenu ? "#5FD39B" : "#7FA3FF";
+    t.brandLabel = isCal ? t.brandCal : isMenu ? t.brandMenu : t.brandMcu;
+
+    const pill = (on, onColor) => `background:${on ? onColor : "transparent"};color:${on ? "#101112" : "#9AA0A6"};border:0;border-radius:999px;padding:7px 14px;font-size:12px;font-weight:600;font-family:inherit;cursor:pointer`;
+    const tab = (on) => `background:${on ? "#F7F6F3" : "#1A1C1E"};color:${on ? "#101112" : "#9AA0A6"};border:1px solid ${on ? "#F7F6F3" : "#26292C"};border-radius:10px;padding:10px 16px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer`;
+
+    const filterDefs = [["all", "Semua", "All"], ["sarapan", "Sarapan", "Breakfast"], ["makan", "Makan utama", "Main meals"], ["snack", "Snack", "Snack"]];
+    const filters = filterDefs.map(([key, l_id, l_en]) => {
+      const on = s.filter === key;
+      return {
+        label: lang === "id" ? l_id : l_en,
+        style: `background:${on ? "#101112" : "#FFFFFF"};color:${on ? "#F7F6F3" : "#4C5155"};border:1px solid ${on ? "#101112" : "#E4E1DA"};border-radius:999px;padding:10px 16px;font-size:13px;font-weight:600;font-family:inherit;cursor:pointer;min-height:40px`,
+        go: () => this.set({ filter: key })
+      };
+    });
+
+    const menuItems = MENUS.filter(m => s.filter === "all" || m[4] === s.filter).map(m => ({
+      slotId: "menu-" + m[0].toLowerCase().replace(/[^a-z0-9]+/g, "-"),
+      name: lang === "id" ? m[0] : m[1],
+      kcal: `${m[2]} kkal`,
+      macro: m[3],
+      desc: m[5],
+      tag: m[4] === "sarapan" ? (lang === "id" ? "Sarapan" : "Breakfast") : m[4] === "snack" ? "Snack" : (lang === "id" ? "Makan utama" : "Main")
+    }));
+
+    const markers = MARKERS.map((mk, i) => {
+      const high = mk[4] === "tinggi";
+      return {
+        name: lang === "id" ? mk[0] : mk[1],
+        value: mk[2], range: mk[3],
+        status: high ? (lang === "id" ? "Di atas rentang" : "Above range") : (lang === "id" ? "Dalam rentang" : "In range"),
+        statusFg: high ? "#9A4A0F" : "#1F7A4C",
+        statusBg: high ? "#FFEDE0" : "#E4F5EB",
+        note: lang === "id" ? mk[5] : mk[6],
+        open: s.openMarker === i,
+        caret: s.openMarker === i ? "\u2212" : "+",
+        toggle: () => this.set({ openMarker: s.openMarker === i ? null : i })
+      };
+    });
+
+    const guides = [
+      ["01", "Rentang rujukan bukan target pribadi", "Reference ranges are not personal targets",
+        "Rentang di kolom kanan hasil lab adalah kisaran populasi, bukan angka ideal untuk kamu. Umur, jenis kelamin, dan metode lab mempengaruhinya.",
+        "The range printed beside your result is a population range, not your ideal figure. Age, sex, and the lab's method all shift it."],
+      ["02", "Satu nilai di luar rentang belum berarti penyakit", "One out-of-range value is not a diagnosis",
+        "Banyak penanda bergerak karena makanan, tidur, atau olahraga sehari sebelumnya. Yang dilihat dokter adalah pola beberapa penanda sekaligus.",
+        "Many markers move with food, sleep, or exercise the day before. A doctor reads several markers together, as a pattern."],
+      ["03", "Angka antar lab tidak selalu bisa dibandingkan", "Values across labs are not always comparable",
+        "Metode dan satuan bisa berbeda. Kalau membandingkan hasil tahun lalu, pastikan satuan dan rentang rujukannya sama.",
+        "Methods and units differ. When comparing with last year's result, check that the unit and reference range match."],
+      ["04", "Kapan sebaiknya konsultasi", "When to see a doctor",
+        "Nilai jauh di luar rentang, beberapa penanda terkait naik bersamaan, atau ada gejala yang kamu rasakan. Bawa hasilnya, jangan hanya angkanya.",
+        "A value far outside the range, several related markers rising together, or symptoms you actually feel. Bring the printout, not just the number."]
+    ].map(g => ({ num: g[0], title: lang === "id" ? g[1] : g[2], body: lang === "id" ? g[3] : g[4] }));
+
+    const apps = [
+      { name: lang === "id" ? "Scan Kalori" : "Calorie Scan", host: "calories.20fit.id", initial: "K", color: "#FF8A5B", go: () => this.set({ domain: "calories", switcher: false }) },
+      { name: lang === "id" ? "Menu Diet" : "Diet Menu", host: "menu.20fit.id", initial: "M", color: "#5FD39B", go: () => this.set({ domain: "menu", switcher: false }) },
+      { name: lang === "id" ? "Panduan MCU" : "MCU Guide", host: "medicalcheckup.20fit.id", initial: "C", color: "#7FA3FF", go: () => this.set({ domain: "mcu", switcher: false }) },
+      { name: lang === "id" ? "Buka My 20FIT" : "Open My 20FIT", host: "my.20fit.id", initial: "20", color: "#E4E1DA", go: () => this.set({ switcher: false }) }
+    ];
+
+    const FAQ = {
+      calories: {
+        id: [["Seberapa akurat estimasinya?", "Model menebak jenis makanan dan ukuran porsi dari satu foto. Minyak yang terserap, cara masak, dan berat asli tidak terlihat di foto, jadi selisihnya bisa cukup besar. Pakai angkanya untuk melihat arah, bukan untuk menghitung tepat."],
+          ["Kenapa scan kedua sampai kelima hasilnya terkunci?", "Setiap scan memanggil model AI yang berbiaya per permintaan. Scan pertama kami buka penuh supaya kamu bisa menilai sendiri hasilnya; sisanya butuh akun agar penggunaannya bisa dihubungkan ke satu orang."],
+          ["Fotonya disimpan?", "Untuk pengunjung tanpa akun, foto hanya diproses untuk menghasilkan estimasi. [[BUTUH DATA]] — kebijakan retensi perlu dikonfirmasi sebelum halaman ini live."],
+          ["Sudah punya akun 20FIT?", "Kalau kamu sedang login di my.20fit.id, halaman ini mengenali kamu otomatis: scan tanpa batas, hasil penuh, dan riwayatnya masuk ke akunmu."]],
+        en: [["How accurate is the estimate?", "The model guesses the dish and portion size from a single photo. Absorbed oil, cooking method, and true weight are invisible in an image, so the gap can be sizeable. Use the number for direction, not exact counting."],
+          ["Why are scans two to five locked?", "Each scan calls an AI model that costs money per request. We open the first scan fully so you can judge the output; the rest need an account so usage ties to a person."],
+          ["Do you keep the photo?", "For visitors without an account, the photo is processed only to produce the estimate. [[BUTUH DATA]] — retention policy needs confirming before this page ships."],
+          ["Already a 20FIT member?", "If you are signed in at my.20fit.id, this page recognises you automatically: unlimited scans, full results, and history saved to your account."]]
+      },
+      menu: {
+        id: [["Kalorinya dihitung dari mana?", "Setiap menu dihitung dari daftar bahan dan beratnya, memakai tabel komposisi pangan. Kalau kamu mengubah porsi atau bahan, angkanya ikut berubah."],
+          ["Apakah menu ini cocok untuk semua orang?", "Tidak. Ini menu umum, bukan rencana makan personal. Kalau ada kondisi medis, alergi, atau sedang hamil, konsultasikan dulu."],
+          ["Kenapa hanya 24 menu yang bisa dilihat?", "24 menu di halaman ini bisa dibaca penuh, termasuk resep dan bahannya. Sisanya, plus filter kalori dan simpan favorit, ada di dalam akun."],
+          ["Bisa dipakai bareng program 20FIT?", "Bisa. Kalau kamu member, menu yang kamu simpan muncul di my.20fit.id bersama data latihan dan scan kalorimu."]],
+        en: [["Where do the calorie figures come from?", "Each menu is calculated from its ingredient list and weights against food composition tables. Change the portion or an ingredient and the figure changes with it."],
+          ["Are these menus suitable for everyone?", "No. These are general menus, not a personal meal plan. With a medical condition, allergy, or during pregnancy, check with a professional first."],
+          ["Why only 24 menus?", "The 24 on this page can be read in full, recipes and ingredients included. The rest, plus calorie filters and saved favourites, sit inside an account."],
+          ["Can I use these with a 20FIT programme?", "Yes. As a member, menus you save appear on my.20fit.id alongside your training and calorie-scan data."]]
+      },
+      mcu: {
+        id: [["Kenapa saya tidak bisa upload hasil di sini?", "Hasil medical check-up adalah data kesehatan. Kami tidak memproses file kesehatan dari pengunjung anonim: tidak ada consent, tidak ada identitas, dan tidak ada jalur penghapusan yang jelas. Upload hanya tersedia setelah login."],
+          ["Data di tabel contoh itu punya siapa?", "Bukan punya siapa pun. Angka-angkanya fiktif, dibuat untuk menunjukkan cara membaca hasil."],
+          ["Apakah ini bisa menggantikan dokter?", "Tidak. Halaman ini membantu kamu memahami istilah dan rentang rujukan supaya percakapan dengan dokter lebih terarah. Diagnosis tetap wewenang tenaga medis."],
+          ["Kalau saya sudah punya akun?", "Login dulu di my.20fit.id, lalu upload hasilnya di area member. Hasil analisisnya tampil lengkap, tidak ada bagian yang dikunci."]],
+        en: [["Why can I not upload my results here?", "Check-up results are health data. We do not process health files from anonymous visitors: no consent, no identity, no clear deletion path. Upload is available only after signing in."],
+          ["Whose data is in the sample table?", "Nobody's. The figures are fictional, written to show how results are read."],
+          ["Does this replace a doctor?", "No. This page helps you understand the terms and reference ranges so your conversation with a doctor is better aimed. Diagnosis stays with medical professionals."],
+          ["What if I already have an account?", "Sign in at my.20fit.id, then upload your results in the member area. The analysis shows in full, with nothing locked."]]
+      }
+    };
+    const faqSet = FAQ[isCal ? "calories" : isMenu ? "menu" : "mcu"][lang];
+    const faqs = faqSet.map((f, i) => ({
+      q: f[0], a: f[1],
+      open: s.openFaq === i,
+      caret: s.openFaq === i ? "\u2212" : "+",
+      toggle: () => this.set({ openFaq: s.openFaq === i ? null : i })
+    }));
+
+    const quota = this.props.freeScanQuota ?? 5;
+    const used = s.scanned ? 1 : 0;
+
+    return {
+      t, accent, isCalories: isCal, isMenu, isMcu,
+      url: isCal ? "https://calories.20fit.id" : isMenu ? "https://menu.20fit.id/menu-diet" : "https://medicalcheckup.20fit.id/panduan-mcu",
+      frameWidth: s.device === "mobile" ? "402px" : "100%",
+      switcherOpen: s.switcher, scanned: s.scanned,
+      gateOpen: s.gate, gateClosed: !s.gate,
+      apps, filters, menuItems, markers, guides, faqs,
+      accentInk: isCal ? "#FF5A1F" : isMenu ? "#1F7A4C" : "#2F6BFF",
+      lockedPlaceholders: [1, 2, 3],
+      quotaLabel: lang === "id" ? `${used}/${quota} scan gratis hari ini` : `${used}/${quota} free scans today`,
+      scanBtnLabel: s.scanned ? (lang === "id" ? "Scan lagi" : "Scan again") : (lang === "id" ? "Coba scan contoh" : "Try a sample scan"),
+      macros: [
+        { label: lang === "id" ? "Protein" : "Protein", value: "24 g", pct: "34%", color: "#FF5A1F" },
+        { label: lang === "id" ? "Karbohidrat" : "Carbohydrate", value: "78 g", pct: "72%", color: "#101112" },
+        { label: lang === "id" ? "Lemak" : "Fat", value: "21 g", pct: "46%", color: "#9AA0A6" }
+      ],
+      micros: lang === "id"
+        ? ["Sodium ± 980 mg", "Serat ± 4 g", "Gula ± 6 g", "Estimasi dari foto"]
+        : ["Sodium approx. 980 mg", "Fibre approx. 4 g", "Sugar approx. 6 g", "Estimated from photo"],
+      howSteps: (lang === "id"
+        ? [["01", "Ambil satu foto", "Foto seluruh porsi dari atas, dalam cahaya yang cukup. Satu piring per foto, jangan digabung."],
+           ["02", "Sistem mengenali makanannya", "Model AI menebak jenis makanan dan ukuran porsinya, lalu mencocokkan ke basis data komposisi gizi."],
+           ["03", "Baca hasilnya sebagai kisaran", "Yang keluar adalah estimasi kalori dan makronutrien. Berguna untuk melihat pola, bukan untuk menghitung sampai satuan."]]
+        : [["01", "Take one photo", "Shoot the whole portion from above, in decent light. One plate per photo, not several combined."],
+           ["02", "The system identifies the food", "An AI model guesses the dish and portion size, then matches it against a nutrition composition database."],
+           ["03", "Read the result as a range", "You get an estimated calorie and macronutrient figure. Useful for spotting patterns, not for counting to the gram."]]
+      ).map(x => ({ num: x[0], title: x[1], body: x[2] })),
+      getPoints: lang === "id"
+        ? ["Estimasi kalori dan makronutrien per porsi", "Perkiraan sodium, serat, dan gula", "Nama makanan yang dikenali beserta asumsi porsinya", "Hasil scan pertama tampil penuh, tanpa akun"]
+        : ["Estimated calories and macronutrients per portion", "Approximate sodium, fibre, and sugar", "The dish it recognised and the portion it assumed", "Your first scan shows in full, without an account"],
+      limitPoints: lang === "id"
+        ? ["Bukan pengukuran akurat. Cara masak, minyak, dan porsi asli tidak terlihat dari foto.", "Bukan saran medis. Kami tidak tahu tinggi, berat, atau kondisi kesehatan kamu.", "Tidak menetapkan target kalori. Untuk itu, bicara dengan tenaga kesehatan."]
+        : ["Not an accurate measurement. Cooking method, oil, and true portion are invisible in a photo.", "Not medical advice. We do not know your height, weight, or health conditions.", "It sets no calorie target. For that, speak to a health professional."],
+      convPoints: lang === "id"
+        ? ["Riwayat scan tersimpan dan bisa dibuka kapan saja", "Terhubung dengan data 20FIT lainnya di my.20fit.id", "Scan tanpa batas di semua perangkat"]
+        : ["Every scan saved and reopenable any time", "Connected to your other 20FIT data on my.20fit.id", "Unlimited scans across your devices"],
+      setDesktop: () => this.set({ device: "desktop" }), setMobile: () => this.set({ device: "mobile" }),
+      setID: () => this.set({ lang: "id" }), setEN: () => this.set({ lang: "en" }),
+      deskBtn: pill(s.device === "desktop", "#F7F6F3"), mobBtn: pill(s.device === "mobile", "#F7F6F3"),
+      idBtn: pill(lang === "id", "#F7F6F3"), enBtn: pill(lang === "en", "#F7F6F3"),
+      goCalories: () => this.set({ domain: "calories" }), goMenu: () => this.set({ domain: "menu" }), goMcu: () => this.set({ domain: "mcu" }),
+      tabCal: tab(isCal), tabMenu: tab(isMenu), tabMcu: tab(isMcu),
+      toggleSwitcher: () => this.set({ switcher: !s.switcher }),
+      runScan: () => this.set({ scanned: true }),
+      loadMore: () => this.set({ gate: true }), closeGate: () => this.set({ gate: false })
+    };
+  }
+}
+
+</script>
+</body>
+</html>

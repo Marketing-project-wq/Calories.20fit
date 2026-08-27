@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+<link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet" />
+<script src="./image-slot.js"></script>
+<style>
+  body { margin: 0; background: #EFEDEA; font-family: Arial, Helvetica, sans-serif; color: #141414; -webkit-font-smoothing: antialiased; }
+  * { box-sizing: border-box; }
+  a { color: #D62828; text-decoration: none; }
+  a:hover { color: #A81F1F; }
+  @keyframes scSpin { to { transform: rotate(360deg); } }
+</style>
+</helmet>
+
+<div style="max-width:1240px;margin:0 auto;padding:36px 20px 96px;display:flex;flex-direction:column;gap:28px">
+
+  <div style="display:flex;flex-direction:column;gap:10px;border-bottom:2px solid #141414;padding-bottom:20px">
+    <span style="font-family:Anton,sans-serif;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#D62828">Tahap 2</span>
+    <h1 style="font-family:Anton,sans-serif;font-size:clamp(32px,5vw,52px);line-height:1;text-transform:uppercase;margin:0">Flow &amp; titik gating</h1>
+    <p style="margin:0;font-size:15px;line-height:1.55;color:#4A4A4A;max-width:64ch;text-wrap:pretty">Hasil analisis selalu terbuka. Yang dikunci adalah lapisan di atasnya: meal plan, diet plan, dan food analytics. Panduan MCU memakai flow yang sama dengan Scan Kalori.</p>
+  </div>
+
+  <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+    <div style="display:flex;background:#141414;border-radius:10px;padding:4px;gap:3px">
+      <button onClick="{{ setCal }}" style="{{ tabCal }}">Scan Kalori</button>
+      <button onClick="{{ setMcu }}" style="{{ tabMcu }}">Panduan MCU</button>
+    </div>
+    <div style="display:flex;background:#141414;border-radius:10px;padding:4px;gap:3px">
+      <button onClick="{{ setAnon }}" style="{{ tabAnon }}">Anonim</button>
+      <button onClick="{{ setMember }}" style="{{ tabMember }}">Member</button>
+    </div>
+    <div style="display:flex;background:#141414;border-radius:10px;padding:4px;gap:3px">
+      <button onClick="{{ setMobile }}" style="{{ tabMob }}">Mobile</button>
+      <button onClick="{{ setDesktop }}" style="{{ tabDesk }}">Desktop</button>
+    </div>
+    <span style="flex:1"></span>
+    <span style="font-size:12px;color:#7A7A7A">{{ stepLabel }}</span>
+  </div>
+
+  <div style="display:flex;justify-content:center">
+  <div style="width:{{ frameWidth }};max-width:100%;background:#FFFFFF;border:1px solid #DAD6D1;border-radius:16px;overflow:hidden;box-shadow:0 30px 60px -34px rgba(20,20,20,.5)">
+
+    <div style="background:#141414;height:{{ headerH }};display:flex;align-items:center;gap:12px;padding:0 {{ headerPad }}">
+      <span style="font-family:Anton,sans-serif;font-size:{{ logoSize }};letter-spacing:.02em;color:#FFFFFF">20FIT</span>
+      <span style="display:flex;flex-direction:column;gap:3px">
+        <span style="font-size:11px;font-weight:bold;letter-spacing:.05em;text-transform:uppercase;color:#FFFFFF">{{ brandName }}</span>
+        <span style="height:2px;width:100%;background:{{ accent }};display:block"></span>
+      </span>
+      <span style="flex:1"></span>
+      <button style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:transparent;border:0;cursor:pointer">
+        <span style="display:grid;grid-template-columns:repeat(3,4px);gap:3px">
+          <i style="width:4px;height:4px;background:#FFFFFF;display:block"></i><i style="width:4px;height:4px;background:#FFFFFF;display:block"></i><i style="width:4px;height:4px;background:#FFFFFF;display:block"></i>
+          <i style="width:4px;height:4px;background:#FFFFFF;display:block"></i><i style="width:4px;height:4px;background:#FFFFFF;display:block"></i><i style="width:4px;height:4px;background:#FFFFFF;display:block"></i>
+          <i style="width:4px;height:4px;background:#FFFFFF;display:block"></i><i style="width:4px;height:4px;background:#FFFFFF;display:block"></i><i style="width:4px;height:4px;background:#FFFFFF;display:block"></i>
+        </span>
+      </button>
+      <sc-if value="{{ isAnon }}" hint-placeholder-val="{{ true }}">
+        <button style="background:#D62828;color:#FFFFFF;border:0;border-radius:8px;height:44px;padding:0 18px;font-family:inherit;font-size:14px;font-weight:bold;cursor:pointer">Masuk</button>
+      </sc-if>
+      <sc-if value="{{ isMember }}" hint-placeholder-val="{{ false }}">
+        <button style="display:flex;align-items:center;gap:8px;background:#242424;border:1px solid #3A3A3A;border-radius:999px;height:44px;padding:0 13px 0 6px;cursor:pointer;font-family:inherit">
+          <span style="width:32px;height:32px;border-radius:50%;background:#D62828;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:bold">RA</span>
+          <span style="font-size:13px;color:#FFFFFF">Rangga</span>
+        </button>
+      </sc-if>
+    </div>
+
+    <sc-if value="{{ isDesktop }}" hint-placeholder-val="{{ false }}">
+      <div style="background:#1C1C1C;border-top:1px solid #2A2A2A;padding:0 22px;display:flex;align-items:center;gap:26px;height:48px;overflow:hidden">
+        <sc-for list="{{ nav }}" as="n" hint-placeholder-count="5">
+          <a href="#" style="font-size:13px;font-weight:bold;color:{{ n.color }};white-space:nowrap;border-bottom:2px solid {{ n.underline }};padding:14px 0 12px">{{ n.label }}</a>
+        </sc-for>
+      </div>
+    </sc-if>
+
+    <div style="background:#141414;padding:{{ heroPad }};display:grid;grid-template-columns:{{ heroCols }};gap:26px;align-items:center">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <span style="align-self:flex-start;font-size:11px;font-weight:bold;letter-spacing:.08em;text-transform:uppercase;color:#FFFFFF;background:{{ accent }};border-radius:999px;padding:6px 12px">{{ eyebrow }}</span>
+        <h2 style="font-family:Anton,sans-serif;font-size:{{ h1Size }};line-height:1.02;text-transform:uppercase;margin:0;color:#FFFFFF;max-width:20ch;text-wrap:pretty">{{ pageTitle }}</h2>
+        <p style="margin:0;font-size:15px;line-height:1.55;color:#BDBDBD;max-width:46ch;text-wrap:pretty">{{ pageSub }}</p>
+        <div style="display:flex;flex-wrap:wrap;gap:9px;margin-top:2px">
+          <button onClick="{{ scrollTool }}" style="background:#D62828;color:#FFFFFF;border:0;border-radius:10px;height:50px;padding:0 22px;font-family:inherit;font-size:15px;font-weight:bold;cursor:pointer">{{ heroCta }}</button>
+          <button style="background:transparent;color:#FFFFFF;border:1.5px solid #4A4A4A;border-radius:10px;height:50px;padding:0 22px;font-family:inherit;font-size:15px;font-weight:bold;cursor:pointer">Download aplikasi</button>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:9px">
+          <a href="#" style="display:flex;align-items:center;gap:9px;background:#000000;border:1px solid #3A3A3A;border-radius:9px;padding:9px 14px;min-height:48px">
+            <span style="font-size:20px;color:#FFFFFF;line-height:1">&#63743;</span>
+            <span style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-size:9px;color:#B4B4B4;letter-spacing:.03em">Download di</span>
+              <span style="font-size:14px;font-weight:bold;color:#FFFFFF;line-height:1.1">App Store</span>
+            </span>
+          </a>
+          <a href="#" style="display:flex;align-items:center;gap:9px;background:#000000;border:1px solid #3A3A3A;border-radius:9px;padding:9px 14px;min-height:48px">
+            <span style="font-size:17px;color:#FFFFFF;line-height:1">&#9654;</span>
+            <span style="display:flex;flex-direction:column;gap:1px">
+              <span style="font-size:9px;color:#B4B4B4;letter-spacing:.03em">Tersedia di</span>
+              <span style="font-size:14px;font-weight:bold;color:#FFFFFF;line-height:1.1">Google Play</span>
+            </span>
+          </a>
+        </div>
+        <div style="display:flex;align-items:center;gap:12px;flex-wrap:wrap">
+          <div style="display:flex">
+            <sc-for list="{{ avatars }}" as="av" hint-placeholder-count="5">
+              <span style="width:32px;height:32px;border-radius:50%;background:#3A3A3A;border:2px solid #141414;margin-left:{{ av.ml }};display:block"></span>
+            </sc-for>
+          </div>
+          <span style="font-size:12px;color:#8A8A8A">Dipakai oleh [[BUTUH DATA]] pengguna 20FIT</span>
+        </div>
+        <span style="font-size:12px;color:#8A8A8A">Tanpa akun. Hasil analisisnya terbuka penuh.</span>
+      </div>
+      <div style="position:relative;width:100%;height:{{ heroImgH }};border-radius:14px;overflow:hidden;background:#242424">
+        <image-slot id="{{ heroSlot }}" shape="rect" placeholder="{{ heroSlotHint }}"></image-slot>
+      </div>
+    </div>
+
+    <div style="padding:26px 18px 34px;display:flex;flex-direction:column;gap:20px">
+
+      <div style="border-left:3px solid {{ accent }};background:{{ tint }};padding:13px 15px">
+        <span style="font-size:13px;line-height:1.55;color:#2A2A2A;display:block;text-wrap:pretty">{{ framing }}</span>
+      </div>
+
+      <div id="tool-anchor" style="display:flex;align-items:center;gap:12px">
+        <span style="font-family:Anton,sans-serif;font-size:20px;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap">{{ toolHeading }}</span>
+        <span style="flex:1;height:2px;background:#141414"></span>
+      </div>
+
+      <sc-if value="{{ isUpload }}" hint-placeholder-val="{{ true }}">
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <sc-if value="{{ noPhoto }}" hint-placeholder-val="{{ true }}">
+            <label style="border:1.5px dashed #C9C4BE;border-radius:14px;background:#FAF9F7;padding:32px 18px;display:flex;flex-direction:column;align-items:center;gap:12px;text-align:center;cursor:pointer" style-hover="border-color:#D62828;background:#FDECEC">
+              <span style="width:46px;height:46px;border-radius:12px;background:{{ tint }};color:{{ accent }};display:flex;align-items:center;justify-content:center;font-family:Anton,sans-serif;font-size:20px">+</span>
+              <span style="font-size:15px;font-weight:bold">{{ uploadTitle }}</span>
+              <span style="font-size:13px;line-height:1.5;color:#6A6A6A;max-width:30ch;text-wrap:pretty">{{ uploadHint }}</span>
+              <input type="file" accept="{{ acceptTypes }}" onChange="{{ pickFile }}" style="display:none" />
+            </label>
+          </sc-if>
+
+          <sc-if value="{{ hasPhoto }}" hint-placeholder-val="{{ false }}">
+            <div style="border:1.5px solid #E4E0DB;border-radius:14px;overflow:hidden;background:#FAF9F7">
+              <div style="height:200px;background:#EFEDEA;background-image:{{ photoBg }};background-size:cover;background-position:center;position:relative">
+                <sc-if value="{{ isSample }}" hint-placeholder-val="{{ false }}">
+                  <image-slot id="scan-sample" shape="rect" placeholder="{{ sampleSlotHint }}"></image-slot>
+                </sc-if>
+              </div>
+              <div style="padding:13px 15px;display:flex;align-items:center;gap:12px">
+                <span style="flex:1;font-size:13px;color:#4A4A4A;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ photoName }}</span>
+                <button onClick="{{ clearFile }}" style="background:transparent;border:0;color:#D62828;font-family:inherit;font-size:13px;font-weight:bold;text-decoration:underline;cursor:pointer;padding:6px 0">Ganti</button>
+              </div>
+            </div>
+          </sc-if>
+
+          <button onClick="{{ startAnalyze }}" disabled="{{ analyzeDisabled }}" style="{{ analyzeStyle }}">{{ uploadCta }}</button>
+          <sc-if value="{{ noPhoto }}" hint-placeholder-val="{{ true }}">
+            <button onClick="{{ useSample }}" style="background:transparent;border:0;color:#7A7A7A;font-family:inherit;font-size:13px;text-decoration:underline;cursor:pointer;padding:4px 0;align-self:center">{{ sampleLabel }}</button>
+          </sc-if>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px">
+            <sc-for list="{{ steps }}" as="st" hint-placeholder-count="3">
+              <div style="border:1px solid #E4E0DB;border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:6px">
+                <span style="font-family:Anton,sans-serif;font-size:12px;color:{{ accent }}">{{ st.num }}</span>
+                <span style="font-size:14px;font-weight:bold;line-height:1.3;text-wrap:pretty">{{ st.title }}</span>
+                <span style="font-size:12px;line-height:1.5;color:#6A6A6A;text-wrap:pretty">{{ st.body }}</span>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isLoading }}" hint-placeholder-val="{{ false }}">
+        <div style="border:1px solid #E4E0DB;border-radius:14px;padding:34px 18px;display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center">
+          <span style="width:46px;height:46px;border-radius:50%;border:3px solid {{ tint }};border-top-color:{{ accent }};display:block;animation:scSpin .9s linear infinite"></span>
+          <span style="font-size:15px;font-weight:bold">{{ loadingTitle }}</span>
+          <span style="font-size:13px;line-height:1.5;color:#6A6A6A;max-width:32ch;text-wrap:pretty">{{ loadingBody }}</span>
+          <span style="font-size:12px;color:#9A9A9A">{{ loadingPhase }}</span>
+        </div>
+      </sc-if>
+
+      <sc-if value="{{ isResult }}" hint-placeholder-val="{{ false }}">
+        <div style="display:flex;flex-direction:column;gap:18px">
+
+          <div style="border:1px solid #E4E0DB;border-radius:14px;overflow:hidden">
+            <div style="background:#141414;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:12px">
+              <span style="font-family:Anton,sans-serif;font-size:16px;text-transform:uppercase;color:#FFFFFF;letter-spacing:.03em">{{ resultTitle }}</span>
+              <span style="font-size:10px;font-weight:bold;letter-spacing:.06em;text-transform:uppercase;color:#141414;background:#FFFFFF;border-radius:999px;padding:5px 9px;white-space:nowrap">Terbuka penuh</span>
+            </div>
+
+            <sc-if value="{{ isCal }}" hint-placeholder-val="{{ true }}">
+              <sc-if value="{{ hasPhoto }}" hint-placeholder-val="{{ false }}">
+                <div style="height:200px;background:#EFEDEA;background-image:{{ photoBg }};background-size:cover;background-position:center;position:relative">
+                  <sc-if value="{{ isSample }}" hint-placeholder-val="{{ false }}">
+                    <image-slot id="scan-sample" shape="rect" placeholder="{{ sampleSlotHint }}"></image-slot>
+                  </sc-if>
+                </div>
+              </sc-if>
+              <div style="padding:18px 16px;display:flex;flex-direction:column;gap:16px">
+                <div style="display:flex;flex-direction:column;gap:3px">
+                  <span style="font-size:17px;font-weight:bold">{{ dish.name }}</span>
+                  <span style="font-size:13px;color:#6A6A6A">Porsi terdeteksi: {{ dish.portion }}</span>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:6px">
+                  <div style="display:flex;justify-content:space-between;font-size:12px;color:#6A6A6A">
+                    <span>Tingkat keyakinan model</span>
+                    <span style="font-weight:bold;color:#141414">{{ dish.confidence }}</span>
+                  </div>
+                  <div style="height:6px;border-radius:999px;background:#EFEDEA;overflow:hidden">
+                    <div style="height:6px;width:{{ dish.confidence }};border-radius:999px;background:{{ accent }}"></div>
+                  </div>
+                  <span style="font-size:11px;color:#9A9A9A;text-wrap:pretty">Keyakinan rendah berarti estimasi di bawah ini perlu dibaca lebih longgar lagi.</span>
+                </div>
+                <div style="display:flex;align-items:baseline;gap:8px">
+                  <span style="font-family:Anton,sans-serif;font-size:42px;line-height:1">{{ dish.kcal }}</span>
+                  <span style="font-size:14px;color:#6A6A6A">kkal &mdash; estimasi</span>
+                </div>
+                <div style="display:flex;flex-direction:column;gap:11px">
+                  <sc-for list="{{ macros }}" as="m" hint-placeholder-count="3">
+                    <div style="display:flex;flex-direction:column;gap:5px">
+                      <div style="display:flex;justify-content:space-between;font-size:13px;color:#4A4A4A">
+                        <span>{{ m.label }}</span>
+                        <span style="font-weight:bold;color:#141414">{{ m.value }}</span>
+                      </div>
+                      <div style="height:6px;border-radius:999px;background:#EFEDEA;overflow:hidden">
+                        <div style="height:6px;width:{{ m.pct }};border-radius:999px;background:{{ m.color }}"></div>
+                      </div>
+                    </div>
+                  </sc-for>
+                </div>
+                <div style="border-top:1px solid #EFEDEA;padding-top:13px;display:flex;flex-wrap:wrap;gap:6px">
+                  <sc-for list="{{ micros }}" as="mi" hint-placeholder-count="4">
+                    <span style="font-size:12px;color:#4A4A4A;background:#F4F2F0;border-radius:999px;padding:5px 10px">{{ mi }}</span>
+                  </sc-for>
+                </div>
+              </div>
+            </sc-if>
+
+            <sc-if value="{{ isMcu }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:8px 12px 14px">
+                <sc-for list="{{ markers }}" as="mk" hint-placeholder-count="5">
+                  <div style="border-bottom:1px solid #F0EDEA">
+                    <button onClick="{{ mk.toggle }}" style="width:100%;display:flex;align-items:center;gap:10px;background:transparent;border:0;padding:14px 6px;cursor:pointer;font-family:inherit;text-align:left;min-height:48px">
+                      <span style="flex:1;font-size:14px;font-weight:bold">{{ mk.name }}</span>
+                      <span style="font-size:14px">{{ mk.value }}</span>
+                      <span style="font-size:10px;font-weight:bold;border-radius:999px;padding:4px 8px;white-space:nowrap;color:{{ mk.fg }};background:{{ mk.bg }}">{{ mk.status }}</span>
+                      <span style="font-size:15px;color:#A8A8A8;width:14px;text-align:center">{{ mk.caret }}</span>
+                    </button>
+                    <sc-if value="{{ mk.open }}" hint-placeholder-val="{{ false }}">
+                      <div style="padding:0 6px 15px;display:flex;flex-direction:column;gap:6px">
+                        <span style="font-size:12px;color:#8A8A8A">Rentang rujukan: {{ mk.range }}</span>
+                        <span style="font-size:13px;line-height:1.6;color:#4A4A4A;max-width:70ch;text-wrap:pretty">{{ mk.note }}</span>
+                      </div>
+                    </sc-if>
+                  </div>
+                </sc-for>
+              </div>
+            </sc-if>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:10px">
+            <span style="font-family:Anton,sans-serif;font-size:17px;text-transform:uppercase;letter-spacing:.03em">{{ nextTitle }}</span>
+            <span style="font-size:13px;line-height:1.55;color:#4A4A4A;max-width:52ch;text-wrap:pretty">{{ nextSub }}</span>
+          </div>
+
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px">
+            <sc-for list="{{ deeper }}" as="d" hint-placeholder-count="3">
+              <div style="border:1px solid {{ d.border }};border-radius:14px;background:{{ d.cardBg }};overflow:hidden;display:flex;flex-direction:column">
+                <div style="padding:15px;display:flex;flex-direction:column;gap:9px;flex:1">
+                  <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px">
+                    <span style="font-size:15px;font-weight:bold;line-height:1.25;text-wrap:pretty">{{ d.title }}</span>
+                    <span style="font-size:9px;font-weight:bold;letter-spacing:.06em;text-transform:uppercase;border-radius:999px;padding:4px 8px;white-space:nowrap;color:{{ d.badgeFg }};background:{{ d.badgeBg }}">{{ d.badge }}</span>
+                  </div>
+                  <span style="font-size:12px;line-height:1.5;color:#5A5A5A;text-wrap:pretty">{{ d.body }}</span>
+                  <div style="margin-top:auto;display:flex;flex-direction:column;gap:6px;padding-top:8px">
+                    <sc-for list="{{ d.rows }}" as="r" hint-placeholder-count="3">
+                      <div style="display:flex;align-items:center;gap:8px">
+                        <span style="height:8px;width:{{ r.w }};border-radius:999px;background:{{ r.bar }};display:block"></span>
+                        <span style="height:8px;flex:1;border-radius:999px;background:#EFEDEA;display:block"></span>
+                      </div>
+                    </sc-for>
+                  </div>
+                </div>
+                <div style="padding:12px 15px;background:{{ d.footBg }};border-top:1px solid {{ d.border }}">
+                  <span style="font-size:12px;font-weight:bold;color:{{ d.footFg }}">{{ d.foot }}</span>
+                </div>
+              </div>
+            </sc-for>
+          </div>
+
+          <sc-if value="{{ isAnon }}" hint-placeholder-val="{{ true }}">
+            <div style="border:2px solid #141414;border-radius:14px;overflow:hidden">
+              <div style="background:#141414;padding:20px 18px;display:flex;flex-direction:column;gap:8px">
+                <span style="font-family:Anton,sans-serif;font-size:22px;line-height:1.1;text-transform:uppercase;color:#FFFFFF;max-width:24ch;text-wrap:pretty">{{ ctaTitle }}</span>
+                <span style="font-size:13px;line-height:1.55;color:#BDBDBD;max-width:48ch;text-wrap:pretty">{{ ctaSub }}</span>
+              </div>
+              <div style="background:#FDECEC;padding:18px;display:flex;flex-direction:column;gap:14px">
+                <div style="display:flex;flex-direction:column;gap:9px">
+                  <sc-for list="{{ ctaPoints }}" as="p" hint-placeholder-count="3">
+                    <div style="display:flex;gap:9px;align-items:flex-start">
+                      <span style="width:6px;height:6px;border-radius:50%;background:#D62828;margin-top:7px;flex:none"></span>
+                      <span style="font-size:13px;line-height:1.5;color:#2A2A2A;text-wrap:pretty">{{ p }}</span>
+                    </div>
+                  </sc-for>
+                </div>
+                <div style="display:flex;flex-wrap:wrap;gap:9px">
+                  <button style="flex:1 1 180px;background:#D62828;color:#FFFFFF;border:0;border-radius:10px;height:50px;font-family:inherit;font-size:15px;font-weight:bold;cursor:pointer">Buat akun di my.20fit.id</button>
+                  <button style="flex:1 1 160px;background:#FFFFFF;color:#141414;border:1.5px solid #141414;border-radius:10px;height:50px;font-family:inherit;font-size:15px;font-weight:bold;cursor:pointer">Download aplikasi</button>
+                </div>
+                <span style="font-size:12px;color:#7A5A5A">Gratis. Hasil analisis di atas tetap bisa kamu baca tanpa akun.</span>
+              </div>
+            </div>
+          </sc-if>
+
+          <sc-if value="{{ isMember }}" hint-placeholder-val="{{ false }}">
+            <div style="border:1px solid #E4E0DB;border-radius:14px;background:#F4F2F0;padding:18px;display:flex;flex-direction:column;gap:8px">
+              <span style="font-size:14px;font-weight:bold">Tersimpan ke akun kamu</span>
+              <span style="font-size:13px;line-height:1.55;color:#4A4A4A;max-width:52ch;text-wrap:pretty">{{ memberNote }}</span>
+              <a href="#" style="font-size:13px;font-weight:bold">Buka di my.20fit.id</a>
+            </div>
+          </sc-if>
+
+          <div style="display:flex;flex-wrap:wrap;gap:10px;align-items:center">
+            <button onClick="{{ scanAgain }}" style="background:#141414;color:#FFFFFF;border:0;border-radius:10px;height:48px;padding:0 20px;font-family:inherit;font-size:14px;font-weight:bold;cursor:pointer">{{ againLabel }}</button>
+            <button onClick="{{ reset }}" style="background:transparent;border:0;color:#7A7A7A;font-family:inherit;font-size:13px;text-decoration:underline;cursor:pointer;padding:8px 0">Ulangi dari awal</button>
+            <span style="flex:1"></span>
+            <span style="font-size:12px;color:#9A9A9A">{{ scanCountLabel }}</span>
+          </div>
+        </div>
+      </sc-if>
+
+    </div>
+
+    <div style="background:#FFFFFF;border-top:1px solid #E4E0DB;padding:38px 18px;display:flex;flex-direction:column;gap:26px">
+      <div style="display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center">
+        <h3 style="font-family:Anton,sans-serif;font-size:{{ secTitleSize }};line-height:1.05;text-transform:uppercase;margin:0;max-width:24ch;text-wrap:pretty">{{ whyTitle }}</h3>
+        <span style="font-size:14px;line-height:1.55;color:#6A6A6A;max-width:46ch;text-wrap:pretty">{{ whySub }}</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:{{ whyCols }};gap:24px;align-items:start">
+        <div style="display:flex;justify-content:center">
+          <div style="width:280px;max-width:100%;border:11px solid #141414;border-radius:34px;overflow:hidden;background:#141414">
+            <div style="height:22px;background:#141414;display:flex;align-items:center;justify-content:center">
+              <span style="width:64px;height:5px;border-radius:999px;background:#3A3A3A;display:block"></span>
+            </div>
+            <div style="background:#FFFFFF;height:430px;position:relative">
+              <image-slot id="{{ activeSlot }}" shape="rect" placeholder="{{ activeSlotHint }}"></image-slot>
+            </div>
+            <div style="height:48px;background:#141414;display:flex;align-items:center;justify-content:space-around;padding:0 14px">
+              <sc-for list="{{ tabBarDots }}" as="dot" hint-placeholder-count="5">
+                <span style="width:{{ dot.size }};height:{{ dot.size }};border-radius:{{ dot.radius }};background:{{ dot.bg }};display:block"></span>
+              </sc-for>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <sc-for list="{{ features }}" as="f" hint-placeholder-count="4">
+            <button onClick="{{ f.pick }}" style="text-align:left;font-family:inherit;cursor:pointer;border:1.5px solid {{ f.border }};background:{{ f.bg }};border-radius:14px;padding:17px;display:flex;flex-direction:column;gap:7px">
+              <div style="display:flex;align-items:center;gap:10px;width:100%">
+                <span style="font-size:16px;font-weight:bold;line-height:1.3;color:#141414;flex:1;text-wrap:pretty">{{ f.title }}</span>
+                <sc-if value="{{ f.locked }}" hint-placeholder-val="{{ false }}">
+                  <span style="font-size:9px;font-weight:bold;letter-spacing:.06em;text-transform:uppercase;color:#D62828;background:#FDECEC;border-radius:999px;padding:4px 8px;white-space:nowrap">Perlu akun</span>
+                </sc-if>
+              </div>
+              <span style="font-size:13px;line-height:1.6;color:#5A5A5A;text-wrap:pretty">{{ f.body }}</span>
+            </button>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+
+    <div style="background:#FDECEC;padding:38px 18px;display:flex;flex-direction:column;gap:22px">
+      <div style="display:flex;flex-direction:column;gap:8px;align-items:center;text-align:center">
+        <h3 style="font-family:Anton,sans-serif;font-size:{{ secTitleSize }};line-height:1.05;text-transform:uppercase;margin:0;max-width:24ch;text-wrap:pretty">Kata pengguna 20FIT</h3>
+        <span style="font-size:14px;line-height:1.55;color:#7A5A5A;max-width:46ch;text-wrap:pretty">Slot testimoni. Isi dengan ulasan asli sebelum halaman ini live &mdash; jangan pakai teks contoh.</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:12px">
+        <sc-for list="{{ testimonials }}" as="tm" hint-placeholder-count="4">
+          <div style="background:#FFFFFF;border:1px solid #F2D8D8;border-radius:14px;padding:17px;display:flex;flex-direction:column;gap:11px">
+            <div style="display:flex;align-items:center;gap:10px">
+              <span style="width:38px;height:38px;border-radius:50%;background:#EFEDEA;display:block;flex:none"></span>
+              <div style="display:flex;flex-direction:column;gap:4px;flex:1">
+                <span style="height:9px;width:62%;background:#EFEDEA;border-radius:999px;display:block"></span>
+                <span style="height:7px;width:40%;background:#F4F2F0;border-radius:999px;display:block"></span>
+              </div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:6px">
+              <sc-for list="{{ tm.lines }}" as="ln" hint-placeholder-count="3">
+                <span style="height:8px;width:{{ ln }};background:#F4F2F0;border-radius:999px;display:block"></span>
+              </sc-for>
+            </div>
+            <span style="font-size:11px;color:#B49999;margin-top:2px">[[BUTUH DATA]] &mdash; ulasan asli</span>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="background:#F4F2F0;border-top:1px solid #E4E0DB;padding:32px 18px;display:flex;flex-direction:column;gap:18px">
+      <div style="display:flex;flex-direction:column;gap:7px">
+        <span style="font-family:Anton,sans-serif;font-size:24px;line-height:1.1;text-transform:uppercase;letter-spacing:.02em;max-width:22ch;text-wrap:pretty">Bagian dari satu ekosistem</span>
+        <span style="font-size:14px;line-height:1.55;color:#4A4A4A;max-width:52ch;text-wrap:pretty">Semua alat 20FIT berbagi satu akun. Apa pun yang kamu buka di sini bisa dilanjutkan di tempat lain.</span>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px">
+        <sc-for list="{{ ecosystem }}" as="e" hint-placeholder-count="4">
+          <a href="#" style="border:1px solid #E4E0DB;border-radius:13px;background:#FFFFFF;padding:15px;display:flex;flex-direction:column;gap:9px" style-hover="border-color:#141414">
+            <span style="width:34px;height:34px;border-radius:9px;background:{{ e.accent }};color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-family:Anton,sans-serif;font-size:13px">{{ e.initial }}</span>
+            <span style="font-size:14px;font-weight:bold;line-height:1.25;color:#141414;text-wrap:pretty">{{ e.name }}</span>
+            <span style="font-size:12px;line-height:1.45;color:#6A6A6A;text-wrap:pretty">{{ e.desc }}</span>
+            <span style="font-size:11px;color:#9A9A9A;margin-top:auto">{{ e.host }}</span>
+          </a>
+        </sc-for>
+      </div>
+    </div>
+
+    <div style="background:#FFFFFF;padding:32px 18px;display:flex;flex-direction:column;gap:16px">
+      <div style="display:flex;flex-direction:column;gap:7px">
+        <span style="font-family:Anton,sans-serif;font-size:24px;line-height:1.1;text-transform:uppercase;letter-spacing:.02em">Pertanyaan yang sering muncul</span>
+        <span style="font-size:14px;line-height:1.55;color:#4A4A4A;max-width:52ch;text-wrap:pretty">{{ faqSub }}</span>
+      </div>
+      <div style="border:1px solid #E4E0DB;border-radius:13px;overflow:hidden">
+        <sc-for list="{{ faqs }}" as="q" hint-placeholder-count="4">
+          <div style="border-bottom:1px solid #F0EDEA">
+            <button onClick="{{ q.toggle }}" style="width:100%;display:flex;align-items:center;gap:12px;background:transparent;border:0;padding:15px 16px;cursor:pointer;font-family:inherit;text-align:left;min-height:52px">
+              <span style="flex:1;font-size:14px;font-weight:bold;line-height:1.35;text-wrap:pretty">{{ q.q }}</span>
+              <span style="font-size:17px;color:#A8A8A8;width:14px;text-align:center;flex:none">{{ q.caret }}</span>
+            </button>
+            <sc-if value="{{ q.open }}" hint-placeholder-val="{{ false }}">
+              <div style="padding:0 16px 16px">
+                <span style="font-size:13px;line-height:1.6;color:#4A4A4A;max-width:70ch;display:block;text-wrap:pretty">{{ q.a }}</span>
+              </div>
+            </sc-if>
+          </div>
+        </sc-for>
+      </div>
+    </div>
+
+    <sc-if value="{{ isAnon }}" hint-placeholder-val="{{ true }}">
+      <div style="background:#D62828;padding:36px 18px;display:flex;flex-direction:column;gap:14px;align-items:flex-start">
+        <span style="font-family:Anton,sans-serif;font-size:28px;line-height:1.05;text-transform:uppercase;color:#FFFFFF;max-width:22ch;text-wrap:pretty">Mulai dari satu akun 20FIT</span>
+        <span style="font-size:14px;line-height:1.55;color:#FBD9D9;max-width:48ch;text-wrap:pretty">Meal plan, diet plan, dan analytics jalan setelah ada riwayat yang tersimpan. Buat akun, atau pakai aplikasinya.</span>
+        <div style="display:flex;flex-wrap:wrap;gap:9px">
+          <button style="background:#FFFFFF;color:#D62828;border:0;border-radius:10px;height:50px;padding:0 22px;font-family:inherit;font-size:15px;font-weight:bold;cursor:pointer">Buat akun di my.20fit.id</button>
+          <button style="background:transparent;color:#FFFFFF;border:1.5px solid #FFFFFF;border-radius:10px;height:50px;padding:0 22px;font-family:inherit;font-size:15px;font-weight:bold;cursor:pointer">Download aplikasi</button>
+        </div>
+      </div>
+    </sc-if>
+
+    <div style="background:#141414;padding:28px 18px 32px;display:flex;flex-direction:column;gap:18px">
+      <div style="display:flex;flex-wrap:wrap;gap:20px;justify-content:space-between">
+        <div style="display:flex;flex-direction:column;gap:7px">
+          <span style="font-family:Anton,sans-serif;font-size:20px;letter-spacing:.02em;color:#FFFFFF">20FIT</span>
+          <span style="font-size:12px;line-height:1.5;color:#8A8A8A;max-width:32ch;text-wrap:pretty">Satu akun untuk scan kalori, menu diet, dan panduan medical check-up.</span>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:28px">
+          <sc-for list="{{ footerCols }}" as="col" hint-placeholder-count="2">
+            <div style="display:flex;flex-direction:column;gap:9px">
+              <span style="font-size:11px;font-weight:bold;letter-spacing:.08em;text-transform:uppercase;color:#6A6A6A">{{ col.title }}</span>
+              <sc-for list="{{ col.links }}" as="l" hint-placeholder-count="3">
+                <a href="#" style="font-size:13px;color:#D4D4D4">{{ l }}</a>
+              </sc-for>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+      <div style="border-top:1px solid #2A2A2A;padding-top:16px">
+        <span style="font-size:11px;line-height:1.55;color:#6A6A6A;display:block;max-width:76ch;text-wrap:pretty">{{ footerDisclaimer }}</span>
+      </div>
+    </div>
+  </div>
+  </div>
+
+  <div style="border:2px solid #141414;border-radius:14px;background:#FDECEC;padding:20px;display:flex;flex-direction:column;gap:11px">
+    <span style="font-family:Anton,sans-serif;font-size:17px;text-transform:uppercase;letter-spacing:.03em">Yang perlu kamu putuskan</span>
+    <sc-for list="{{ notes }}" as="n" hint-placeholder-count="4">
+      <div style="display:flex;gap:9px;align-items:flex-start">
+        <span style="width:6px;height:6px;border-radius:50%;background:#D62828;margin-top:7px;flex:none"></span>
+        <span style="font-size:14px;line-height:1.55;color:#2A2A2A;text-wrap:pretty">{{ n }}</span>
+      </div>
+    </sc-for>
+  </div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1240,&quot;height&quot;:1400}}">
+const MARKERS = [
+  ["Glukosa puasa", "96 mg/dL", "70 – 99 mg/dL", false, "Gula darah setelah tidak makan 8 jam. Satu pengukuran tidak menggambarkan kondisi jangka panjang."],
+  ["Kolesterol total", "214 mg/dL", "< 200 mg/dL", true, "Jumlah semua kolesterol dalam darah. Di atas rentang rujukan biasanya dibaca bersama HDL dan LDL, bukan sendirian."],
+  ["HDL", "48 mg/dL", "> 40 mg/dL", false, "Membantu membawa kolesterol keluar dari pembuluh darah. Nilai lebih tinggi umumnya dinilai lebih baik."],
+  ["LDL", "142 mg/dL", "< 130 mg/dL", true, "Kolesterol yang bisa menumpuk di dinding pembuluh darah. Target aman berbeda per orang."],
+  ["Trigliserida", "128 mg/dL", "< 150 mg/dL", false, "Bentuk lemak cadangan energi. Cukup sensitif terhadap makanan beberapa hari sebelum tes."],
+  ["HbA1c", "5.4 %", "< 5.7 %", false, "Rata-rata gula darah dua sampai tiga bulan terakhir. Lebih stabil dibanding glukosa puasa."]
+];
+
+const DISHES = [
+  { name: "Nasi Goreng Ayam", portion: "1 piring (± 300 g)", kcal: 620, confidence: "88%", macros: [["Protein", "24 g", "34%"], ["Karbohidrat", "78 g", "72%"], ["Lemak", "21 g", "46%"]], micros: ["Sodium ± 980 mg", "Serat ± 4 g", "Gula ± 6 g"] },
+  { name: "Ayam Bakar + Nasi Merah", portion: "1 porsi (± 320 g)", kcal: 480, confidence: "82%", macros: [["Protein", "38 g", "58%"], ["Karbohidrat", "46 g", "44%"], ["Lemak", "14 g", "30%"]], micros: ["Sodium ± 620 mg", "Serat ± 6 g", "Gula ± 3 g"] },
+  { name: "Gado-gado", portion: "1 porsi (± 280 g)", kcal: 390, confidence: "71%", macros: [["Protein", "16 g", "24%"], ["Karbohidrat", "34 g", "32%"], ["Lemak", "19 g", "42%"]], micros: ["Sodium ± 740 mg", "Serat ± 8 g", "Gula ± 9 g"] },
+  { name: "Mie Ayam Pangsit", portion: "1 mangkuk (± 350 g)", kcal: 540, confidence: "64%", macros: [["Protein", "22 g", "31%"], ["Karbohidrat", "68 g", "63%"], ["Lemak", "18 g", "40%"]], micros: ["Sodium ± 1.240 mg", "Serat ± 3 g", "Gula ± 5 g"] }
+];
+
+class Component extends DCLogic {
+  state = { domain: "cal", mode: "anon", device: "mobile", step: "upload", openMarker: 0, openFaq: 0, feature: 0,
+            photoUrl: null, photoName: "", dishIdx: 0, scanCount: 0, phase: 0 };
+  set(p) { this.setState(p); }
+
+  componentWillUnmount() { clearTimeout(this._t); clearInterval(this._p); this._revoke(); }
+
+  _revoke() { if (this.state.photoUrl && this.state.photoUrl.startsWith("blob:")) URL.revokeObjectURL(this.state.photoUrl); }
+
+  renderVals() {
+    const s = this.state;
+    const isCal = s.domain === "cal", isMcu = s.domain === "mcu";
+    const isAnon = s.mode === "anon", isMember = s.mode === "member";
+    const accent = isCal ? "#D62828" : "#2D4E8F";
+    const tint = isCal ? "#FDECEC" : "#EAEEF7";
+    const mob = s.device === "mobile";
+
+    const seg = (on) => `background:${on ? "#FFFFFF" : "transparent"};color:${on ? "#141414" : "#B4B4B4"};border:0;border-radius:7px;padding:9px 15px;font-family:inherit;font-size:13px;font-weight:bold;cursor:pointer;min-height:40px`;
+
+    const lockedRows = [{ w: "38%", bar: "#D6D2CD" }, { w: "62%", bar: "#D6D2CD" }, { w: "28%", bar: "#D6D2CD" }];
+    const openRows = [{ w: "38%", bar: accent }, { w: "62%", bar: accent }, { w: "28%", bar: accent }];
+
+    const deeperDefs = isCal
+      ? [["Meal plan mingguan", "Rencana makan tujuh hari yang disusun dari pola scan kamu, lengkap dengan daftar belanja."],
+         ["Diet plan", "Target dan penyesuaian porsi yang dihitung dari data tubuh kamu di akun 20FIT."],
+         ["Food analytics", "Tren kalori dan makronutrien lintas waktu, bukan angka satu piring."]]
+      : [["Meal plan dari hasil lab", "Rencana makan yang disesuaikan dengan penanda yang di atas rentang."],
+         ["Diet plan terarah", "Penyesuaian pola makan yang ditinjau bersama tenaga kesehatan 20FIT."],
+         ["Health analytics", "Perbandingan hasil MCU antar periode, supaya arah perubahannya terlihat."]];
+
+    const deeper = deeperDefs.map(([title, body]) => isAnon
+      ? { title, body, badge: "Perlu akun", badgeFg: "#D62828", badgeBg: "#FDECEC", border: "#E4E0DB", cardBg: "#FAF9F7", footBg: "#FDECEC", footFg: "#D62828", foot: "Buat akun untuk membuka", rows: lockedRows }
+      : { title, body, badge: "Terbuka", badgeFg: "#1F5E43", badgeBg: "#E9F3EE", border: "#E4E0DB", cardBg: "#FFFFFF", footBg: "#FFFFFF", footFg: accent, foot: "Buka sekarang", rows: openRows });
+
+    const markers = MARKERS.map((mk, i) => ({
+      name: mk[0], value: mk[1], range: mk[2], note: mk[4],
+      status: mk[3] ? "Di atas rentang" : "Dalam rentang",
+      fg: mk[3] ? "#A3401A" : "#1F5E43",
+      bg: mk[3] ? "#FDECEC" : "#E9F3EE",
+      open: s.openMarker === i,
+      caret: s.openMarker === i ? "\u2212" : "+",
+      toggle: () => this.set({ openMarker: s.openMarker === i ? null : i })
+    }));
+
+    const PHASES = isCal
+      ? ["Membaca foto…", "Mengenali jenis makanan…", "Memperkirakan porsi…", "Menghitung makronutrien…"]
+      : ["Membaca lembar hasil…", "Mengenali nama penanda…", "Mencocokkan rentang rujukan…", "Menyusun penjelasan…"];
+
+    const startAnalyze = () => {
+      if (!s.photoUrl) return;
+      clearTimeout(this._t); clearInterval(this._p);
+      this.set({ step: "loading", phase: 0 });
+      this._p = setInterval(() => this.setState(st => ({ phase: Math.min(st.phase + 1, PHASES.length - 1) })), 550);
+      this._t = setTimeout(() => {
+        clearInterval(this._p);
+        this.setState(st => ({ step: "result", scanCount: st.scanCount + 1 }));
+      }, 2300);
+    };
+
+    const pickFile = (e) => {
+      const f = e.target.files && e.target.files[0];
+      if (!f) return;
+      this._revoke();
+      this.set({ photoUrl: URL.createObjectURL(f), photoName: f.name });
+    };
+
+    const useSample = () => {
+      this._revoke();
+      this.set({
+        photoUrl: "sample",
+        photoName: isCal ? "contoh-nasi-goreng.jpg" : "contoh-hasil-lab.pdf"
+      });
+    };
+
+    const clearFile = () => { this._revoke(); this.set({ photoUrl: null, photoName: "" }); };
+
+    const scanAgain = () => {
+      this._revoke();
+      clearTimeout(this._t); clearInterval(this._p);
+      this.setState(st => ({ step: "upload", photoUrl: null, photoName: "", dishIdx: (st.dishIdx + 1) % DISHES.length }));
+    };
+
+    const FAQ = isCal
+      ? [["Seberapa akurat estimasinya?", "Model menebak jenis makanan dan porsinya dari satu foto. Minyak yang terserap, cara masak, dan berat asli tidak terlihat di foto, jadi selisihnya bisa cukup besar. Pakai angkanya untuk melihat arah, bukan menghitung tepat."],
+         ["Kenapa meal plan dan analytics butuh akun?", "Ketiganya dihitung dari riwayat, bukan dari satu foto. Riwayat butuh tempat tersimpan, dan tempatnya ada di akun 20FIT."],
+         ["Fotonya disimpan?", "Untuk pengunjung tanpa akun, foto hanya diproses untuk menghasilkan estimasi. [[BUTUH DATA]] — kebijakan retensi perlu dikonfirmasi sebelum halaman ini live."],
+         ["Sudah punya akun 20FIT?", "Kalau kamu sedang login, halaman ini mengenali kamu otomatis. Tidak ada gate, tidak ada ajakan daftar, dan hasilnya langsung masuk ke riwayat."]]
+      : [["Kenapa hasil saya bisa diupload di sini?", "Supaya kamu bisa langsung membaca penjelasan tiap penanda tanpa perlu akun dulu. Yang butuh akun adalah rencana lanjutan dan perbandingan antar periode."],
+         ["Apakah ini diagnosis?", "Bukan. Halaman ini membantu kamu memahami istilah dan rentang rujukan supaya percakapan dengan dokter lebih terarah. Diagnosis tetap wewenang tenaga medis."],
+         ["File hasil lab saya disimpan?", "[[BUTUH DATA]] — kebijakan penyimpanan dan penghapusan file kesehatan untuk pengunjung anonim perlu ditetapkan sebelum halaman ini live."],
+         ["Kalau labnya pakai satuan berbeda?", "Sistem membaca satuan dan rentang rujukan yang tertulis di lembar hasil kamu, bukan memakai rentang tetap. Angka antar lab tidak selalu bisa dibandingkan langsung."]];
+
+    const FEATURES = isCal
+      ? [["Deteksi makanan dari satu foto", "Upload foto makanan, sistem mengenali jenisnya, memperkirakan porsi, lalu menguraikan kalori, protein, karbo, dan lemaknya.", false, "Foto layar hasil scan di aplikasi"],
+         ["Riwayat dan tren makan", "Setiap scan tersimpan, lalu dibaca sebagai tren lintas hari dan lintas waktu makan. Tanpa pencatatan manual.", true, "Foto layar riwayat / grafik tren"],
+         ["Meal plan dan diet plan", "Rencana makan yang disusun dari target, alergi, dan preferensi diet kamu, bukan template umum.", true, "Foto layar meal plan mingguan"],
+         ["Resep dari makanan yang kamu scan", "Bahan, langkah, dan porsinya diuraikan, jadi makanan yang kamu suka bisa kamu masak sendiri.", true, "Foto layar detail resep"]]
+      : [["Baca penanda lab tanpa kamus", "Upload lembar hasil, tiap penanda dijelaskan dengan bahasa biasa beserta rentang rujukan dari lab kamu sendiri.", false, "Foto layar hasil analisis MCU"],
+         ["Perbandingan antar periode", "Hasil MCU tahun ini dibandingkan dengan sebelumnya, sehingga arah perubahannya terlihat, bukan cuma angka hari ini.", true, "Foto layar grafik perbandingan"],
+         ["Rencana makan dari hasil lab", "Penyesuaian pola makan yang menimbang penanda mana yang di atas rentang.", true, "Foto layar rencana makan"],
+         ["Riwayat kesehatan satu tempat", "Hasil MCU, data latihan, dan catatan makan berada di akun yang sama.", true, "Foto layar riwayat kesehatan"]];
+
+    const activeIdx = Math.min(s.feature, FEATURES.length - 1);
+
+    return {
+      isCal, isMcu, isAnon, isMember, accent, tint,
+      isDesktop: !mob,
+      nav: [
+        { label: "Fitur", color: "#FFFFFF", underline: accent },
+        { label: "Cara kerja", color: "#B4B4B4", underline: "transparent" },
+        { label: "Menu diet", color: "#B4B4B4", underline: "transparent" },
+        { label: "Panduan MCU", color: "#B4B4B4", underline: "transparent" },
+        { label: "Harga", color: "#B4B4B4", underline: "transparent" },
+        { label: "Blog", color: "#B4B4B4", underline: "transparent" }
+      ],
+      avatars: [0, 1, 2, 3, 4].map((n, i) => ({ ml: i === 0 ? "0" : "-9px" })),
+      secTitleSize: mob ? "26px" : "36px",
+      whyCols: mob ? "1fr" : ".8fr 1.2fr",
+      whyTitle: isCal ? "Kenapa pakai scan kalori 20FIT" : "Kenapa pakai panduan MCU 20FIT",
+      whySub: isCal
+        ? "Yang bisa dipakai tanpa akun, dan yang butuh akun karena memerlukan riwayat."
+        : "Yang bisa dibaca tanpa akun, dan yang butuh akun karena memerlukan riwayat.",
+      features: FEATURES.map((f, i) => {
+        const on = i === activeIdx;
+        return {
+          title: f[0], body: f[1],
+          locked: f[2] && isAnon,
+          border: on ? accent : "#E4E0DB",
+          bg: on ? tint : "#FFFFFF",
+          pick: () => this.set({ feature: i })
+        };
+      }),
+      activeSlot: (isCal ? "why-cal-" : "why-mcu-") + activeIdx,
+      activeSlotHint: FEATURES[activeIdx][3],
+      tabBarDots: [
+        { size: "18px", radius: "4px", bg: "#3A3A3A" },
+        { size: "18px", radius: "4px", bg: "#3A3A3A" },
+        { size: "30px", radius: "50%", bg: "#D62828" },
+        { size: "18px", radius: "4px", bg: "#3A3A3A" },
+        { size: "18px", radius: "4px", bg: "#3A3A3A" }
+      ],
+      testimonials: [
+        { lines: ["100%", "88%", "64%"] },
+        { lines: ["94%", "72%"] },
+        { lines: ["100%", "80%", "52%"] },
+        { lines: ["86%", "68%"] }
+      ],
+      heroPad: mob ? "26px 18px 30px" : "44px 34px",
+      heroCols: mob ? "1fr" : "1.1fr .9fr",
+      heroImgH: mob ? "190px" : "300px",
+      heroSlot: isCal ? "hero-cal" : "hero-mcu",
+      heroSlotHint: isCal ? "Foto makanan Indonesia di atas meja" : "Foto lembar hasil lab / konsultasi",
+      heroCta: isCal ? "Scan makanan sekarang" : "Analisis hasil MCU",
+      toolHeading: isCal ? "Coba sekarang" : "Upload hasil kamu",
+      scrollTool: () => {
+        const el = document.getElementById("tool-anchor");
+        if (el) window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 20, behavior: "smooth" });
+      },
+      faqSub: isCal ? "Ditanyakan paling sering sebelum orang mencoba scan pertamanya." : "Ditanyakan paling sering sebelum orang mengupload hasil labnya.",
+      faqs: FAQ.map((f, i) => ({
+        q: f[0], a: f[1],
+        open: s.openFaq === i,
+        caret: s.openFaq === i ? "\u2212" : "+",
+        toggle: () => this.set({ openFaq: s.openFaq === i ? null : i })
+      })),
+      ecosystem: [
+        { name: "Scan Kalori", host: "calories.20fit.id", initial: "K", accent: "#D62828", desc: "Foto makanan, dapat estimasi kalori dan makronutriennya." },
+        { name: "Menu Diet", host: "menu.20fit.id", initial: "M", accent: "#2F7D5B", desc: "Kumpulan menu dan resep dengan hitungan kalori per porsi." },
+        { name: "Panduan MCU", host: "medicalcheckup.20fit.id", initial: "C", accent: "#2D4E8F", desc: "Upload hasil lab, baca penjelasan tiap penandanya." },
+        { name: "My 20FIT", host: "my.20fit.id", initial: "20", accent: "#141414", desc: "Akun, riwayat, meal plan, diet plan, dan analytics." }
+      ],
+      footerCols: [
+        { title: "Aplikasi", links: ["Scan Kalori", "Menu Diet", "Panduan MCU", "My 20FIT"] },
+        { title: "20FIT", links: ["Tentang", "Lokasi studio", "Hubungi kami"] },
+        { title: "Legal", links: ["Kebijakan privasi", "Syarat layanan", "Penanganan data kesehatan"] }
+      ],
+      footerDisclaimer: isCal
+        ? "Estimasi kalori di situs ini dihitung dari analisis foto dan bersifat perkiraan, bukan pengukuran. Bukan saran medis, bukan target kalori personal. Untuk keputusan kesehatan, konsultasikan dengan tenaga kesehatan."
+        : "Penjelasan di situs ini bersifat edukasi dan bukan diagnosis. Rentang rujukan berbeda antar laboratorium. Untuk keputusan kesehatan, konsultasikan dengan dokter.",
+      isUpload: s.step === "upload", isLoading: s.step === "loading", isResult: s.step === "result",
+      frameWidth: mob ? "402px" : "100%",
+      headerH: mob ? "56px" : "68px",
+      headerPad: mob ? "12px" : "22px",
+      logoSize: mob ? "17px" : "21px",
+      h1Size: mob ? "30px" : "40px",
+      brandName: isCal ? "Scan Kalori" : "Panduan MCU",
+      eyebrow: isCal ? "Scan kalori" : "Panduan MCU",
+      pageTitle: isCal ? "Foto makanan, lihat estimasi kalorinya" : "Upload hasil MCU, lihat penjelasannya",
+      pageSub: isCal
+        ? "Hasil analisisnya terbuka penuh, tanpa akun. Yang butuh akun adalah rencana di atasnya: meal plan, diet plan, dan food analytics."
+        : "Penjelasan tiap penanda terbuka penuh, tanpa akun. Yang butuh akun adalah rencana lanjutannya dan perbandingan antar periode.",
+      framing: isCal
+        ? "Angka di halaman ini estimasi dari satu foto, bukan pengukuran akurat. Bukan saran medis dan bukan target kalori."
+        : "Halaman ini alat bantu memahami hasil lab, bukan diagnosis. Rentang rujukan berbeda antar laboratorium. Untuk keputusan kesehatan, konsultasikan dengan dokter.",
+      uploadTitle: isCal ? "Ambil atau pilih foto makanan" : "Upload hasil MCU kamu",
+      uploadHint: isCal ? "Satu piring per foto, dari atas, cahaya cukup" : "Foto atau PDF lembar hasil laboratorium",
+      uploadCta: isCal ? "Analisis foto" : "Analisis hasil",
+      loadingTitle: isCal ? "Menganalisis foto" : "Membaca hasil lab",
+      loadingBody: isCal ? "Mengenali jenis makanan dan memperkirakan porsinya. Biasanya beberapa detik." : "Mencocokkan penanda dan rentang rujukannya. Biasanya beberapa detik.",
+      resultTitle: isCal ? "Hasil analisis" : "Hasil analisis",
+      steps: (isCal
+        ? [["01", "Ambil satu foto", "Seluruh porsi dari atas, satu piring per foto."],
+           ["02", "Sistem mengenali makanannya", "Model AI menebak jenis dan porsi, lalu dicocokkan ke basis data gizi."],
+           ["03", "Baca sebagai kisaran", "Berguna untuk melihat pola, bukan menghitung sampai satuan."]]
+        : [["01", "Upload lembar hasil", "Foto atau PDF dari laboratorium mana pun."],
+           ["02", "Penanda dikenali", "Sistem mencocokkan nama penanda, nilai, dan rentang rujukannya."],
+           ["03", "Baca penjelasannya", "Tiap penanda dijelaskan dengan bahasa biasa, tanpa kesimpulan diagnosis."]]
+      ).map(x => ({ num: x[0], title: x[1], body: x[2] })),
+      dish: DISHES[s.dishIdx],
+      macros: DISHES[s.dishIdx].macros.map((m, i) => ({
+        label: m[0], value: m[1], pct: m[2],
+        color: i === 0 ? "#D62828" : i === 1 ? "#141414" : "#A8A29C"
+      })),
+      micros: DISHES[s.dishIdx].micros.concat(["Estimasi dari foto"]),
+      noPhoto: !s.photoUrl, hasPhoto: !!s.photoUrl,
+      photoBg: s.photoUrl && s.photoUrl !== "sample" ? "url(" + s.photoUrl + ")" : "none",
+      photoName: s.photoName,
+      isSample: s.photoUrl === "sample",
+      sampleSlotHint: isCal ? "Foto contoh — tarik foto makanan ke sini" : "Contoh lembar hasil lab",
+      acceptTypes: isCal ? "image/*" : "image/*,application/pdf",
+      analyzeDisabled: !s.photoUrl,
+      analyzeStyle: "border:0;border-radius:10px;height:52px;font-family:inherit;font-size:15px;font-weight:bold;"
+        + (s.photoUrl ? "background:#D62828;color:#FFFFFF;cursor:pointer" : "background:#E4E0DB;color:#A8A29C;cursor:not-allowed"),
+      sampleLabel: isCal ? "Atau pakai foto contoh" : "Atau pakai hasil lab contoh",
+      loadingPhase: PHASES[Math.min(s.phase, PHASES.length - 1)],
+      againLabel: isCal ? "Scan makanan lain" : "Analisis hasil lain",
+      scanCountLabel: s.scanCount === 1 ? "1 analisis di sesi ini" : s.scanCount + " analisis di sesi ini",
+      pickFile, useSample, clearFile, scanAgain,
+      markers,
+      nextTitle: isAnon ? "Yang butuh akun" : "Lanjutan untuk kamu",
+      nextSub: isAnon
+        ? "Tiga hal berikut disusun dari data yang tersimpan di akun, jadi tidak bisa dijalankan untuk pengunjung anonim."
+        : "Tiga hal berikut sudah aktif di akun kamu dan memakai data yang tersimpan.",
+      deeper,
+      ctaTitle: isCal ? "Satu hasil scan tidak cukup untuk menyusun rencana" : "Satu lembar hasil tidak cukup untuk menyusun rencana",
+      ctaSub: isCal
+        ? "Meal plan, diet plan, dan food analytics dihitung dari riwayat, bukan dari satu foto. Riwayat itu butuh tempat menyimpan, dan tempatnya ada di akun 20FIT."
+        : "Rencana makan dan perbandingan antar periode dihitung dari riwayat, bukan satu lembar hasil. Riwayat itu tersimpan di akun 20FIT.",
+      ctaPoints: [
+        "Riwayat tersimpan dan bisa dibuka kapan saja",
+        "Terhubung dengan data 20FIT lainnya di satu akun",
+        "Tanpa batas di semua fitur, di web maupun aplikasi"
+      ],
+      memberNote: isCal
+        ? "Scan ini masuk ke riwayat kamu. Meal plan, diet plan, dan food analytics ikut diperbarui memakai data terbaru."
+        : "Hasil ini masuk ke riwayat kesehatan kamu dan dibandingkan dengan hasil periode sebelumnya.",
+      stepLabel: s.step === "upload" ? "State 1 dari 3 — sebelum analisis" : s.step === "loading" ? "State 2 dari 3 — sedang menganalisis" : "State 3 dari 3 — hasil + gating",
+      tabCal: seg(isCal), tabMcu: seg(isMcu),
+      tabAnon: seg(isAnon), tabMember: seg(isMember),
+      tabMob: seg(mob), tabDesk: seg(!mob),
+      setCal: () => this.set({ domain: "cal" }), setMcu: () => this.set({ domain: "mcu" }),
+      setAnon: () => this.set({ mode: "anon" }), setMember: () => this.set({ mode: "member" }),
+      setMobile: () => this.set({ device: "mobile" }), setDesktop: () => this.set({ device: "desktop" }),
+      startAnalyze,
+      reset: () => {
+        this._revoke(); clearTimeout(this._t); clearInterval(this._p);
+        this.set({ step: "upload", photoUrl: null, photoName: "", scanCount: 0, dishIdx: 0 });
+      },
+      notes: [
+        "MCU sekarang punya form upload, mengikuti instruksi terbaru. Brief Tahap 3.3 sebelumnya melarang ini — konfirmasi mana yang berlaku.",
+        "Upload file kesehatan dari pengunjung anonim butuh consent dan kebijakan retensi. [[BUTUH DATA]] sebelum halaman ini live.",
+        "Kuota scan: masih perlu diputuskan apakah pengunjung anonim dibatasi, karena sekarang hasil selalu terbuka penuh.",
+        "Tombol \"Download aplikasi\" mengarah ke mana — App Store, Play Store, atau satu halaman perantara?"
+      ]
+    };
+  }
+}
+
+</script>
+</body>
+</html>

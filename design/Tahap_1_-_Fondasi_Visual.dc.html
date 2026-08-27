@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+<link href="https://fonts.googleapis.com/css2?family=Anton&display=swap" rel="stylesheet" />
+<style>
+  body { margin: 0; background: #EFEDEA; font-family: Arial, Helvetica, sans-serif; color: #141414; -webkit-font-smoothing: antialiased; }
+  * { box-sizing: border-box; }
+  a { color: #D62828; text-decoration: none; }
+  a:hover { color: #A81F1F; }
+</style>
+</helmet>
+
+<div style="max-width:1240px;margin:0 auto;padding:40px 24px 96px;display:flex;flex-direction:column;gap:56px">
+
+  <div style="display:flex;flex-direction:column;gap:10px;border-bottom:2px solid #141414;padding-bottom:20px">
+    <span style="font-family:Anton,sans-serif;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#D62828">Tahap 1</span>
+    <h1 style="font-family:Anton,sans-serif;font-size:clamp(34px,5vw,56px);line-height:1;letter-spacing:.005em;text-transform:uppercase;margin:0">Fondasi visual</h1>
+    <p style="margin:0;font-size:15px;line-height:1.55;color:#4A4A4A;max-width:62ch;text-wrap:pretty">Header, app switcher, sistem warna sub-brand, dan status login. Semua komponen di halaman ini dipakai identik di keempat domain, jadi bentuknya perlu disetujui sebelum halaman dibangun. Mobile dulu, desktop menyusul di bawahnya.</p>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:22px">
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <span style="font-family:Anton,sans-serif;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#8A8A8A">1.1 &mdash; Header mobile</span>
+      <h2 style="font-family:Anton,sans-serif;font-size:28px;line-height:1.1;text-transform:uppercase;margin:0">Tinggi 56px, hitam penuh</h2>
+      <p style="margin:0;font-size:14px;line-height:1.55;color:#4A4A4A;max-width:60ch;text-wrap:pretty">Logo selalu di kiri dan selalu menuju my.20fit.id. Nama sub-brand di sebelahnya dengan garis aksen. Kanan: tombol app switcher, lalu status login.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px">
+
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <span style="font-size:12px;font-weight:bold;letter-spacing:.06em;text-transform:uppercase;color:#8A8A8A">Anonim</span>
+        <div style="width:100%;max-width:390px;border:1px solid #DAD6D1;border-radius:14px;overflow:hidden;background:#FFFFFF">
+          <div style="background:#141414;height:56px;display:flex;align-items:center;gap:10px;padding:0 12px">
+            <span style="font-family:Anton,sans-serif;font-size:17px;letter-spacing:.02em;color:#FFFFFF">20FIT</span>
+            <span style="display:flex;flex-direction:column;gap:3px">
+              <span style="font-size:11px;font-weight:bold;letter-spacing:.04em;text-transform:uppercase;color:#FFFFFF">Scan Kalori</span>
+              <span style="height:2px;width:100%;background:#D62828;display:block"></span>
+            </span>
+            <span style="flex:1"></span>
+            <button style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:transparent;border:0;cursor:pointer">
+              <span style="display:grid;grid-template-columns:repeat(3,4px);gap:3px">
+                <i style="width:4px;height:4px;background:#FFFFFF;display:block"></i><i style="width:4px;height:4px;background:#FFFFFF;display:block"></i><i style="width:4px;height:4px;background:#FFFFFF;display:block"></i>
+                <i style="width:4px;height:4px;background:#FFFFFF;display:block"></i><i style="width:4px;height:4px;background:#FFFFFF;display:block"></i><i style="width:4px;height:4px;background:#FFFFFF;display:block"></i>
+                <i style="width:4px;height:4px;background:#FFFFFF;display:block"></i><i style="width:4px;height:4px;background:#FFFFFF;display:block"></i><i style="width:4px;height:4px;background:#FFFFFF;display:block"></i>
+              </span>
+            </button>
+            <button style="background:#D62828;color:#FFFFFF;border:0;border-radius:8px;height:44px;padding:0 16px;font-family:inherit;font-size:14px;font-weight:bold;cursor:pointer">Masuk</button>
+          </div>
+          <div style="height:120px;background:#FFFFFF;display:flex;align-items:center;justify-content:center">
+            <span style="font-size:12px;color:#B4AFAA">isi halaman</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:10px">
+        <span style="font-size:12px;font-weight:bold;letter-spacing:.06em;text-transform:uppercase;color:#8A8A8A">Member (sudah login)</span>
+        <div style="width:100%;max-width:390px;border:1px solid #DAD6D1;border-radius:14px;overflow:hidden;background:#FFFFFF">
+          <div style="background:#141414;height:56px;display:flex;align-items:center;gap:10px;padding:0 12px">
+            <span style="font-family:Anton,sans-serif;font-size:17px;letter-spacing:.02em;color:#FFFFFF">20FIT</span>
+            <span style="display:flex;flex-direction:column;gap:3px">
+              <span style="font-size:11px;font-weight:bold;letter-spacing:.04em;text-transform:uppercase;color:#FFFFFF">Scan Kalori</span>
+              <span style="height:2px;width:100%;background:#D62828;display:block"></span>
+            </span>
+            <span style="flex:1"></span>
+            <button style="width:44px;height:44px;display:flex;align-items:center;justify-content:center;background:transparent;border:0;cursor:pointer">
+              <span style="display:grid;grid-template-columns:repeat(3,4px);gap:3px">
+                <i style="width:4px;height:4px;background:#FFFFFF;display:block"></i><i style="width:4px;height:4px;background:#FFFFFF;display:block"></i><i style="width:4px;height:4px;background:#FFFFFF;display:block"></i>
+                <i style="width:4px;height:4px;background:#FFFFFF;display:block"></i><i style="width:4px;height:4px;background:#FFFFFF;display:block"></i><i style="width:4px;height:4px;background:#FFFFFF;display:block"></i>
+                <i style="width:4px;height:4px;background:#FFFFFF;display:block"></i><i style="width:4px;height:4px;background:#FFFFFF;display:block"></i><i style="width:4px;height:4px;background:#FFFFFF;display:block"></i>
+              </span>
+            </button>
+            <button style="display:flex;align-items:center;gap:7px;background:#242424;border:1px solid #3A3A3A;border-radius:999px;height:44px;padding:0 12px 0 6px;cursor:pointer;font-family:inherit">
+              <span style="width:32px;height:32px;border-radius:50%;background:#D62828;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:bold">RA</span>
+              <span style="font-size:13px;color:#FFFFFF">Rangga</span>
+            </button>
+          </div>
+          <div style="height:120px;background:#FFFFFF;display:flex;align-items:center;justify-content:center">
+            <span style="font-size:12px;color:#B4AFAA">isi halaman &mdash; tanpa gate, tanpa ajakan daftar</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:22px">
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <span style="font-family:Anton,sans-serif;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#8A8A8A">1.1b &mdash; App switcher mobile</span>
+      <h2 style="font-family:Anton,sans-serif;font-size:28px;line-height:1.1;text-transform:uppercase;margin:0">Bottom sheet, grid 2&times;2</h2>
+      <p style="margin:0;font-size:14px;line-height:1.55;color:#4A4A4A;max-width:60ch;text-wrap:pretty">Di HP, dropdown dari header terlalu sempit untuk empat tujuan. Sheet dari bawah lebih mudah dijangkau jempol dan memberi ruang untuk nama sub-brand yang panjang.</p>
+    </div>
+
+    <div style="width:100%;max-width:390px;border:1px solid #DAD6D1;border-radius:14px;overflow:hidden;background:#141414;position:relative">
+      <div style="height:56px;display:flex;align-items:center;gap:10px;padding:0 12px;opacity:.4">
+        <span style="font-family:Anton,sans-serif;font-size:17px;color:#FFFFFF">20FIT</span>
+        <span style="font-size:11px;font-weight:bold;text-transform:uppercase;color:#FFFFFF">Scan Kalori</span>
+      </div>
+      <div style="height:60px;background:rgba(20,20,20,.55)"></div>
+      <div style="background:#FFFFFF;border-radius:18px 18px 0 0;padding:16px 14px 22px;display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;align-items:center;justify-content:space-between">
+          <span style="font-family:Anton,sans-serif;font-size:16px;text-transform:uppercase;letter-spacing:.03em">Pindah aplikasi</span>
+          <span style="width:32px;height:32px;border-radius:50%;background:#F2EFEC;display:flex;align-items:center;justify-content:center;font-size:15px;color:#6A6A6A">&times;</span>
+        </div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px">
+          <sc-for list="{{ apps }}" as="app" hint-placeholder-count="4">
+            <div style="border:1px solid #E4E0DB;border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px;min-height:112px;background:{{ app.tint }}">
+              <span style="width:36px;height:36px;border-radius:10px;background:{{ app.accent }};color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-family:Anton,sans-serif;font-size:14px">{{ app.initial }}</span>
+              <span style="font-size:14px;font-weight:bold;line-height:1.25;text-wrap:pretty">{{ app.name }}</span>
+              <span style="font-size:11px;color:#6A6A6A;margin-top:auto">{{ app.host }}</span>
+            </div>
+          </sc-for>
+        </div>
+        <span style="font-size:12px;color:#8A8A8A;text-align:center">Halaman aktif ditandai garis aksen di kartunya.</span>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:22px">
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <span style="font-family:Anton,sans-serif;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#8A8A8A">1.1c &mdash; Header desktop</span>
+      <h2 style="font-family:Anton,sans-serif;font-size:28px;line-height:1.1;text-transform:uppercase;margin:0">Tinggi 68px, panel dropdown</h2>
+      <p style="margin:0;font-size:14px;line-height:1.55;color:#4A4A4A;max-width:60ch;text-wrap:pretty">Struktur sama dengan mobile. App switcher jadi panel 320px dari kanan tombolnya; status member jadi dropdown akun.</p>
+    </div>
+
+    <div style="border:1px solid #DAD6D1;border-radius:14px;overflow:hidden;background:#FFFFFF">
+      <div style="background:#141414;height:68px;display:flex;align-items:center;gap:16px;padding:0 22px">
+        <span style="font-family:Anton,sans-serif;font-size:21px;letter-spacing:.02em;color:#FFFFFF">20FIT</span>
+        <span style="width:1px;height:26px;background:#3A3A3A"></span>
+        <span style="display:flex;flex-direction:column;gap:4px">
+          <span style="font-size:12px;font-weight:bold;letter-spacing:.05em;text-transform:uppercase;color:#FFFFFF">Scan Kalori</span>
+          <span style="height:2px;width:100%;background:#D62828;display:block"></span>
+        </span>
+        <span style="flex:1"></span>
+        <button style="display:flex;align-items:center;gap:9px;background:#242424;border:1px solid #3A3A3A;border-radius:10px;height:44px;padding:0 14px;cursor:pointer;font-family:inherit;color:#FFFFFF;font-size:13px">
+          <span style="display:grid;grid-template-columns:repeat(3,4px);gap:3px">
+            <i style="width:4px;height:4px;background:#FFFFFF;display:block"></i><i style="width:4px;height:4px;background:#FFFFFF;display:block"></i><i style="width:4px;height:4px;background:#FFFFFF;display:block"></i>
+            <i style="width:4px;height:4px;background:#FFFFFF;display:block"></i><i style="width:4px;height:4px;background:#FFFFFF;display:block"></i><i style="width:4px;height:4px;background:#FFFFFF;display:block"></i>
+            <i style="width:4px;height:4px;background:#FFFFFF;display:block"></i><i style="width:4px;height:4px;background:#FFFFFF;display:block"></i><i style="width:4px;height:4px;background:#FFFFFF;display:block"></i>
+          </span>
+          <span>Aplikasi</span>
+        </button>
+        <button style="background:#D62828;color:#FFFFFF;border:0;border-radius:9px;height:44px;padding:0 20px;font-family:inherit;font-size:14px;font-weight:bold;cursor:pointer">Masuk</button>
+      </div>
+      <div style="display:flex;gap:20px;padding:20px 22px 26px;background:#FFFFFF;align-items:flex-start">
+        <div style="flex:1;height:150px;background:#F6F4F2;border-radius:12px;display:flex;align-items:center;justify-content:center">
+          <span style="font-size:12px;color:#B4AFAA">isi halaman</span>
+        </div>
+        <div style="width:320px;flex:none;border:1px solid #E4E0DB;border-radius:14px;background:#FFFFFF;box-shadow:0 18px 40px -22px rgba(20,20,20,.45);padding:8px">
+          <sc-for list="{{ apps }}" as="app" hint-placeholder-count="4">
+            <div style="display:flex;align-items:center;gap:12px;padding:11px;border-radius:10px;background:{{ app.rowBg }}">
+              <span style="width:34px;height:34px;border-radius:9px;background:{{ app.accent }};color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-family:Anton,sans-serif;font-size:13px;flex:none">{{ app.initial }}</span>
+              <span style="display:flex;flex-direction:column;gap:2px">
+                <span style="font-size:13px;font-weight:bold">{{ app.name }}</span>
+                <span style="font-size:11px;color:#7A7A7A">{{ app.host }}</span>
+              </span>
+            </div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+
+    <div style="border:1px solid #DAD6D1;border-radius:14px;overflow:hidden;background:#FFFFFF">
+      <div style="background:#141414;height:68px;display:flex;align-items:center;gap:16px;padding:0 22px">
+        <span style="font-family:Anton,sans-serif;font-size:21px;letter-spacing:.02em;color:#FFFFFF">20FIT</span>
+        <span style="width:1px;height:26px;background:#3A3A3A"></span>
+        <span style="display:flex;flex-direction:column;gap:4px">
+          <span style="font-size:12px;font-weight:bold;letter-spacing:.05em;text-transform:uppercase;color:#FFFFFF">Menu Diet</span>
+          <span style="height:2px;width:100%;background:#2F7D5B;display:block"></span>
+        </span>
+        <span style="flex:1"></span>
+        <button style="display:flex;align-items:center;gap:9px;background:#242424;border:1px solid #3A3A3A;border-radius:10px;height:44px;padding:0 14px;cursor:pointer;font-family:inherit;color:#FFFFFF;font-size:13px">
+          <span style="display:grid;grid-template-columns:repeat(3,4px);gap:3px">
+            <i style="width:4px;height:4px;background:#FFFFFF;display:block"></i><i style="width:4px;height:4px;background:#FFFFFF;display:block"></i><i style="width:4px;height:4px;background:#FFFFFF;display:block"></i>
+            <i style="width:4px;height:4px;background:#FFFFFF;display:block"></i><i style="width:4px;height:4px;background:#FFFFFF;display:block"></i><i style="width:4px;height:4px;background:#FFFFFF;display:block"></i>
+            <i style="width:4px;height:4px;background:#FFFFFF;display:block"></i><i style="width:4px;height:4px;background:#FFFFFF;display:block"></i><i style="width:4px;height:4px;background:#FFFFFF;display:block"></i>
+          </span>
+          <span>Aplikasi</span>
+        </button>
+        <button style="display:flex;align-items:center;gap:9px;background:#242424;border:1px solid #3A3A3A;border-radius:999px;height:44px;padding:0 14px 0 6px;cursor:pointer;font-family:inherit">
+          <span style="width:32px;height:32px;border-radius:50%;background:#D62828;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:bold">RA</span>
+          <span style="font-size:13px;color:#FFFFFF">Rangga Adiputra</span>
+          <span style="font-size:10px;color:#9A9A9A">&#9662;</span>
+        </button>
+      </div>
+      <div style="display:flex;gap:20px;padding:20px 22px 26px;justify-content:flex-end;align-items:flex-start">
+        <div style="flex:1;height:150px;background:#F6F4F2;border-radius:12px;display:flex;align-items:center;justify-content:center">
+          <span style="font-size:12px;color:#B4AFAA">isi halaman &mdash; mode member</span>
+        </div>
+        <div style="width:250px;flex:none;border:1px solid #E4E0DB;border-radius:14px;background:#FFFFFF;box-shadow:0 18px 40px -22px rgba(20,20,20,.45);padding:8px">
+          <div style="padding:11px;border-bottom:1px solid #F0EDEA;display:flex;flex-direction:column;gap:2px">
+            <span style="font-size:13px;font-weight:bold">Rangga Adiputra</span>
+            <span style="font-size:11px;color:#7A7A7A">Member 20FIT</span>
+          </div>
+          <sc-for list="{{ accountMenu }}" as="row" hint-placeholder-count="4">
+            <div style="padding:11px;border-radius:10px;font-size:13px;color:{{ row.color }}">{{ row.label }}</div>
+          </sc-for>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:22px">
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <span style="font-family:Anton,sans-serif;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#8A8A8A">1.2 &mdash; Sistem warna sub-brand</span>
+      <h2 style="font-family:Anton,sans-serif;font-size:28px;line-height:1.1;text-transform:uppercase;margin:0">Merah-hitam dominan, aksen setipis mungkin</h2>
+      <p style="margin:0;font-size:14px;line-height:1.55;color:#4A4A4A;max-width:64ch;text-wrap:pretty">Aksen hanya muncul di empat tempat: garis bawah nama sub-brand, ikon app switcher, tint latar satu blok, dan indikator halaman aktif. Tombol utama tetap merah 20FIT di ketiga domain, jadi tindakan penting selalu terlihat sama. Ketiga aksen dipilih pada tingkat kegelapan yang sama dengan merah utama supaya satu keluarga.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px">
+      <sc-for list="{{ apps3 }}" as="b" hint-placeholder-count="3">
+        <div style="border:1px solid #DAD6D1;border-radius:14px;background:#FFFFFF;overflow:hidden;display:flex;flex-direction:column">
+          <div style="background:#141414;padding:14px 16px;display:flex;flex-direction:column;gap:4px">
+            <span style="font-size:11px;font-weight:bold;letter-spacing:.05em;text-transform:uppercase;color:#FFFFFF">{{ b.name }}</span>
+            <span style="height:2px;width:56px;background:{{ b.accent }};display:block"></span>
+          </div>
+          <div style="padding:16px;display:flex;flex-direction:column;gap:12px">
+            <div style="display:flex;gap:8px">
+              <span style="flex:1;height:52px;border-radius:8px;background:{{ b.accent }};display:flex;align-items:flex-end;padding:6px;font-size:10px;color:#FFFFFF">{{ b.accent }}</span>
+              <span style="flex:1;height:52px;border-radius:8px;background:{{ b.tint }};display:flex;align-items:flex-end;padding:6px;font-size:10px;color:#4A4A4A">{{ b.tint }}</span>
+            </div>
+            <div style="background:{{ b.tint }};border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:6px">
+              <span style="font-size:12px;font-weight:bold;color:{{ b.accent }}">{{ b.tagline }}</span>
+              <span style="font-size:12px;line-height:1.5;color:#4A4A4A;text-wrap:pretty">{{ b.usage }}</span>
+            </div>
+            <button style="background:#D62828;color:#FFFFFF;border:0;border-radius:8px;height:44px;font-family:inherit;font-size:14px;font-weight:bold;cursor:pointer">Tombol utama tetap merah</button>
+          </div>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="display:flex;flex-direction:column;gap:22px">
+    <div style="display:flex;flex-direction:column;gap:6px">
+      <span style="font-family:Anton,sans-serif;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:#8A8A8A">1.3 &mdash; Status login</span>
+      <h2 style="font-family:Anton,sans-serif;font-size:28px;line-height:1.1;text-transform:uppercase;margin:0">Dua bentuk, satu posisi</h2>
+      <p style="margin:0;font-size:14px;line-height:1.55;color:#4A4A4A;max-width:60ch;text-wrap:pretty">Keduanya menempati slot yang sama di kanan header, dengan tinggi 44px, supaya tidak ada pergeseran layout saat status terbaca. Status ditentukan di server sebelum halaman dikirim, jadi tidak ada kedipan &ldquo;belum login&rdquo;.</p>
+    </div>
+
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px">
+      <sc-for list="{{ loginStates }}" as="ls" hint-placeholder-count="2">
+        <div style="border:1px solid #DAD6D1;border-radius:14px;background:#FFFFFF;padding:18px;display:flex;flex-direction:column;gap:12px">
+          <span style="font-size:12px;font-weight:bold;letter-spacing:.06em;text-transform:uppercase;color:#8A8A8A">{{ ls.label }}</span>
+          <div style="background:#141414;border-radius:10px;padding:12px;display:flex;justify-content:flex-end">
+            <sc-if value="{{ ls.isAnon }}" hint-placeholder-val="{{ true }}">
+              <button style="background:#D62828;color:#FFFFFF;border:0;border-radius:8px;height:44px;padding:0 20px;font-family:inherit;font-size:14px;font-weight:bold;cursor:pointer">Masuk</button>
+            </sc-if>
+            <sc-if value="{{ ls.isMember }}" hint-placeholder-val="{{ false }}">
+              <button style="display:flex;align-items:center;gap:9px;background:#242424;border:1px solid #3A3A3A;border-radius:999px;height:44px;padding:0 14px 0 6px;cursor:pointer;font-family:inherit">
+                <span style="width:32px;height:32px;border-radius:50%;background:#D62828;color:#FFFFFF;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:bold">RA</span>
+                <span style="font-size:13px;color:#FFFFFF">Rangga</span>
+                <span style="font-size:10px;color:#9A9A9A">&#9662;</span>
+              </button>
+            </sc-if>
+          </div>
+          <span style="font-size:13px;line-height:1.55;color:#4A4A4A;text-wrap:pretty">{{ ls.note }}</span>
+        </div>
+      </sc-for>
+    </div>
+  </div>
+
+  <div style="border:2px solid #141414;border-radius:14px;background:#FDECEC;padding:22px;display:flex;flex-direction:column;gap:12px">
+    <span style="font-family:Anton,sans-serif;font-size:18px;text-transform:uppercase;letter-spacing:.03em">Keputusan yang saya tunggu sebelum Tahap 2</span>
+    <sc-for list="{{ decisions }}" as="d" hint-placeholder-count="4">
+      <div style="display:flex;gap:10px;align-items:flex-start">
+        <span style="width:6px;height:6px;border-radius:50%;background:#D62828;margin-top:7px;flex:none"></span>
+        <span style="font-size:14px;line-height:1.55;color:#2A2A2A;text-wrap:pretty">{{ d }}</span>
+      </div>
+    </sc-for>
+  </div>
+
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  renderVals() {
+    const apps = [
+      { name: "Scan Kalori", host: "calories.20fit.id", initial: "K", accent: "#D62828", tint: "#FDECEC", rowBg: "#FDECEC" },
+      { name: "Menu Diet", host: "menu.20fit.id", initial: "M", accent: "#2F7D5B", tint: "#E9F3EE", rowBg: "#FFFFFF" },
+      { name: "Panduan MCU", host: "medicalcheckup.20fit.id", initial: "C", accent: "#2D4E8F", tint: "#EAEEF7", rowBg: "#FFFFFF" },
+      { name: "Buka My 20FIT", host: "my.20fit.id", initial: "20", accent: "#141414", tint: "#F4F2F0", rowBg: "#FFFFFF" }
+    ];
+    return {
+      apps,
+      apps3: [
+        { ...apps[0], tagline: "Merah utama 20FIT", usage: "Sub-domain scan kalori memakai merah induk. Ini pintu masuk paling ramai, jadi warnanya sengaja tidak dibedakan." },
+        { ...apps[1], tagline: "Hijau tua", usage: "Dipakai di garis sub-brand, tag kategori menu, dan link resep. Tidak dipakai untuk tombol." },
+        { ...apps[2], tagline: "Biru tua", usage: "Dipakai di garis sub-brand, penanda blok data sampel, dan kotak disclaimer." }
+      ],
+      accountMenu: [
+        { label: "Akun saya", color: "#2A2A2A" },
+        { label: "Riwayat scan", color: "#2A2A2A" },
+        { label: "Menu tersimpan", color: "#2A2A2A" },
+        { label: "Keluar", color: "#D62828" }
+      ],
+      loginStates: [
+        { label: "Anonim", isAnon: true, isMember: false, note: "Tombol \"Masuk\" membawa parameter return_to, jadi setelah login orang kembali ke halaman ini, bukan ke dashboard." },
+        { label: "Member", isAnon: false, isMember: true, note: "Nama dipendekkan jadi nama depan di HP. Tidak ada satu pun ajakan daftar yang muncul dalam mode ini." }
+      ],
+      decisions: [
+        "Aksen hijau tua dan biru tua untuk Menu Diet dan Panduan MCU: setuju, atau mau warna lain?",
+        "Scan Kalori memakai merah induk tanpa aksen sendiri. Kalau mau dibedakan, saya perlu warna keempat.",
+        "App switcher mobile sebagai bottom sheet: setuju, atau lebih suka dropdown dari header seperti desktop?",
+        "Nama tampilan member: nama depan saja di HP, nama lengkap di desktop. Perlu foto profil, atau cukup inisial?",
+        "Logo 20FIT: saya pakai teks Anton sebagai penampung. Kirim file logo aslinya kalau ada."
+      ]
+    };
+  }
+}
+
+</script>
+</body>
+</html>
