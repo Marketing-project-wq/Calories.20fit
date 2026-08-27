@@ -42,11 +42,7 @@ async function getSession() {
 function fileToBase64(file: File): Promise<string> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-    reader.onload = () => {
-      const result = reader.result as string;
-      // Strip the data:image/...;base64, prefix — backend expects raw base64
-      resolve(result.split(",")[1]);
-    };
+    reader.onload = () => resolve(reader.result as string); // full data URL: data:image/jpeg;base64,...
     reader.onerror = reject;
     reader.readAsDataURL(file);
   });
