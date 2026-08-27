@@ -10,6 +10,10 @@ export interface ScanResult {
   fat: number;
   fiber: number;
   total_grams: number;
+  health_score: number;
+  satiety_score: number;
+  description: string;
+  overall: string;
   image_url: string;
   created_at: string;
   items: ScanItem[];
@@ -161,12 +165,16 @@ function normalizeResult(data: any): ScanResult {
   return {
     id: data.id ?? "",
     food_name: result.dish_name ?? result.name ?? items.map((i: any) => i.name).join(", ") ?? "Makanan",
-    calories: Math.round(totals.calories),
-    protein: Math.round(totals.protein * 10) / 10,
-    carbs: Math.round(totals.carbs * 10) / 10,
-    fat: Math.round(totals.fat * 10) / 10,
-    fiber: Math.round(totals.fiber * 10) / 10,
+    calories: Math.round(result.total_kcal ?? totals.calories),
+    protein: Math.round((result.protein_g ?? totals.protein) * 10) / 10,
+    carbs: Math.round((result.carbs_g ?? totals.carbs) * 10) / 10,
+    fat: Math.round((result.fat_g ?? totals.fat) * 10) / 10,
+    fiber: Math.round((result.fiber_g ?? totals.fiber) * 10) / 10,
     total_grams: Math.round(totals.grams),
+    health_score: Math.round(result.health_score ?? 0),
+    satiety_score: Math.round(result.satiety_score ?? 0),
+    description: result.description ?? "",
+    overall: result.overall ?? "",
     image_url: data.image_url ?? "",
     created_at: data.created_at ?? new Date().toISOString(),
     items: items.map((i: any) => ({

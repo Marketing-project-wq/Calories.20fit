@@ -159,19 +159,13 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
     );
 
     if (scanResult) {
-      // Calculate health meter (0-100): higher protein%, fiber, lower sat fat = better
-      const proteinPct = scanResult.calories > 0 ? (scanResult.protein * 4 / scanResult.calories) : 0;
-      const fiberScore = Math.min(scanResult.fiber / 5, 1); // 5g fiber = max score
-      const fatPct = scanResult.calories > 0 ? (scanResult.fat * 9 / scanResult.calories) : 0;
-      const healthScore = Math.round(Math.min(100, Math.max(0,
-        proteinPct * 40 + fiberScore * 30 + (1 - fatPct) * 30
-      )));
-      // Filling rate (0-100): protein + fiber are most satiating
-      const fillingRate = Math.round(Math.min(100, Math.max(0,
-        proteinPct * 50 + fiberScore * 50
-      )));
+      const healthScore = scanResult.health_score;
+      const fillingRate = scanResult.satiety_score;
       const healthColor = healthScore >= 70 ? "#2F7D5B" : healthScore >= 40 ? "#D97706" : RED;
       const fillingColor = fillingRate >= 70 ? "#2F7D5B" : fillingRate >= 40 ? "#D97706" : RED;
+      const proteinPct = scanResult.calories > 0 ? Math.round((scanResult.protein * 4 / scanResult.calories) * 100) : 0;
+      const carbsPct = scanResult.calories > 0 ? Math.round((scanResult.carbs * 4 / scanResult.calories) * 100) : 0;
+      const fatPct = scanResult.calories > 0 ? Math.round((scanResult.fat * 9 / scanResult.calories) * 100) : 0;
 
       return (
         <div style={{ background: "#FFFFFF", border: `1px solid ${BORDER}`, borderRadius: 16, overflow: "hidden" }}>
