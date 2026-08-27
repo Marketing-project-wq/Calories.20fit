@@ -99,27 +99,27 @@ export const ScanPage = () => {
   // Tool panel rendered inside hero on desktop
   const ToolPanel = () => {
     if (isLoading || authLoading) return (
-      <div style={{ background: "#1A1A1A", borderRadius: 16, padding: "32px 20px", display: "flex", flexDirection: "column", alignItems: "center", gap: 14, textAlign: "center" }}>
-        <span style={{ width: 40, height: 40, borderRadius: "50%", border: `3px solid #333`, borderTopColor: RED, display: "block", animation: "scSpin .9s linear infinite" }} />
-        <span style={{ fontSize: 14, fontWeight: "bold", color: "#FFFFFF" }}>Menganalisis foto…</span>
+      <div style={{ background: "#F4F2F0", border: `1px solid ${BORDER}`, borderRadius: 16, padding: "32px 20px", display: "flex", flexDirection: "column", alignItems: "center", gap: 14, textAlign: "center" }}>
+        <span style={{ width: 40, height: 40, borderRadius: "50%", border: `3px solid ${BORDER}`, borderTopColor: RED, display: "block", animation: "scSpin .9s linear infinite" }} />
+        <span style={{ fontSize: 14, fontWeight: "bold", color: BLACK }}>Menganalisis foto…</span>
         <span style={{ fontSize: 12, color: "#8A8A8A" }}>Biasanya beberapa detik.</span>
         <style>{`@keyframes scSpin { to { transform: rotate(360deg); } }`}</style>
       </div>
     );
 
     if (error) return (
-      <div style={{ background: "#1A1A1A", borderRadius: 16, padding: 20, display: "flex", flexDirection: "column", gap: 12 }}>
+      <div style={{ background: "#FFF5F5", border: `1.5px solid #FFCDD2`, borderRadius: 16, padding: 20, display: "flex", flexDirection: "column", gap: 12 }}>
         <span style={{ fontSize: 13, fontWeight: "bold", color: RED }}>Gagal menganalisis</span>
-        <span style={{ fontSize: 12, color: "#BDBDBD" }}>{error}</span>
+        <span style={{ fontSize: 12, color: "#4A4A4A" }}>{error}</span>
         <button onClick={() => setError(null)} style={{ background: RED, color: "#fff", border: "none", borderRadius: 8, padding: "8px 14px", fontFamily: "inherit", fontSize: 12, fontWeight: "bold", cursor: "pointer", alignSelf: "flex-start" }}>Coba lagi</button>
       </div>
     );
 
     if (scanResult) return (
-      <div style={{ background: "#1A1A1A", borderRadius: 16, overflow: "hidden" }}>
+      <div style={{ background: "#FFFFFF", border: `1px solid ${BORDER}`, borderRadius: 16, overflow: "hidden" }}>
         {photoPreview && <div style={{ height: 160, backgroundImage: `url(${photoPreview})`, backgroundSize: "cover", backgroundPosition: "center" }} />}
         <div style={{ padding: "16px 18px", display: "flex", flexDirection: "column", gap: 10 }}>
-          <span style={{ fontSize: 13, fontWeight: "bold", color: "#FFFFFF" }}>{scanResult.food_name}</span>
+          <span style={{ fontSize: 13, fontWeight: "bold", color: BLACK }}>{scanResult.food_name}</span>
           <div style={{ display: "flex", alignItems: "baseline", gap: 6 }}>
             <span style={{ fontFamily: "Anton, sans-serif", fontSize: 36, color: RED, lineHeight: 1 }}>{scanResult.calories}</span>
             <span style={{ fontSize: 12, color: "#8A8A8A" }}>kkal</span>
@@ -132,10 +132,10 @@ export const ScanPage = () => {
                 .map(m => (
                   <div key={m.label} style={{ display: "flex", flexDirection: "column", gap: 4 }}>
                     <div style={{ display: "flex", justifyContent: "space-between", fontSize: 12 }}>
-                      <span style={{ color: "#8A8A8A" }}>{m.label}</span>
-                      <span style={{ color: "#FFFFFF", fontWeight: "bold" }}>{m.value}</span>
+                      <span style={{ color: "#6A6A6A" }}>{m.label}</span>
+                      <span style={{ color: BLACK, fontWeight: "bold" }}>{m.value}</span>
                     </div>
-                    <div style={{ height: 5, borderRadius: 999, background: "#2A2A2A" }}><div style={{ height: 5, width: `${m.pct}%`, borderRadius: 999, background: RED }} /></div>
+                    <div style={{ height: 5, borderRadius: 999, background: BORDER }}><div style={{ height: 5, width: `${m.pct}%`, borderRadius: 999, background: RED }} /></div>
                   </div>
                 ))
               : ["Protein", "Karbo", "Lemak"].map(label => (
@@ -147,7 +147,7 @@ export const ScanPage = () => {
           </div>
           <div style={{ display: "flex", gap: 8, marginTop: 4 }}>
             <button onClick={scanAgain} style={{ flex: 1, background: RED, color: "#fff", border: "none", borderRadius: 8, padding: "9px 0", fontFamily: "inherit", fontSize: 12, fontWeight: "bold", cursor: "pointer" }}>Scan lagi</button>
-            <button onClick={resetAll} style={{ background: "transparent", border: `1px solid #3A3A3A`, color: "#8A8A8A", borderRadius: 8, padding: "9px 12px", fontFamily: "inherit", fontSize: 12, cursor: "pointer" }}>Reset</button>
+            <button onClick={resetAll} style={{ background: "transparent", border: `1px solid ${BORDER}`, color: "#6A6A6A", borderRadius: 8, padding: "9px 12px", fontFamily: "inherit", fontSize: 12, cursor: "pointer" }}>Reset</button>
           </div>
         </div>
       </div>
@@ -157,22 +157,22 @@ export const ScanPage = () => {
       <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
         {!photoFile
           ? <label onDragEnter={handleDrag} onDragLeave={handleDrag} onDragOver={handleDrag} onDrop={handleDrop}
-              style={{ border: `1.5px dashed ${dragActive ? RED : "#3A3A3A"}`, borderRadius: 14, background: dragActive ? "#2A1010" : "#1A1A1A", padding: "28px 18px", display: "flex", flexDirection: "column", alignItems: "center", gap: 10, textAlign: "center", cursor: "pointer" }}>
-              <span style={{ width: 40, height: 40, borderRadius: 10, background: "#2A2A2A", color: RED, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Anton, sans-serif", fontSize: 22 }}>+</span>
-              <span style={{ fontSize: 14, fontWeight: "bold", color: "#FFFFFF" }}>Pilih atau seret foto makanan</span>
-              <span style={{ fontSize: 12, color: "#6A6A6A" }}>JPG · PNG · WebP · maks 5MB</span>
+              style={{ border: `1.5px dashed ${dragActive ? RED : BORDER}`, borderRadius: 14, background: dragActive ? TINT : "#FAFAF9", padding: "28px 18px", display: "flex", flexDirection: "column", alignItems: "center", gap: 10, textAlign: "center", cursor: "pointer" }}>
+              <span style={{ width: 40, height: 40, borderRadius: 10, background: TINT, color: RED, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Anton, sans-serif", fontSize: 22 }}>+</span>
+              <span style={{ fontSize: 14, fontWeight: "bold", color: BLACK }}>Pilih atau seret foto makanan</span>
+              <span style={{ fontSize: 12, color: "#8A8A8A" }}>JPG · PNG · WebP · maks 5MB</span>
               <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" onChange={e => e.target.files?.[0] && handleFile(e.target.files[0])} style={{ display: "none" }} />
             </label>
-          : <div style={{ border: `1.5px solid #2A2A2A`, borderRadius: 14, overflow: "hidden", background: "#1A1A1A" }}>
+          : <div style={{ border: `1.5px solid ${BORDER}`, borderRadius: 14, overflow: "hidden", background: "#FFFFFF" }}>
               <div style={{ height: 160, backgroundImage: `url(${photoPreview!})`, backgroundSize: "cover", backgroundPosition: "center" }} />
               <div style={{ padding: "10px 14px", display: "flex", alignItems: "center", gap: 10 }}>
-                <span style={{ flex: 1, fontSize: 12, color: "#8A8A8A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{photoFile.name}</span>
+                <span style={{ flex: 1, fontSize: 12, color: "#6A6A6A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{photoFile.name}</span>
                 <button onClick={resetAll} style={{ background: "transparent", border: 0, color: RED, fontFamily: "inherit", fontSize: 12, fontWeight: "bold", textDecoration: "underline", cursor: "pointer" }}>Ganti</button>
               </div>
             </div>
         }
         <button onClick={startAnalyze} disabled={!photoFile}
-          style={{ border: 0, borderRadius: 10, height: 48, fontFamily: "inherit", fontSize: 14, fontWeight: "bold", cursor: photoFile ? "pointer" : "not-allowed", background: photoFile ? RED : "#2A2A2A", color: photoFile ? "#FFFFFF" : "#5A5A5A" }}>
+          style={{ border: 0, borderRadius: 10, height: 48, fontFamily: "inherit", fontSize: 14, fontWeight: "bold", cursor: photoFile ? "pointer" : "not-allowed", background: photoFile ? RED : BORDER, color: photoFile ? "#FFFFFF" : "#9A9A9A" }}>
           Analisis foto
         </button>
       </div>
@@ -183,17 +183,17 @@ export const ScanPage = () => {
     <div style={{ background: "#FFFFFF" }}>
 
       {/* ─── Hero + Tool (2-col desktop, stack mobile) ─── */}
-      <div style={{ background: BLACK }}>
+      <div style={{ background: "#FFFFFF", borderBottom: `1px solid ${BORDER}` }}>
         <div style={{ maxWidth: W, margin: "0 auto", padding: "32px 24px 36px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 32, alignItems: "start" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             <span style={{ alignSelf: "flex-start", fontSize: 11, fontWeight: "bold", letterSpacing: ".08em", textTransform: "uppercase", color: "#FFFFFF", background: RED, borderRadius: 999, padding: "5px 11px" }}>Scan kalori</span>
-            <h1 style={{ fontFamily: "Anton, sans-serif", fontSize: "clamp(26px,3.5vw,44px)", lineHeight: 1.02, textTransform: "uppercase", margin: 0, color: "#FFFFFF" }}>
+            <h1 style={{ fontFamily: "Anton, sans-serif", fontSize: "clamp(26px,3.5vw,44px)", lineHeight: 1.02, textTransform: "uppercase", margin: 0, color: BLACK }}>
               Foto makanan,<br />lihat estimasi kalorinya
             </h1>
-            <p style={{ margin: 0, fontSize: 14, lineHeight: 1.55, color: "#BDBDBD", maxWidth: "44ch" }}>
+            <p style={{ margin: 0, fontSize: 14, lineHeight: 1.55, color: "#4A4A4A", maxWidth: "44ch" }}>
               Hasil analisisnya terbuka penuh tanpa akun. Yang butuh akun adalah lapisan di atasnya: meal plan, diet plan, dan food analytics.
             </p>
-            <span style={{ fontSize: 12, color: "#6A6A6A" }}>Tanpa akun. Hasil terbuka penuh.</span>
+            <span style={{ fontSize: 12, color: "#8A8A8A" }}>Tanpa akun. Hasil terbuka penuh.</span>
           </div>
           <ToolPanel />
         </div>
