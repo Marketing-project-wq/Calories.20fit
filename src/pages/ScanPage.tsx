@@ -74,16 +74,16 @@ const STEPS = {
 
 const FEATURES = {
   id: [
-    { title: "Scan dari foto", body: "Upload foto makanan, sistem mengenali dan memperkirakan kalori, protein, karbo, dan lemak.", locked: false },
-    { title: "Riwayat dan tren", body: "Setiap scan tersimpan, lalu dibaca sebagai tren lintas hari.", locked: true },
-    { title: "Meal plan & diet plan", body: "Rencana makan dari target dan preferensi kamu, bukan template umum.", locked: true },
-    { title: "Resep dari makanan yang di-scan", body: "Bahan dan langkah diuraikan dari makanan yang kamu suka.", locked: true },
+    { icon: "📷", title: "Scan dari foto", body: "Upload foto makanan, sistem mengenali dan memperkirakan kalori, protein, karbo, dan lemak." },
+    { icon: "📊", title: "Riwayat dan tren", body: "Setiap scan tersimpan, lalu dibaca sebagai tren lintas hari." },
+    { icon: "🥗", title: "Meal plan & diet plan", body: "Rencana makan dari target dan preferensi kamu, bukan template umum." },
+    { icon: "👨‍🍳", title: "Resep dari makanan yang di-scan", body: "Bahan dan langkah diuraikan dari makanan yang kamu suka." },
   ],
   en: [
-    { title: "Scan from photo", body: "Upload a food photo, system identifies and estimates calories, protein, carbs, and fat.", locked: false },
-    { title: "History and trends", body: "Every scan is saved, then read as cross-day trends.", locked: true },
-    { title: "Meal plan & diet plan", body: "A meal plan built from your targets and preferences, not a generic template.", locked: true },
-    { title: "Recipes from scanned food", body: "Ingredients and steps are broken down from food you like.", locked: true },
+    { icon: "📷", title: "Scan from photo", body: "Upload a food photo, system identifies and estimates calories, protein, carbs, and fat." },
+    { icon: "📊", title: "History and trends", body: "Every scan is saved, then read as cross-day trends." },
+    { icon: "🥗", title: "Meal plan & diet plan", body: "A meal plan built from your targets and preferences, not a generic template." },
+    { icon: "👨‍🍳", title: "Recipes from scanned food", body: "Ingredients and steps are broken down from food you like." },
   ],
 };
 
@@ -446,12 +446,12 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
             <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 20, textTransform: "uppercase" }}>{tr.whatYouCan}</span>
             <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
               {features.map(f => (
-                <div key={f.title} style={{ border: `1px solid ${BORDER}`, borderRadius: 10, padding: "11px 13px", display: "flex", flexDirection: "column", gap: 4 }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                    <span style={{ fontSize: 13, fontWeight: "bold", flex: 1 }}>{f.title}</span>
-                    {f.locked && !isAuthenticated && <span style={{ fontSize: 9, fontWeight: "bold", textTransform: "uppercase", letterSpacing: ".06em", color: RED, background: TINT, borderRadius: 999, padding: "3px 7px" }}>{tr.featureNeedsAccount}</span>}
+                <div key={f.title} style={{ border: `1px solid ${BORDER}`, borderRadius: 10, padding: "11px 13px", display: "flex", gap: 12, alignItems: "flex-start" }}>
+                  <span style={{ fontSize: 20, flexShrink: 0 }}>{f.icon}</span>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
+                    <span style={{ fontSize: 13, fontWeight: "bold" }}>{f.title}</span>
+                    <span style={{ fontSize: 12, lineHeight: 1.5, color: "#6A6A6A" }}>{f.body}</span>
                   </div>
-                  <span style={{ fontSize: 12, lineHeight: 1.5, color: "#6A6A6A" }}>{f.body}</span>
                 </div>
               ))}
             </div>
