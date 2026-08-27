@@ -230,6 +230,18 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
               </div>
             </div>
 
+            {/* Analisa makanan */}
+            {(scanResult.overall || scanResult.description) && (
+              <div style={{ borderTop: `1px solid ${BORDER}`, paddingTop: 12 }}>
+                <span style={{ fontSize: 10, color: "#8A8A8A", textTransform: "uppercase", letterSpacing: ".06em", display: "block", marginBottom: 6 }}>
+                  {lang === "id" ? "Analisa" : "Analysis"}
+                </span>
+                <p style={{ fontSize: 12, lineHeight: 1.6, color: "#3A3A3A", margin: 0 }}>
+                  {scanResult.overall || scanResult.description}
+                </p>
+              </div>
+            )}
+
             {/* Per-item breakdown if multiple items */}
             {scanResult.items.length > 1 && (
               <div style={{ borderTop: `1px solid ${BORDER}`, paddingTop: 10 }}>
