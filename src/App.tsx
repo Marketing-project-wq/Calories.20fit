@@ -30,7 +30,7 @@ export function App() {
                 onClick={() => setPage(tab.key)}
                 style={{
                   padding: "12px 16px",
-                  fontFamily: "Anton, sans-serif",
+                  fontFamily: "Barlow Condensed, sans-serif",
                   fontSize: "13px",
                   letterSpacing: "0.08em",
                   textTransform: "uppercase",
@@ -54,7 +54,7 @@ export function App() {
                 onClick={() => setLang(l)}
                 style={{
                   padding: "4px 10px",
-                  fontFamily: "Anton, sans-serif",
+                  fontFamily: "Barlow Condensed, sans-serif",
                   fontSize: "11px",
                   letterSpacing: "0.06em",
                   textTransform: "uppercase",

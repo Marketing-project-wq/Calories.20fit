@@ -19,7 +19,7 @@ export const Header = ({ subdomainKey, isAuthenticated, user }: HeaderProps) => 
 
         {/* Left: logo + divider + sub-brand */}
         <div className="flex items-center gap-3">
-          <a href={URLS.MY_20FIT} style={{ fontFamily: "Anton, sans-serif", fontSize: "20px", color: "#D62828", letterSpacing: "0.02em" }}>
+          <a href={URLS.MY_20FIT} style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: "20px", color: "#D62828", letterSpacing: "0.02em" }}>
             20FIT
           </a>
           <div style={{ width: "1px", height: "20px", backgroundColor: "#3A3A3A" }} />

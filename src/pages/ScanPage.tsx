@@ -164,7 +164,7 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
         <div style={{ padding: "16px 18px", display: "flex", flexDirection: "column", gap: 10 }}>
           <span style={{ fontSize: 13, fontWeight: "bold", color: BLACK }}>{scanResult.food_name}</span>
           <div style={{ display: "flex", alignItems: "baseline", gap: 6 }}>
-            <span style={{ fontFamily: "Anton, sans-serif", fontSize: 36, color: RED, lineHeight: 1 }}>{scanResult.calories}</span>
+            <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 36, color: RED, lineHeight: 1 }}>{scanResult.calories}</span>
             <span style={{ fontSize: 12, color: "#8A8A8A" }}>{tr.kcal}</span>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
@@ -201,7 +201,7 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
         {!photoFile
           ? <label onDragEnter={handleDrag} onDragLeave={handleDrag} onDragOver={handleDrag} onDrop={handleDrop}
               style={{ border: `1.5px dashed ${dragActive ? RED : BORDER}`, borderRadius: 14, background: dragActive ? TINT : "#FAFAF9", padding: "28px 18px", display: "flex", flexDirection: "column", alignItems: "center", gap: 10, textAlign: "center", cursor: "pointer" }}>
-              <span style={{ width: 40, height: 40, borderRadius: 10, background: TINT, color: RED, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Anton, sans-serif", fontSize: 22 }}>+</span>
+              <span style={{ width: 40, height: 40, borderRadius: 10, background: TINT, color: RED, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Barlow Condensed, sans-serif", fontSize: 22 }}>+</span>
               <span style={{ fontSize: 14, fontWeight: "bold", color: BLACK }}>{tr.dropzone}</span>
               <span style={{ fontSize: 12, color: "#8A8A8A" }}>{tr.dropzoneSub}</span>
               <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" onChange={e => e.target.files?.[0] && handleFile(e.target.files[0])} style={{ display: "none" }} />
@@ -236,7 +236,7 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
         <div style={{ maxWidth: W, margin: "0 auto", padding: "32px 24px 36px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 32, alignItems: "start" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             <span style={{ alignSelf: "flex-start", fontSize: 11, fontWeight: "bold", letterSpacing: ".08em", textTransform: "uppercase", color: "#FFFFFF", background: RED, borderRadius: 999, padding: "5px 11px" }}>{tr.badge}</span>
-            <h1 style={{ fontFamily: "Anton, sans-serif", fontSize: "clamp(26px,3.5vw,44px)", lineHeight: 1.02, textTransform: "uppercase", margin: 0, color: BLACK }}>
+            <h1 style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: "clamp(26px,3.5vw,44px)", lineHeight: 1.02, textTransform: "uppercase", margin: 0, color: BLACK }}>
               {tr.heroTitle.split("\n").map((line, i) => <span key={i}>{line}{i === 0 && <br />}</span>)}
             </h1>
             <p style={{ margin: 0, fontSize: 14, lineHeight: 1.55, color: "#4A4A4A", maxWidth: "44ch" }}>{tr.heroSub}</p>
@@ -257,11 +257,11 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
       <div style={{ borderBottom: `1px solid ${BORDER}` }}>
         <div style={{ maxWidth: W, margin: "0 auto", padding: "32px 24px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 32 }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            <span style={{ fontFamily: "Anton, sans-serif", fontSize: 20, textTransform: "uppercase" }}>{tr.howItWorks}</span>
+            <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 20, textTransform: "uppercase" }}>{tr.howItWorks}</span>
             <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
               {steps.map(st => (
                 <div key={st.num} style={{ display: "flex", gap: 14, alignItems: "flex-start" }}>
-                  <span style={{ fontFamily: "Anton, sans-serif", fontSize: 12, color: RED, minWidth: 22, paddingTop: 2 }}>{st.num}</span>
+                  <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 12, color: RED, minWidth: 22, paddingTop: 2 }}>{st.num}</span>
                   <div>
                     <span style={{ fontSize: 13, fontWeight: "bold", display: "block", marginBottom: 3 }}>{st.title}</span>
                     <span style={{ fontSize: 12, color: "#6A6A6A", lineHeight: 1.5 }}>{st.body}</span>
@@ -271,7 +271,7 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
             </div>
           </div>
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
-            <span style={{ fontFamily: "Anton, sans-serif", fontSize: 20, textTransform: "uppercase" }}>{tr.whatYouCan}</span>
+            <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 20, textTransform: "uppercase" }}>{tr.whatYouCan}</span>
             <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
               {features.map(f => (
                 <div key={f.title} style={{ border: `1px solid ${BORDER}`, borderRadius: 10, padding: "11px 13px", display: "flex", flexDirection: "column", gap: 4 }}>
@@ -291,13 +291,13 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
       <div style={{ background: "#F4F2F0", borderBottom: `1px solid ${BORDER}` }}>
         <div style={{ maxWidth: W, margin: "0 auto", padding: "28px 24px", display: "flex", flexDirection: "column", gap: 18 }}>
           <div>
-            <span style={{ fontFamily: "Anton, sans-serif", fontSize: 20, textTransform: "uppercase" }}>{tr.ecoTitle}</span>
+            <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 20, textTransform: "uppercase" }}>{tr.ecoTitle}</span>
             <span style={{ fontSize: 13, lineHeight: 1.5, color: "#4A4A4A", display: "block", marginTop: 5 }}>{tr.ecoSub}</span>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 10 }}>
             {eco.map(e => (
               <a key={e.host} href={`https://${e.host}`} style={{ border: `1px solid ${BORDER}`, borderRadius: 12, background: "#FFFFFF", padding: 13, display: "flex", flexDirection: "column", gap: 8, textDecoration: "none", color: "inherit" }}>
-                <span style={{ width: 30, height: 30, borderRadius: 8, background: e.accent, color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Anton, sans-serif", fontSize: 12 }}>{e.initial}</span>
+                <span style={{ width: 30, height: 30, borderRadius: 8, background: e.accent, color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Barlow Condensed, sans-serif", fontSize: 12 }}>{e.initial}</span>
                 <span style={{ fontSize: 13, fontWeight: "bold" }}>{e.name}</span>
                 <span style={{ fontSize: 11, lineHeight: 1.45, color: "#6A6A6A", flex: 1 }}>{e.desc}</span>
                 <span style={{ fontSize: 10, color: "#9A9A9A" }}>{e.host}</span>
@@ -311,14 +311,14 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
       <div style={{ background: "#F4F2F0", borderBottom: `1px solid ${BORDER}` }}>
         <div style={{ maxWidth: W, margin: "0 auto", padding: "28px 24px", display: "flex", flexDirection: "column", gap: 18 }}>
           <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
-            <span style={{ fontFamily: "Anton, sans-serif", fontSize: 20, textTransform: "uppercase" }}>{tr.testimonialTitle}</span>
+            <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 20, textTransform: "uppercase" }}>{tr.testimonialTitle}</span>
             <span style={{ fontSize: 12, color: "#8A8A8A" }}>{tr.testimonialSub}</span>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 12 }}>
             {testimonials.map((tm) => (
               <div key={tm.name} style={{ background: "#FFFFFF", border: `1px solid ${BORDER}`, borderRadius: 14, padding: 18, display: "flex", flexDirection: "column", gap: 12 }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
-                  <span style={{ width: 38, height: 38, borderRadius: "50%", background: tm.color, color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Anton, sans-serif", fontSize: 15, flexShrink: 0 }}>{tm.initial}</span>
+                  <span style={{ width: 38, height: 38, borderRadius: "50%", background: tm.color, color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Barlow Condensed, sans-serif", fontSize: 15, flexShrink: 0 }}>{tm.initial}</span>
                   <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
                     <span style={{ fontSize: 13, fontWeight: "bold", color: BLACK }}>{tm.name}</span>
                     <div style={{ display: "flex", gap: 2 }}>
@@ -340,7 +340,7 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
       <div style={{ borderBottom: `1px solid ${BORDER}` }}>
         <div style={{ maxWidth: W, margin: "0 auto", padding: "28px 24px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 28, alignItems: "start" }}>
           <div>
-            <span style={{ fontFamily: "Anton, sans-serif", fontSize: 20, textTransform: "uppercase" }}>{tr.faqTitle}</span>
+            <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 20, textTransform: "uppercase" }}>{tr.faqTitle}</span>
             <span style={{ fontSize: 13, lineHeight: 1.5, color: "#4A4A4A", display: "block", marginTop: 5 }}>{tr.faqSub}</span>
           </div>
           <div style={{ border: `1px solid ${BORDER}`, borderRadius: 12, overflow: "hidden" }}>
@@ -354,7 +354,7 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
         <div style={{ background: RED }}>
           <div style={{ maxWidth: W, margin: "0 auto", padding: "28px 24px", display: "flex", flexWrap: "wrap", gap: 20, alignItems: "center", justifyContent: "space-between" }}>
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-              <span style={{ fontFamily: "Anton, sans-serif", fontSize: 24, lineHeight: 1.05, textTransform: "uppercase", color: "#FFFFFF" }}>{tr.ctaTitle}</span>
+              <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 24, lineHeight: 1.05, textTransform: "uppercase", color: "#FFFFFF" }}>{tr.ctaTitle}</span>
               <span style={{ fontSize: 13, lineHeight: 1.5, color: "#FBD9D9", maxWidth: "52ch" }}>{tr.ctaSub}</span>
             </div>
             <a href={URLS.LOGIN} style={{ background: "#FFFFFF", color: RED, borderRadius: 10, height: 48, padding: "0 22px", fontFamily: "inherit", fontSize: 14, fontWeight: "bold", cursor: "pointer", display: "flex", alignItems: "center", textDecoration: "none", whiteSpace: "nowrap" }}>{tr.ctaBtn}</a>
@@ -366,7 +366,7 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
       <div style={{ background: BLACK }}>
         <div style={{ maxWidth: W, margin: "0 auto", padding: "24px 24px 28px", display: "flex", flexWrap: "wrap", gap: 20, justifyContent: "space-between", alignItems: "flex-start" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
-            <span style={{ fontFamily: "Anton, sans-serif", fontSize: 18, color: "#FFFFFF" }}>20FIT</span>
+            <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 18, color: "#FFFFFF" }}>20FIT</span>
             <span style={{ fontSize: 12, color: "#6A6A6A", maxWidth: "36ch" }}>{tr.footerTagline}</span>
           </div>
           {scanCount > 0 && <span style={{ fontSize: 11, color: "#6A6A6A", alignSelf: "flex-end" }}>{tr.sessionCount(scanCount)}</span>}
