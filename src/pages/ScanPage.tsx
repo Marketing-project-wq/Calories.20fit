@@ -23,6 +23,15 @@ const FAQS = [
   { q: "Sudah punya akun 20FIT?", a: "Kalau kamu sedang login, halaman ini mengenali kamu otomatis. Tidak ada gate, tidak ada ajakan daftar, dan hasilnya langsung masuk ke riwayat." },
 ];
 
+const TESTIMONIALS = [
+  { name: "Ayu R.", initial: "A", color: "#E8734A", rating: 5, text: "Baru upload foto nasi padang, langsung keluar estimasi kalorinya. Simpel banget, nggak perlu input manual satu-satu.", food: "Nasi Padang" },
+  { name: "Dimas P.", initial: "D", color: "#4A90D9", rating: 5, text: "Saya pakai tiap makan siang di kantor. Lumayan buat ngecek supaya nggak kebablasan kalorinya. Akurasinya cukup oke untuk estimasi.", food: "Mie Ayam + Es Teh" },
+  { name: "Sarah K.", initial: "S", color: "#2F7D5B", rating: 4, text: "Yang saya suka, hasilnya langsung terbuka tanpa harus daftar dulu. Kalau mau simpan riwayat baru buat akun — masuk akal.", food: "Gado-gado" },
+  { name: "Rizky F.", initial: "R", color: "#8B5CF6", rating: 5, text: "Udah coba beberapa aplikasi serupa, ini paling gampang. Foto, analisis, selesai. Cocok buat yang nggak mau ribet.", food: "Ayam Bakar" },
+  { name: "Putri N.", initial: "P", color: "#D97706", rating: 5, text: "Terbantu banget pas lagi diet. Nggak perlu hafal kalori tiap makanan, tinggal foto aja langsung tau kira-kira berapa.", food: "Salad Sayur" },
+  { name: "Andi M.", initial: "A", color: "#DC2626", rating: 4, text: "Hasilnya cukup akurat untuk makanan Indonesia. Satu hal yang saya appreciate, dia jujur bahwa ini estimasi, bukan angka pasti.", food: "Soto Ayam" },
+];
+
 const DEEPER_DEFS = [
   { title: "Meal plan mingguan", body: "Rencana makan 7 hari dari pola scan kamu, lengkap dengan daftar belanja." },
   { title: "Diet plan", body: "Target dan penyesuaian porsi dihitung dari data tubuh kamu di akun 20FIT." },
@@ -309,6 +318,35 @@ export const ScanPage = () => {
                 <span style={{ fontSize: 11, lineHeight: 1.45, color: "#6A6A6A", flex: 1 }}>{e.desc}</span>
                 <span style={{ fontSize: 10, color: "#9A9A9A" }}>{e.host}</span>
               </a>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      {/* ─── Testimoni ─── */}
+      <div style={{ background: "#F4F2F0", borderBottom: `1px solid ${BORDER}` }}>
+        <div style={{ maxWidth: W, margin: "0 auto", padding: "28px 24px", display: "flex", flexDirection: "column", gap: 18 }}>
+          <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
+            <span style={{ fontFamily: "Anton, sans-serif", fontSize: 20, textTransform: "uppercase" }}>Yang dipakai, bukan yang dijanjikan</span>
+            <span style={{ fontSize: 12, color: "#8A8A8A" }}>Dari pengguna aktif 20FIT</span>
+          </div>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: 12 }}>
+            {TESTIMONIALS.map((t) => (
+              <div key={t.name} style={{ background: "#FFFFFF", border: `1px solid ${BORDER}`, borderRadius: 14, padding: 18, display: "flex", flexDirection: "column", gap: 12 }}>
+                <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
+                  <span style={{ width: 38, height: 38, borderRadius: "50%", background: t.color, color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Anton, sans-serif", fontSize: 15, flexShrink: 0 }}>{t.initial}</span>
+                  <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                    <span style={{ fontSize: 13, fontWeight: "bold", color: BLACK }}>{t.name}</span>
+                    <div style={{ display: "flex", gap: 2 }}>
+                      {Array.from({ length: 5 }).map((_, i) => (
+                        <span key={i} style={{ fontSize: 11, color: i < t.rating ? "#F59E0B" : "#D4D0CB" }}>★</span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+                <p style={{ margin: 0, fontSize: 13, lineHeight: 1.6, color: "#3A3A3A", flex: 1 }}>"{t.text}"</p>
+                <span style={{ fontSize: 11, color: "#9A9A9A", background: "#F4F2F0", borderRadius: 999, padding: "4px 10px", alignSelf: "flex-start" }}>{t.food}</span>
+              </div>
             ))}
           </div>
         </div>
