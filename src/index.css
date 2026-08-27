@@ -222,3 +222,34 @@ textarea:focus {
     animation: none;
   }
 }
+
+/* Premium glass layer: decorative blurred gradient orbs + glass nav */
+.sc-orb-field {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+  z-index: 0;
+}
+.sc-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(70px);
+  opacity: 0.55;
+  animation: scOrbFloat 16s ease-in-out infinite;
+}
+@keyframes scOrbFloat {
+  0%, 100% { transform: translate(0, 0) scale(1); }
+  50% { transform: translate(-18px, 20px) scale(1.08); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sc-orb {
+    animation: none;
+  }
+}
+
+.sc-nav-glass {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(18px) saturate(180%);
+  -webkit-backdrop-filter: blur(18px) saturate(180%);
+}

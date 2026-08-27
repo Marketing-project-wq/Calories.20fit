@@ -21,7 +21,7 @@ export function App() {
   return (
     <div className="min-h-screen" style={{ background: "#FFFFFF" }}>
       {/* Tab nav + lang toggle */}
-      <div style={{ borderBottom: "2px solid #141414", background: "#FFFFFF", position: "sticky", top: 0, zIndex: 50 }}>
+      <div className="sc-nav-glass" style={{ borderBottom: "1px solid rgba(20,20,20,0.08)", position: "sticky", top: 0, zIndex: 50, boxShadow: "0 4px 24px rgba(20,20,20,0.04)" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <div style={{ display: "flex" }}>
             {TABS.map((tab) => (
@@ -48,7 +48,7 @@ export function App() {
           </div>
 
           {/* Language toggle */}
-          <div style={{ display: "flex", background: "#F4F2F0", borderRadius: 8, padding: 3, gap: 2 }}>
+          <div style={{ display: "flex", background: "rgba(20,20,20,0.05)", borderRadius: 10, padding: 3, gap: 2 }}>
             {(["id", "en"] as Lang[]).map((l) => (
               <button
                 key={l}

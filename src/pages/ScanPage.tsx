@@ -10,6 +10,14 @@ const TINT = "#FDECEC";
 const BORDER = "#E4E0DB";
 const W = 1100;
 
+// Glassmorphism helper: frosted, translucent surface over a gradient/orb backdrop.
+const glass = (opacity = 0.62) => ({
+  background: `rgba(255,255,255,${opacity})`,
+  backdropFilter: "blur(22px) saturate(180%)",
+  WebkitBackdropFilter: "blur(22px) saturate(180%)",
+  border: "1px solid rgba(255,255,255,0.65)",
+});
+
 const ECOSYSTEM = {
   id: [
     { name: "Scan Kalori", host: "calories.20fit.id", initial: "K", accent: RED, desc: "Foto makanan, dapat estimasi kalori dan makronutriennya." },
@@ -90,7 +98,7 @@ const FEATURES = {
 function TestimonialCard({ tm }: { tm: (typeof TESTIMONIALS)["id"][number] }) {
   return (
     <div className="sc-marquee-card">
-      <div className="sc-card" style={{ background: "#FFFFFF", border: `1px solid ${BORDER}`, borderRadius: 14, padding: 18, display: "flex", flexDirection: "column", gap: 12, height: "100%" }}>
+      <div className="sc-card" style={{ ...glass(0.62), borderRadius: 18, padding: 18, display: "flex", flexDirection: "column", gap: 12, height: "100%" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
           <span className="sc-testi-icon" style={{ width: 38, height: 38, borderRadius: "50%", background: tm.color, color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Barlow Condensed, sans-serif", fontSize: 15, flexShrink: 0 }}>{tm.initial}</span>
           <div style={{ display: "flex", flexDirection: "column", gap: 2 }}>
@@ -126,7 +134,7 @@ function TestimonialMarquee({ testimonials }: { testimonials: (typeof TESTIMONIA
 function FaqItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
   return (
-    <div style={{ borderBottom: `1px solid #F0EDEA` }}>
+    <div style={{ borderBottom: "1px solid rgba(20,20,20,0.06)" }}>
       <button onClick={() => setOpen(!open)} className="sc-faq-btn" style={{ width: "100%", display: "flex", alignItems: "center", gap: 12, background: "transparent", border: 0, padding: "14px 16px", cursor: "pointer", fontFamily: "inherit", textAlign: "left" }}>
         <span style={{ flex: 1, fontSize: 14, fontWeight: "bold", lineHeight: 1.35 }}>{q}</span>
         <span className="sc-faq-icon" style={{ fontSize: 16, color: open ? "#D62828" : "#A8A8A8", flexShrink: 0, transform: open ? "rotate(180deg)" : "none" }}>{open ? "−" : "+"}</span>
@@ -179,7 +187,7 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
 
   const ToolPanel = () => {
     if (isLoading || authLoading) return (
-      <div style={{ background: "#F4F2F0", border: `1px solid ${BORDER}`, borderRadius: 16, padding: "32px 20px", display: "flex", flexDirection: "column", alignItems: "center", gap: 14, textAlign: "center", boxShadow: "0 4px 16px rgba(20,20,20,0.05)" }}>
+      <div style={{ ...glass(0.55), borderRadius: 22, padding: "32px 20px", display: "flex", flexDirection: "column", alignItems: "center", gap: 14, textAlign: "center", boxShadow: "0 20px 50px -12px rgba(20,20,20,0.12)" }}>
         <span style={{ width: 40, height: 40, borderRadius: "50%", border: `3px solid ${BORDER}`, borderTopColor: RED, display: "block", animation: "scSpin .9s linear infinite" }} />
         <span style={{ fontSize: 14, fontWeight: "bold", color: BLACK }}>{tr.analyzing}</span>
         <span style={{ fontSize: 12, color: "#8A8A8A" }}>{tr.analyzingSub}</span>
@@ -188,7 +196,7 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
     );
 
     if (error) return (
-      <div style={{ background: "#FFF5F5", border: `1.5px solid #FFCDD2`, borderRadius: 16, padding: 20, display: "flex", flexDirection: "column", gap: 12, boxShadow: "0 4px 16px rgba(20,20,20,0.05)" }}>
+      <div style={{ ...glass(0.6), borderColor: "rgba(255,150,150,0.5)", borderRadius: 22, padding: 20, display: "flex", flexDirection: "column", gap: 12, boxShadow: "0 20px 50px -12px rgba(214,40,40,0.12)" }}>
         <span style={{ fontSize: 13, fontWeight: "bold", color: RED }}>{tr.failedTitle}</span>
         <span style={{ fontSize: 12, color: "#4A4A4A" }}>{error}</span>
         <button onClick={() => setError(null)} className="sc-btn-primary" style={{ background: RED, color: "#fff", border: "none", borderRadius: 8, padding: "8px 14px", fontFamily: "inherit", fontSize: 12, fontWeight: "bold", cursor: "pointer", alignSelf: "flex-start" }}>{tr.retryBtn}</button>
@@ -207,7 +215,7 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
 
       return (
         <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
-        <div style={{ background: "#FFFFFF", border: `1px solid ${BORDER}`, borderRadius: "16px 16px 0 0", overflow: "hidden", boxShadow: "0 4px 16px rgba(20,20,20,0.05)" }}>
+        <div style={{ ...glass(0.7), borderRadius: "22px 22px 0 0", overflow: "hidden", boxShadow: "0 20px 50px -12px rgba(20,20,20,0.14)" }}>
           {photoPreview && <div style={{ height: 160, backgroundImage: `url(${photoPreview})`, backgroundSize: "cover", backgroundPosition: "center" }} />}
           <div style={{ padding: "16px 18px", display: "flex", flexDirection: "column", gap: 12 }}>
             {/* Name + calories */}
@@ -242,7 +250,7 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
 
             {/* Health meter + Filling rate */}
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
-              <div style={{ border: `1px solid ${BORDER}`, borderRadius: 10, padding: "10px 12px" }}>
+              <div style={{ border: "1px solid rgba(20,20,20,0.08)", background: "rgba(255,255,255,0.4)", borderRadius: 14, padding: "10px 12px" }}>
                 <span style={{ fontSize: 10, color: "#8A8A8A", textTransform: "uppercase", letterSpacing: ".06em", display: "block", marginBottom: 4 }}>
                   {lang === "id" ? "Health Meter" : "Health Meter"}
                 </span>
@@ -254,7 +262,7 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
                   <div className="sc-bar-fill" style={{ height: 4, width: `${Math.min(100, Math.max(0, healthScore))}%`, borderRadius: 999, background: healthColor }} />
                 </div>
               </div>
-              <div style={{ border: `1px solid ${BORDER}`, borderRadius: 10, padding: "10px 12px" }}>
+              <div style={{ border: "1px solid rgba(20,20,20,0.08)", background: "rgba(255,255,255,0.4)", borderRadius: 14, padding: "10px 12px" }}>
                 <span style={{ fontSize: 10, color: "#8A8A8A", textTransform: "uppercase", letterSpacing: ".06em", display: "block", marginBottom: 4 }}>
                   {lang === "id" ? "Filling Rate" : "Filling Rate"}
                 </span>
@@ -270,7 +278,7 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
 
             {/* Analisa makanan */}
             {(scanResult.overall || scanResult.description) && (
-              <div style={{ borderTop: `1px solid ${BORDER}`, paddingTop: 12 }}>
+              <div style={{ borderTop: "1px solid rgba(20,20,20,0.08)", paddingTop: 12 }}>
                 <span style={{ fontSize: 10, color: "#8A8A8A", textTransform: "uppercase", letterSpacing: ".06em", display: "block", marginBottom: 6 }}>
                   {lang === "id" ? "Analisa" : "Analysis"}
                 </span>
@@ -282,7 +290,7 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
 
             {/* Per-item breakdown if multiple items */}
             {scanResult.items.length > 1 && (
-              <div style={{ borderTop: `1px solid ${BORDER}`, paddingTop: 10 }}>
+              <div style={{ borderTop: "1px solid rgba(20,20,20,0.08)", paddingTop: 10 }}>
                 <span style={{ fontSize: 11, color: "#8A8A8A", display: "block", marginBottom: 6 }}>
                   {lang === "id" ? "Rincian" : "Breakdown"}
                 </span>
@@ -296,16 +304,16 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
             )}
 
             <div style={{ display: "flex", gap: 8 }}>
-              <button onClick={scanAgain} className="sc-btn-primary" style={{ flex: 1, background: RED, color: "#fff", border: "none", borderRadius: 8, padding: "9px 0", fontFamily: "inherit", fontSize: 12, fontWeight: "bold", cursor: "pointer" }}>{tr.scanAgain}</button>
-              <button onClick={resetAll} className="sc-btn-ghost" style={{ background: "transparent", border: `1px solid ${BORDER}`, color: "#6A6A6A", borderRadius: 8, padding: "9px 12px", fontFamily: "inherit", fontSize: 12, cursor: "pointer" }}>{tr.reset}</button>
+              <button onClick={scanAgain} className="sc-btn-primary" style={{ flex: 1, background: RED, color: "#fff", border: "none", borderRadius: 10, padding: "9px 0", fontFamily: "inherit", fontSize: 12, fontWeight: "bold", cursor: "pointer" }}>{tr.scanAgain}</button>
+              <button onClick={resetAll} className="sc-btn-ghost" style={{ background: "transparent", border: "1px solid rgba(20,20,20,0.12)", color: "#6A6A6A", borderRadius: 10, padding: "9px 12px", fontFamily: "inherit", fontSize: 12, cursor: "pointer" }}>{tr.reset}</button>
             </div>
           </div>
         </div>
 
         {/* Result tabs: Insights + Food Summary (locked for non-member) */}
-        <div style={{ borderTop: `1px solid ${BORDER}` }}>
+        <div style={{ ...glass(0.7), borderTop: "none", borderRadius: "0 0 22px 22px", overflow: "hidden" }}>
           {/* Tab bar */}
-          <div style={{ display: "flex", borderBottom: `1px solid ${BORDER}` }}>
+          <div style={{ display: "flex", borderBottom: "1px solid rgba(20,20,20,0.08)" }}>
             {(["result", "insights", "summary"] as const).map((tab) => {
               const locked = !isAuthenticated && tab !== "result";
               const labels: Record<string, string> = {
@@ -387,17 +395,17 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
     }
 
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+      <div style={{ ...glass(0.55), borderRadius: 22, padding: 16, display: "flex", flexDirection: "column", gap: 12, boxShadow: "0 20px 50px -12px rgba(20,20,20,0.12)" }}>
         {!photoFile
           ? <label onDragEnter={handleDrag} onDragLeave={handleDrag} onDragOver={handleDrag} onDrop={handleDrop} className={dragActive ? "" : "sc-dropzone"}
-              style={{ border: `1.5px dashed ${dragActive ? RED : BORDER}`, borderRadius: 14, background: dragActive ? TINT : "#FAFAF9", padding: "28px 18px", display: "flex", flexDirection: "column", alignItems: "center", gap: 10, textAlign: "center", cursor: "pointer" }}>
+              style={{ border: `1.5px dashed ${dragActive ? RED : "rgba(20,20,20,0.16)"}`, borderRadius: 16, background: dragActive ? TINT : "rgba(255,255,255,0.35)", padding: "28px 18px", display: "flex", flexDirection: "column", alignItems: "center", gap: 10, textAlign: "center", cursor: "pointer" }}>
               <span style={{ width: 40, height: 40, borderRadius: 10, background: TINT, color: RED, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Barlow Condensed, sans-serif", fontSize: 22 }}>+</span>
               <span style={{ fontSize: 14, fontWeight: "bold", color: BLACK }}>{tr.dropzone}</span>
               <span style={{ fontSize: 12, color: "#8A8A8A" }}>{tr.dropzoneSub}</span>
-              <span className="sc-btn-primary" style={{ background: RED, color: "#FFFFFF", borderRadius: 8, padding: "8px 20px", fontSize: 12, fontWeight: "bold", marginTop: 4 }}>{tr.dropzoneChoose}</span>
+              <span className="sc-btn-primary" style={{ background: RED, color: "#FFFFFF", borderRadius: 10, padding: "8px 20px", fontSize: 12, fontWeight: "bold", marginTop: 4 }}>{tr.dropzoneChoose}</span>
               <input ref={fileInputRef} type="file" accept="image/jpeg,image/png,image/webp" onChange={e => e.target.files?.[0] && handleFile(e.target.files[0])} style={{ display: "none" }} />
             </label>
-          : <div style={{ border: `1.5px solid ${BORDER}`, borderRadius: 14, overflow: "hidden", background: "#FFFFFF" }}>
+          : <div style={{ border: "1px solid rgba(20,20,20,0.1)", borderRadius: 16, overflow: "hidden", background: "rgba(255,255,255,0.5)" }}>
               <div style={{ height: 160, backgroundImage: `url(${photoPreview!})`, backgroundSize: "cover", backgroundPosition: "center" }} />
               <div style={{ padding: "10px 14px", display: "flex", alignItems: "center", gap: 10 }}>
                 <span style={{ flex: 1, fontSize: 12, color: "#6A6A6A", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{photoFile.name}</span>
@@ -406,7 +414,7 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
             </div>
         }
         <button onClick={startAnalyze} disabled={!photoFile} className={photoFile ? "sc-btn-primary" : ""}
-          style={{ border: 0, borderRadius: 10, height: 48, fontFamily: "inherit", fontSize: 14, fontWeight: "bold", cursor: photoFile ? "pointer" : "not-allowed", background: photoFile ? RED : BORDER, color: photoFile ? "#FFFFFF" : "#9A9A9A" }}>
+          style={{ border: 0, borderRadius: 12, height: 48, fontFamily: "inherit", fontSize: 14, fontWeight: "bold", cursor: photoFile ? "pointer" : "not-allowed", background: photoFile ? RED : "rgba(20,20,20,0.12)", color: photoFile ? "#FFFFFF" : "#9A9A9A" }}>
           {tr.analyzeBtn}
         </button>
       </div>
@@ -423,8 +431,13 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
     <div style={{ background: "#FFFFFF" }}>
 
       {/* Hero + Tool */}
-      <div style={{ background: "radial-gradient(circle at 88% 15%, #FDECEC 0%, #FFFFFF 55%)", borderBottom: `1px solid ${BORDER}` }}>
-        <div style={{ maxWidth: W, margin: "0 auto", padding: "32px 24px 36px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 32, alignItems: "start" }}>
+      <div style={{ position: "relative", background: "linear-gradient(180deg, #FDF6F2 0%, #FFFFFF 70%)", borderBottom: "1px solid rgba(20,20,20,0.06)", overflow: "hidden" }}>
+        <div className="sc-orb-field">
+          <span className="sc-orb" style={{ width: 420, height: 420, top: -140, right: -80, background: "radial-gradient(circle, #F5A3A3 0%, transparent 70%)" }} />
+          <span className="sc-orb" style={{ width: 320, height: 320, bottom: -120, left: -60, background: "radial-gradient(circle, #FFD9A8 0%, transparent 70%)", animationDelay: "-6s" }} />
+          <span className="sc-orb" style={{ width: 220, height: 220, top: 60, left: "38%", background: "radial-gradient(circle, #C7E8D8 0%, transparent 70%)", animationDelay: "-3s" }} />
+        </div>
+        <div style={{ position: "relative", zIndex: 1, maxWidth: W, margin: "0 auto", padding: "32px 24px 36px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 32, alignItems: "start" }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             <span style={{ alignSelf: "flex-start", fontSize: 11, fontWeight: "bold", letterSpacing: ".08em", textTransform: "uppercase", color: "#FFFFFF", background: RED, borderRadius: 999, padding: "5px 11px" }}>{tr.badge}</span>
             <h1 style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: "clamp(26px,3.5vw,44px)", lineHeight: 1.02, textTransform: "uppercase", margin: 0, color: BLACK }}>
@@ -465,14 +478,14 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
       </div>
 
       {/* Framing note */}
-      <div style={{ borderBottom: `1px solid ${BORDER}` }}>
+      <div style={{ borderBottom: "1px solid rgba(20,20,20,0.06)" }}>
         <div style={{ maxWidth: W, margin: "0 auto", padding: "14px 24px" }}>
           <span style={{ fontSize: 12, lineHeight: 1.55, color: "#6A6A6A", borderLeft: `3px solid ${RED}`, paddingLeft: 12, display: "block" }}>{tr.framingNote}</span>
         </div>
       </div>
 
       {/* Who this is for */}
-      <div style={{ borderBottom: `1px solid ${BORDER}` }}>
+      <div style={{ borderBottom: "1px solid rgba(20,20,20,0.06)" }}>
         <div style={{ maxWidth: 640, margin: "0 auto", padding: "32px 24px", display: "flex", flexDirection: "column", alignItems: "center", gap: 18, textAlign: "center" }}>
           <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 22, textTransform: "uppercase" }}>{tr.whoForTitle}</span>
           <div style={{ display: "flex", flexDirection: "column", gap: 12, alignItems: "flex-start" }}>
@@ -487,7 +500,7 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
       </div>
 
       {/* How it works + Features */}
-      <div style={{ borderBottom: `1px solid ${BORDER}` }}>
+      <div style={{ borderBottom: "1px solid rgba(20,20,20,0.06)" }}>
         <div style={{ maxWidth: W, margin: "0 auto", padding: "32px 24px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 32 }}>
           <div style={{ display: "flex", flexDirection: "column", gap: 14 }}>
             <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 20, textTransform: "uppercase" }}>{tr.howItWorks}</span>
@@ -507,8 +520,8 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
             <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 20, textTransform: "uppercase" }}>{tr.whatYouCan}</span>
             <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
               {features.map((f, i) => (
-                <div key={f.title} className="sc-card" style={{ border: `1px solid ${i === 0 ? RED : BORDER}`, borderRadius: 10, padding: "11px 13px", display: "flex", gap: 12, alignItems: "flex-start", background: i === 0 ? TINT : "#FFFFFF" }}>
-                  <span style={{ width: 34, height: 34, borderRadius: 9, background: i === 0 ? "#FFFFFF" : TINT, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>{f.icon}</span>
+                <div key={f.title} className="sc-card" style={i === 0 ? { border: `1px solid ${RED}`, borderRadius: 16, padding: "13px 15px", display: "flex", gap: 12, alignItems: "flex-start", background: TINT } : { ...glass(0.5), borderRadius: 16, padding: "13px 15px", display: "flex", gap: 12, alignItems: "flex-start" }}>
+                  <span style={{ width: 34, height: 34, borderRadius: 10, background: i === 0 ? "#FFFFFF" : TINT, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>{f.icon}</span>
                   <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
                     <span style={{ fontSize: 13, fontWeight: "bold" }}>{f.title}</span>
                     <span style={{ fontSize: 12, lineHeight: 1.5, color: "#6A6A6A" }}>{f.body}</span>
@@ -521,15 +534,19 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
       </div>
 
       {/* Ecosystem */}
-      <div style={{ background: "#F4F2F0", borderBottom: `1px solid ${BORDER}` }}>
-        <div style={{ maxWidth: W, margin: "0 auto", padding: "28px 24px", display: "flex", flexDirection: "column", gap: 18 }}>
+      <div style={{ position: "relative", overflow: "hidden", background: "linear-gradient(160deg, #F6F4F1 0%, #EEEAE4 100%)", borderBottom: "1px solid rgba(20,20,20,0.06)" }}>
+        <div className="sc-orb-field">
+          <span className="sc-orb" style={{ width: 300, height: 300, top: -100, left: "10%", background: "radial-gradient(circle, #F5A3A3 0%, transparent 70%)" }} />
+          <span className="sc-orb" style={{ width: 260, height: 260, bottom: -100, right: "8%", background: "radial-gradient(circle, #A8C7E8 0%, transparent 70%)", animationDelay: "-8s" }} />
+        </div>
+        <div style={{ position: "relative", zIndex: 1, maxWidth: W, margin: "0 auto", padding: "28px 24px", display: "flex", flexDirection: "column", gap: 18 }}>
           <div>
             <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 20, textTransform: "uppercase" }}>{tr.ecoTitle}</span>
             <span style={{ fontSize: 13, lineHeight: 1.5, color: "#4A4A4A", display: "block", marginTop: 5 }}>{tr.ecoSub}</span>
           </div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(200px, 1fr))", gap: 10 }}>
             {eco.map(e => (
-              <a key={e.host} href={`https://${e.host}`} className="sc-card" style={{ border: `1px solid ${BORDER}`, borderRadius: 12, background: "#FFFFFF", padding: 13, display: "flex", flexDirection: "column", gap: 8, textDecoration: "none", color: "inherit" }}>
+              <a key={e.host} href={`https://${e.host}`} className="sc-card" style={{ ...glass(0.55), borderRadius: 16, padding: 13, display: "flex", flexDirection: "column", gap: 8, textDecoration: "none", color: "inherit" }}>
                 <span className="sc-eco-icon" style={{ width: 30, height: 30, borderRadius: 8, background: e.accent, color: "#FFFFFF", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "Barlow Condensed, sans-serif", fontSize: 12 }}>{e.initial}</span>
                 <span style={{ fontSize: 13, fontWeight: "bold" }}>{e.name}</span>
                 <span style={{ fontSize: 11, lineHeight: 1.45, color: "#6A6A6A", flex: 1 }}>{e.desc}</span>
@@ -541,8 +558,12 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
       </div>
 
       {/* Testimonials */}
-      <div style={{ background: "#F4F2F0", borderBottom: `1px solid ${BORDER}` }}>
-        <div style={{ maxWidth: W, margin: "0 auto", padding: "28px 24px", display: "flex", flexDirection: "column", gap: 18 }}>
+      <div style={{ position: "relative", overflow: "hidden", background: "linear-gradient(160deg, #F6F4F1 0%, #EEEAE4 100%)", borderBottom: "1px solid rgba(20,20,20,0.06)" }}>
+        <div className="sc-orb-field">
+          <span className="sc-orb" style={{ width: 340, height: 340, top: -120, right: "6%", background: "radial-gradient(circle, #FFD9A8 0%, transparent 70%)" }} />
+          <span className="sc-orb" style={{ width: 260, height: 260, bottom: -110, left: "12%", background: "radial-gradient(circle, #C7E8D8 0%, transparent 70%)", animationDelay: "-5s" }} />
+        </div>
+        <div style={{ position: "relative", zIndex: 1, maxWidth: W, margin: "0 auto", padding: "28px 24px", display: "flex", flexDirection: "column", gap: 18 }}>
           <div style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
             <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 20, textTransform: "uppercase" }}>{tr.testimonialTitle}</span>
             <span style={{ fontSize: 12, color: "#8A8A8A" }}>{tr.testimonialSub}</span>
@@ -552,13 +573,13 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
       </div>
 
       {/* FAQ */}
-      <div style={{ borderBottom: `1px solid ${BORDER}` }}>
+      <div style={{ borderBottom: "1px solid rgba(20,20,20,0.06)" }}>
         <div style={{ maxWidth: W, margin: "0 auto", padding: "28px 24px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 28, alignItems: "start" }}>
           <div>
             <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 20, textTransform: "uppercase" }}>{tr.faqTitle}</span>
             <span style={{ fontSize: 13, lineHeight: 1.5, color: "#4A4A4A", display: "block", marginTop: 5 }}>{tr.faqSub}</span>
           </div>
-          <div style={{ border: `1px solid ${BORDER}`, borderRadius: 12, overflow: "hidden" }}>
+          <div style={{ ...glass(0.5), borderRadius: 18, overflow: "hidden" }}>
             {faqs.map(f => <FaqItem key={f.q} q={f.q} a={f.a} />)}
           </div>
         </div>
@@ -566,13 +587,17 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
 
       {/* Bottom CTA (anon only) */}
       {!isAuthenticated && (
-        <div style={{ background: `linear-gradient(120deg, ${RED} 0%, #A81212 100%)` }}>
-          <div style={{ maxWidth: W, margin: "0 auto", padding: "28px 24px", display: "flex", flexWrap: "wrap", gap: 20, alignItems: "center", justifyContent: "space-between" }}>
+        <div style={{ position: "relative", overflow: "hidden", background: `linear-gradient(120deg, ${RED} 0%, #A81212 100%)` }}>
+          <div className="sc-orb-field">
+            <span className="sc-orb" style={{ width: 320, height: 320, top: -140, left: "15%", background: "radial-gradient(circle, rgba(255,255,255,0.5) 0%, transparent 70%)", opacity: 0.35 }} />
+            <span className="sc-orb" style={{ width: 260, height: 260, bottom: -120, right: "10%", background: "radial-gradient(circle, rgba(255,255,255,0.4) 0%, transparent 70%)", opacity: 0.3, animationDelay: "-7s" }} />
+          </div>
+          <div style={{ position: "relative", zIndex: 1, maxWidth: W, margin: "0 auto", padding: "28px 24px", display: "flex", flexWrap: "wrap", gap: 20, alignItems: "center", justifyContent: "space-between" }}>
             <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
               <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 24, lineHeight: 1.05, textTransform: "uppercase", color: "#FFFFFF" }}>{tr.ctaTitle}</span>
               <span style={{ fontSize: 13, lineHeight: 1.5, color: "#FBD9D9", maxWidth: "52ch" }}>{tr.ctaSub}</span>
             </div>
-            <a href={URLS.LOGIN} className="sc-link-btn" style={{ background: "#FFFFFF", color: RED, borderRadius: 10, height: 48, padding: "0 22px", fontFamily: "inherit", fontSize: 14, fontWeight: "bold", cursor: "pointer", display: "flex", alignItems: "center", textDecoration: "none", whiteSpace: "nowrap" }}>{tr.ctaBtn}</a>
+            <a href={URLS.LOGIN} className="sc-link-btn" style={{ background: "#FFFFFF", color: RED, borderRadius: 12, height: 48, padding: "0 22px", fontFamily: "inherit", fontSize: 14, fontWeight: "bold", cursor: "pointer", display: "flex", alignItems: "center", textDecoration: "none", whiteSpace: "nowrap", boxShadow: "0 12px 30px -8px rgba(0,0,0,0.35)" }}>{tr.ctaBtn}</a>
           </div>
         </div>
       )}
