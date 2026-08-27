@@ -199,7 +199,10 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
     if (!photoFile) return;
     setIsLoading(true); setError(null);
     try {
-      if (isAuthenticated) { const quota = await apiClient.getQuota(); if (quota && quota.remaining <= 0) { setError(tr.errQuota); return; } }
+      // Scanning itself is unlimited from the client's side — no pre-flight quota
+      // check here. Only the deeper analysis (Insights / Food Summary tabs) is
+      // gated, and that's a login gate, not a scan-credit gate. If the backend
+      // still rejects the scan (e.g. abuse limits), the catch below surfaces it.
       const result = await apiClient.scanPhoto(photoFile);
       setScanResult(result); setScanCount(c => c + 1);
     } catch (err) {
