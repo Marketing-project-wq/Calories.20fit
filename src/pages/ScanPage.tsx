@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { URLS } from "../lib/constants";
 import { apiClient, ScanResult } from "../lib/api";
 import { useAuth } from "../hooks/useAuth";
@@ -91,6 +91,10 @@ function TestimonialCarousel({ testimonials, lang }: { testimonials: (typeof TES
   const trackRef = useRef<HTMLDivElement>(null);
   const cardRefs = useRef<(HTMLDivElement | null)[]>([]);
   const [active, setActive] = useState(0);
+  const activeRef = useRef(0);
+  const [paused, setPaused] = useState(false);
+
+  useEffect(() => { activeRef.current = active; }, [active]);
 
   const scrollToIndex = (i: number) => {
     const track = trackRef.current;
@@ -115,8 +119,23 @@ function TestimonialCarousel({ testimonials, lang }: { testimonials: (typeof TES
     trackRef.current?.scrollBy({ left: dir * trackRef.current.clientWidth * 0.9, behavior: "smooth" });
   };
 
+  // Auto-advance one card at a time; pauses on hover/touch so it never fights the reader.
+  useEffect(() => {
+    if (paused) return;
+    const id = setInterval(() => {
+      scrollToIndex((activeRef.current + 1) % testimonials.length);
+    }, 4000);
+    return () => clearInterval(id);
+  }, [paused, testimonials.length]);
+
   return (
-    <div style={{ position: "relative" }}>
+    <div
+      style={{ position: "relative" }}
+      onMouseEnter={() => setPaused(true)}
+      onMouseLeave={() => setPaused(false)}
+      onTouchStart={() => setPaused(true)}
+      onTouchEnd={() => setPaused(false)}
+    >
       <div ref={trackRef} onScroll={handleScroll} className="sc-testi-track">
         {testimonials.map((tm, i) => (
           <div key={tm.name} ref={(el) => (cardRefs.current[i] = el)} className="sc-testi-card">
