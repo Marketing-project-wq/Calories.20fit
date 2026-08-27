@@ -110,6 +110,7 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
   const [photoFile, setPhotoFile] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [scanCount, setScanCount] = useState(0);
+  const [resultTab, setResultTab] = useState<"result" | "insights" | "summary">("result");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const handleFile = (file: File) => {
@@ -169,7 +170,8 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
       const fiberScore = Math.round(Math.min(scanResult.fiber / 5, 1) * 100);
 
       return (
-        <div style={{ background: "#FFFFFF", border: `1px solid ${BORDER}`, borderRadius: 16, overflow: "hidden" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: 0 }}>
+        <div style={{ background: "#FFFFFF", border: `1px solid ${BORDER}`, borderRadius: "16px 16px 0 0", overflow: "hidden" }}>
           {photoPreview && <div style={{ height: 160, backgroundImage: `url(${photoPreview})`, backgroundSize: "cover", backgroundPosition: "center" }} />}
           <div style={{ padding: "16px 18px", display: "flex", flexDirection: "column", gap: 12 }}>
             {/* Name + calories */}
@@ -263,6 +265,88 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
             </div>
           </div>
         </div>
+
+        {/* Result tabs: Insights + Food Summary (locked for non-member) */}
+        <div style={{ borderTop: `1px solid ${BORDER}` }}>
+          {/* Tab bar */}
+          <div style={{ display: "flex", borderBottom: `1px solid ${BORDER}` }}>
+            {(["result", "insights", "summary"] as const).map((tab) => {
+              const locked = !isAuthenticated && tab !== "result";
+              const labels: Record<string, string> = {
+                result: lang === "id" ? "Hasil" : "Result",
+                insights: lang === "id" ? "Insights" : "Insights",
+                summary: lang === "id" ? "Food Summary" : "Food Summary",
+              };
+              return (
+                <button key={tab} onClick={() => setResultTab(tab)}
+                  style={{ flex: 1, padding: "10px 8px", fontFamily: "Barlow Condensed, sans-serif", fontSize: 12, letterSpacing: ".06em", textTransform: "uppercase", background: "none", border: "none", borderBottom: resultTab === tab ? `2px solid ${RED}` : "2px solid transparent", color: resultTab === tab ? RED : locked ? "#C0B8B0" : "#6A6A6A", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 4 }}>
+                  {locked && <span style={{ fontSize: 10 }}>🔒</span>}
+                  {labels[tab]}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Tab content */}
+          {resultTab === "insights" && (
+            !isAuthenticated ? (
+              <div style={{ position: "relative", overflow: "hidden" }}>
+                {/* Blurred mock content */}
+                <div style={{ filter: "blur(5px)", userSelect: "none", padding: "16px 18px", display: "flex", flexDirection: "column", gap: 10 }}>
+                  {["Kalori harian kamu 15% di bawah target", "Protein intake minggu ini meningkat", "Makanan ini cocok untuk diet kamu", "Rekomendasi: tambah sayuran hijau"].map((item, i) => (
+                    <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "8px 0", borderBottom: `1px solid ${BORDER}` }}>
+                      <span style={{ width: 8, height: 8, borderRadius: "50%", background: i % 2 === 0 ? "#2F7D5B" : RED, flexShrink: 0, display: "block" }} />
+                      <span style={{ fontSize: 13 }}>{item}</span>
+                    </div>
+                  ))}
+                </div>
+                {/* Overlay */}
+                <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 10, background: "rgba(255,255,255,0.7)", backdropFilter: "blur(2px)" }}>
+                  <span style={{ fontSize: 22 }}>🔒</span>
+                  <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 15, textTransform: "uppercase", fontWeight: "bold" }}>{lang === "id" ? "Butuh akun" : "Account required"}</span>
+                  <a href="https://my.20fit.id/login" style={{ background: RED, color: "#fff", borderRadius: 8, padding: "8px 18px", fontSize: 13, fontWeight: "bold", textDecoration: "none" }}>
+                    {lang === "id" ? "Buat akun gratis" : "Create free account"}
+                  </a>
+                </div>
+              </div>
+            ) : (
+              <div style={{ padding: "16px 18px" }}>
+                <span style={{ fontSize: 12, color: "#8A8A8A" }}>{lang === "id" ? "Insight tersedia setelah beberapa scan tersimpan." : "Insights available after a few scans are saved."}</span>
+              </div>
+            )
+          )}
+
+          {resultTab === "summary" && (
+            !isAuthenticated ? (
+              <div style={{ position: "relative", overflow: "hidden" }}>
+                {/* Blurred mock content */}
+                <div style={{ filter: "blur(5px)", userSelect: "none", padding: "16px 18px", display: "flex", flexDirection: "column", gap: 10 }}>
+                  <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 8 }}>
+                    {["Total kalori hari ini", "Target kalori", "Sisa kalori", "Makanan di-scan"].map((label, i) => (
+                      <div key={i} style={{ border: `1px solid ${BORDER}`, borderRadius: 8, padding: "10px 12px" }}>
+                        <span style={{ fontSize: 10, color: "#8A8A8A", display: "block" }}>{label}</span>
+                        <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 22, color: BLACK }}>{[1240, 2000, 760, 3][i]}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                {/* Overlay */}
+                <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 10, background: "rgba(255,255,255,0.7)", backdropFilter: "blur(2px)" }}>
+                  <span style={{ fontSize: 22 }}>🔒</span>
+                  <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 15, textTransform: "uppercase", fontWeight: "bold" }}>{lang === "id" ? "Butuh akun" : "Account required"}</span>
+                  <a href="https://my.20fit.id/login" style={{ background: RED, color: "#fff", borderRadius: 8, padding: "8px 18px", fontSize: 13, fontWeight: "bold", textDecoration: "none" }}>
+                    {lang === "id" ? "Buat akun gratis" : "Create free account"}
+                  </a>
+                </div>
+              </div>
+            ) : (
+              <div style={{ padding: "16px 18px" }}>
+                <span style={{ fontSize: 12, color: "#8A8A8A" }}>{lang === "id" ? "Summary tersedia setelah beberapa scan tersimpan." : "Summary available after a few scans are saved."}</span>
+              </div>
+            )
+          )}
+        </div>
+        </div>
       );
     }
 
@@ -310,7 +394,25 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
               {tr.heroTitle.split("\n").map((line, i) => <span key={i}>{line}{i === 0 && <br />}</span>)}
             </h1>
             <p style={{ margin: 0, fontSize: 14, lineHeight: 1.55, color: "#4A4A4A", maxWidth: "44ch" }}>{tr.heroSub}</p>
-            <span style={{ fontSize: 12, color: "#8A8A8A" }}>{tr.heroNote}</span>
+            {/* Download buttons */}
+            <div style={{ display: "flex", flexWrap: "wrap", gap: 8, marginTop: 4 }}>
+              <a href="https://apps.apple.com/app/20fit/id1234567890" target="_blank" rel="noopener noreferrer"
+                style={{ display: "flex", alignItems: "center", gap: 8, background: BLACK, color: "#FFFFFF", borderRadius: 10, padding: "8px 14px", textDecoration: "none" }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/></svg>
+                <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.2 }}>
+                  <span style={{ fontSize: 9, opacity: 0.7 }}>{lang === "id" ? "Unduh di" : "Download on the"}</span>
+                  <span style={{ fontSize: 13, fontWeight: "bold" }}>App Store</span>
+                </div>
+              </a>
+              <a href="https://play.google.com/store/apps/details?id=id.fit20" target="_blank" rel="noopener noreferrer"
+                style={{ display: "flex", alignItems: "center", gap: 8, background: BLACK, color: "#FFFFFF", borderRadius: 10, padding: "8px 14px", textDecoration: "none" }}>
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M3,20.5v-17c0-0.83,0.94-1.3,1.6-0.8l14,8.5c0.6,0.37,0.6,1.23,0,1.6l-14,8.5C3.94,21.8,3,21.33,3,20.5z"/></svg>
+                <div style={{ display: "flex", flexDirection: "column", lineHeight: 1.2 }}>
+                  <span style={{ fontSize: 9, opacity: 0.7 }}>{lang === "id" ? "Dapatkan di" : "Get it on"}</span>
+                  <span style={{ fontSize: 13, fontWeight: "bold" }}>Google Play</span>
+                </div>
+              </a>
+            </div>
           </div>
           <ToolPanel />
         </div>
