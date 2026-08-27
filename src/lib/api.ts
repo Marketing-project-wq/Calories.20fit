@@ -116,7 +116,10 @@ export const apiClient = {
     });
     if (response.status === 401) throw new Error("login_required");
     if (!response.ok) throw new Error("Gagal memuat kuota");
-    return response.json();
+    const data = await response.json();
+    // Server returns { ok, quota: { remaining, freeLeft, credits, ... } }
+    const q = data.quota ?? data;
+    return { remaining: q.remaining ?? 0, limit: q.freeLimit ?? 10 };
   },
 
   async getHistory(): Promise<HistoryItem[]> {
