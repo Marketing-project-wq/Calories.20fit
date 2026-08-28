@@ -178,7 +178,9 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
       setScanResult(result); setScanCount(c => c + 1);
     } catch (err) {
       const msg = err instanceof Error ? err.message : tr.errGeneric;
-      setError(msg === "scan_limit" ? tr.errQuota : msg);
+      // Tamu yang habis jatah tidak bisa "top-up" (belum punya akun) — pesannya
+      // mengarahkan ke daftar akun, bukan ke halaman top-up member.
+      setError(msg === "scan_limit" ? (isAuthenticated ? tr.errQuota : tr.errQuotaGuest) : msg);
     } finally { setIsLoading(false); }
   };
 
@@ -195,13 +197,22 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
       </div>
     );
 
-    if (error) return (
-      <div style={{ ...glass(0.6), borderColor: "rgba(255,150,150,0.5)", borderRadius: 22, padding: 20, display: "flex", flexDirection: "column", gap: 12, boxShadow: "0 20px 50px -12px rgba(214,40,40,0.12)" }}>
-        <span style={{ fontSize: 13, fontWeight: "bold", color: RED }}>{tr.failedTitle}</span>
-        <span style={{ fontSize: 12, color: "#4A4A4A" }}>{error}</span>
-        <button onClick={() => setError(null)} className="sc-btn-primary" style={{ background: RED, color: "#fff", border: "none", borderRadius: 8, padding: "8px 14px", fontFamily: "inherit", fontSize: 12, fontWeight: "bold", cursor: "pointer", alignSelf: "flex-start" }}>{tr.retryBtn}</button>
-      </div>
-    );
+    if (error) {
+      // Tamu yang jatah gratisnya habis tidak punya apa pun untuk "dicoba lagi"
+      // — arahkan langsung ke daftar akun, bukan tombol retry yang percuma.
+      const isGuestQuotaError = !isAuthenticated && error === tr.errQuotaGuest;
+      return (
+        <div style={{ ...glass(0.6), borderColor: "rgba(255,150,150,0.5)", borderRadius: 22, padding: 20, display: "flex", flexDirection: "column", gap: 12, boxShadow: "0 20px 50px -12px rgba(214,40,40,0.12)" }}>
+          <span style={{ fontSize: 13, fontWeight: "bold", color: RED }}>{tr.failedTitle}</span>
+          <span style={{ fontSize: 12, color: "#4A4A4A" }}>{error}</span>
+          {isGuestQuotaError ? (
+            <a href={URLS.SIGN_UP} className="sc-btn-primary" style={{ background: RED, color: "#fff", borderRadius: 8, padding: "8px 14px", fontFamily: "inherit", fontSize: 12, fontWeight: "bold", textDecoration: "none", alignSelf: "flex-start" }}>{tr.signUp}</a>
+          ) : (
+            <button onClick={() => setError(null)} className="sc-btn-primary" style={{ background: RED, color: "#fff", border: "none", borderRadius: 8, padding: "8px 14px", fontFamily: "inherit", fontSize: 12, fontWeight: "bold", cursor: "pointer", alignSelf: "flex-start" }}>{tr.retryBtn}</button>
+          )}
+        </div>
+      );
+    }
 
     if (scanResult) {
       const healthScore = scanResult.health_score;
@@ -226,6 +237,14 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
                 <span style={{ fontSize: 12, color: "#8A8A8A" }}>{tr.kcal}</span>
                 {scanResult.total_grams > 0 && <span style={{ fontSize: 11, color: "#9A9A9A", marginLeft: 4 }}>· {scanResult.total_grams}g</span>}
               </div>
+              {/* Rentang estimasi + keyakinan — bagian dari hasil analisis 1 foto, selalu terbuka. Cuma tampil kalau AI mengirim field-nya. */}
+              {(typeof scanResult.kcal_min === "number" && typeof scanResult.kcal_max === "number") || typeof scanResult.confidence === "number" ? (
+                <span style={{ fontSize: 11, color: "#9A9A9A", display: "block", marginTop: 2 }}>
+                  {tr.estimateLabel}
+                  {typeof scanResult.kcal_min === "number" && typeof scanResult.kcal_max === "number" && ` · ${tr.estimateRange(scanResult.kcal_min, scanResult.kcal_max)}`}
+                  {typeof scanResult.confidence === "number" && ` · ${scanResult.confidence >= 70 ? tr.confHigh : scanResult.confidence >= 40 ? tr.confMedium : tr.confLow}`}
+                </span>
+              ) : null}
             </div>
 
             {/* Macros — always visible */}
@@ -288,6 +307,54 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
               </div>
             )}
 
+            {/* Tag nutrisi singkat — hasil analisis 1 foto, selalu terbuka */}
+            {scanResult.tags && scanResult.tags.length > 0 && (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 6 }}>
+                {scanResult.tags.map((tag, i) => (
+                  <span key={i} style={{ display: "inline-flex", alignItems: "center", gap: 4, fontSize: 11, fontWeight: 700, padding: "4px 9px", borderRadius: 999, background: tag.positive ? "#EAF6EF" : "#FDF3E7", color: tag.positive ? "#2F7D5B" : "#B4690E" }}>
+                    {tag.positive ? "✓" : "!"} {tag.label}
+                  </span>
+                ))}
+              </div>
+            )}
+
+            {/* Key Insights — hasil analisis 1 foto, selalu terbuka (BEDA dari tab "Tren" di bawah yang butuh riwayat lintas-scan) */}
+            {scanResult.insights && scanResult.insights.length > 0 && (
+              <div style={{ borderTop: "1px solid rgba(20,20,20,0.08)", paddingTop: 12 }}>
+                <span style={{ fontSize: 10, color: "#8A8A8A", textTransform: "uppercase", letterSpacing: ".06em", display: "block", marginBottom: 6 }}>
+                  {tr.keyInsightsTitle}
+                </span>
+                <div style={{ display: "flex", flexDirection: "column", gap: 6 }}>
+                  {scanResult.insights.map((insight, i) => (
+                    <div key={i} style={{ display: "flex", alignItems: "flex-start", gap: 8 }}>
+                      <span style={{ width: 5, height: 5, borderRadius: "50%", background: RED, flexShrink: 0, marginTop: 6 }} />
+                      <span style={{ fontSize: 12, lineHeight: 1.55, color: "#3A3A3A" }}>{insight}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Rekomendasi / "healthier" advice untuk scan ini — hasil analisis 1 foto, selalu terbuka */}
+            {scanResult.recommendation && (
+              <div style={{ borderTop: "1px solid rgba(20,20,20,0.08)", paddingTop: 12 }}>
+                <span style={{ fontSize: 10, color: "#8A8A8A", textTransform: "uppercase", letterSpacing: ".06em", display: "block", marginBottom: 6 }}>
+                  {tr.recommendationTitle}
+                </span>
+                <p style={{ fontSize: 12, lineHeight: 1.6, color: "#3A3A3A", margin: 0 }}>{scanResult.recommendation}</p>
+                {scanResult.needs_more && scanResult.needs_more.length > 0 && (
+                  <div style={{ marginTop: 8 }}>
+                    <span style={{ fontSize: 10, color: "#9A9A9A" }}>{tr.needsMoreTitle}: </span>
+                    <div style={{ display: "inline-flex", flexWrap: "wrap", gap: 6, marginTop: 4 }}>
+                      {scanResult.needs_more.map((need, i) => (
+                        <span key={i} style={{ fontSize: 11, fontWeight: 700, padding: "3px 9px", borderRadius: 999, background: TINT, color: RED }}>+ {need}</span>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Per-item breakdown if multiple items */}
             {scanResult.items.length > 1 && (
               <div style={{ borderTop: "1px solid rgba(20,20,20,0.08)", paddingTop: 10 }}>
@@ -316,9 +383,13 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
           <div style={{ display: "flex", borderBottom: "1px solid rgba(20,20,20,0.08)" }}>
             {(["result", "insights", "summary"] as const).map((tab) => {
               const locked = !isAuthenticated && tab !== "result";
+              // Label tab "insights" sengaja BUKAN "Insights" — itu sudah dipakai
+              // bagian "Key Insights" yang terbuka di atas (hasil 1 foto). Tab ini
+              // soal pola LINTAS-SCAN (butuh riwayat tersimpan → layer akun), jadi
+              // dilabeli "Trends"/"Tren" biar tidak tertukar.
               const labels: Record<string, string> = {
                 result: lang === "id" ? "Hasil" : "Result",
-                insights: lang === "id" ? "Insights" : "Insights",
+                insights: lang === "id" ? "Tren" : "Trends",
                 summary: lang === "id" ? "Food Summary" : "Food Summary",
               };
               return (
@@ -348,7 +419,7 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
                 <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 10, background: "rgba(255,255,255,0.7)", backdropFilter: "blur(2px)" }}>
                   <span style={{ fontSize: 22 }}>🔒</span>
                   <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 15, textTransform: "uppercase", fontWeight: "bold" }}>{lang === "id" ? "Butuh akun" : "Account required"}</span>
-                  <a href="https://my.20fit.id/login" style={{ background: RED, color: "#fff", borderRadius: 8, padding: "8px 18px", fontSize: 13, fontWeight: "bold", textDecoration: "none" }}>
+                  <a href={URLS.SIGN_UP} style={{ background: RED, color: "#fff", borderRadius: 8, padding: "8px 18px", fontSize: 13, fontWeight: "bold", textDecoration: "none" }}>
                     {lang === "id" ? "Buat akun gratis" : "Create free account"}
                   </a>
                 </div>
@@ -378,7 +449,7 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
                 <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 10, background: "rgba(255,255,255,0.7)", backdropFilter: "blur(2px)" }}>
                   <span style={{ fontSize: 22 }}>🔒</span>
                   <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 15, textTransform: "uppercase", fontWeight: "bold" }}>{lang === "id" ? "Butuh akun" : "Account required"}</span>
-                  <a href="https://my.20fit.id/login" style={{ background: RED, color: "#fff", borderRadius: 8, padding: "8px 18px", fontSize: 13, fontWeight: "bold", textDecoration: "none" }}>
+                  <a href={URLS.SIGN_UP} style={{ background: RED, color: "#fff", borderRadius: 8, padding: "8px 18px", fontSize: 13, fontWeight: "bold", textDecoration: "none" }}>
                     {lang === "id" ? "Buat akun gratis" : "Create free account"}
                   </a>
                 </div>
