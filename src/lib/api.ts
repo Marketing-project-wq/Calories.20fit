@@ -1,6 +1,11 @@
 import { API, API_BASE } from "./constants";
 import { supabase } from "./supabase";
 
+export interface ScanTag {
+  label: string;
+  positive: boolean;
+}
+
 export interface ScanResult {
   id: string;
   food_name: string;
@@ -17,6 +22,15 @@ export interface ScanResult {
   image_url: string;
   created_at: string;
   items: ScanItem[];
+  // Bagian dari hasil analisis SATU foto — selalu terbuka (tidak butuh akun).
+  // Optional: backend lama yang belum mengirim field ini tetap aman (undefined).
+  kcal_min?: number;
+  kcal_max?: number;
+  confidence?: number;
+  tags?: ScanTag[];
+  recommendation?: string;
+  needs_more?: string[];
+  insights?: string[];
 }
 
 export interface ScanItem {
@@ -89,7 +103,12 @@ export const apiClient = {
       const data = await response.json();
       return normalizeResult(data);
     } else {
-      // Guest: use /api/pub/scan — server tracks quota via httpOnly cookie
+      // Guest: use /api/pub/scan — server tracks quota via httpOnly cookie.
+      // Rate limit lives server-side (my.20fit.id, outside this repo) — not
+      // enforceable from here. Recommended: 5 scans/device/day. Hasil per scan
+      // sekarang lebih lengkap (kalori/makro + confidence/insight/rekomendasi,
+      // lihat ScanResult) daripada saat limit lama diusulkan, jadi angkanya
+      // sengaja lebih ketat dari sebelumnya — konfirmasi ke pemilik backend.
       const response = await fetch(`${API_BASE}/api/pub/scan`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -189,6 +208,18 @@ function normalizeResult(data: any): ScanResult {
       fat_g: Math.round((i.fat_g ?? i.fat ?? 0) * 10) / 10,
       fiber_g: Math.round((i.fiber_g ?? i.fiber ?? 0) * 10) / 10,
     })),
+    // Bagian hasil analisis 1 foto — selalu terbuka. Semua opsional: kalau
+    // backend (AI prompt-nya) belum mengirim field ini, UI cukup tidak
+    // menampilkan bagian itu (lihat ScanPage) — tidak pernah error.
+    kcal_min: typeof result.kcal_min === "number" ? Math.round(result.kcal_min) : undefined,
+    kcal_max: typeof result.kcal_max === "number" ? Math.round(result.kcal_max) : undefined,
+    confidence: typeof result.confidence === "number" ? result.confidence : undefined,
+    tags: Array.isArray(result.tags)
+      ? result.tags.map((tg: any) => ({ label: String(tg.label ?? ""), positive: tg.positive !== false })).filter((tg: ScanTag) => tg.label)
+      : undefined,
+    recommendation: result.recommendation ?? undefined,
+    needs_more: Array.isArray(result.needs_more) ? result.needs_more.map((s: any) => String(s)) : undefined,
+    insights: Array.isArray(result.insights) ? result.insights.map((s: any) => String(s)) : undefined,
   };
 }
 

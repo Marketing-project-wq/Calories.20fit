@@ -6,6 +6,11 @@ export const t = {
     tabScan: "Scan Kalori",
     tabHistory: "Riwayat",
     tabInsight: "Insight",
+    // Auth nav (heading)
+    signIn: "Masuk",
+    signUp: "Daftar",
+    signOut: "Keluar",
+    openMy20fit: "Buka My 20FIT",
     // Hero
     badge: "Scan kalori",
     heroTitle: "Foto makanan,\nlihat estimasi kalorinya",
@@ -39,12 +44,22 @@ export const t = {
     errFormat: "Format tidak didukung. Gunakan JPG, PNG, atau WebP.",
     errSize: "Foto terlalu besar. Maksimal 5MB.",
     errQuota: "Kuota scan habis. Top-up untuk melanjutkan.",
+    errQuotaGuest: "Jatah scan gratis habis. Daftar akun gratis untuk lanjut scan.",
     errGeneric: "Gagal menganalisis foto",
     // Macros
     protein: "Protein",
     carbs: "Karbo",
     fat: "Lemak",
     locked: "🔒 Perlu akun",
+    // Estimate range + confidence (hasil analisis — selalu terbuka)
+    estimateLabel: "Estimasi dari foto",
+    estimateRange: (min: number, max: number) => `${min}–${max} kkal`,
+    confHigh: "keyakinan tinggi",
+    confMedium: "keyakinan sedang",
+    confLow: "keyakinan rendah",
+    keyInsightsTitle: "Insight Utama",
+    recommendationTitle: "Rekomendasi",
+    needsMoreTitle: "Perlu ditambah",
     // How it works
     howItWorks: "Cara kerja",
     whatYouCan: "Yang bisa kamu lakukan",
@@ -72,6 +87,11 @@ export const t = {
     tabScan: "Calorie Scan",
     tabHistory: "History",
     tabInsight: "Insight",
+    // Auth nav (heading)
+    signIn: "Sign In",
+    signUp: "Sign Up",
+    signOut: "Sign Out",
+    openMy20fit: "Open My 20FIT",
     // Hero
     badge: "Calorie scan",
     heroTitle: "Photo your food,\nsee the calorie estimate",
@@ -105,12 +125,22 @@ export const t = {
     errFormat: "Format not supported. Use JPG, PNG, or WebP.",
     errSize: "Photo too large. Maximum 5MB.",
     errQuota: "Scan quota exhausted. Top up to continue.",
+    errQuotaGuest: "Free scans used up. Sign up for a free account to keep scanning.",
     errGeneric: "Failed to analyze photo",
     // Macros
     protein: "Protein",
     carbs: "Carbs",
     fat: "Fat",
     locked: "🔒 Account required",
+    // Estimate range + confidence (part of the analysis result — always open)
+    estimateLabel: "Estimate from photo",
+    estimateRange: (min: number, max: number) => `${min}–${max} kcal`,
+    confHigh: "high confidence",
+    confMedium: "medium confidence",
+    confLow: "low confidence",
+    keyInsightsTitle: "Key Insights",
+    recommendationTitle: "Recommendation",
+    needsMoreTitle: "Needs more",
     // How it works
     howItWorks: "How it works",
     whatYouCan: "What you can do",

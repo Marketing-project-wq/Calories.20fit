@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { COLORS } from "./lib/constants";
 import { t, Lang } from "./lib/i18n";
+import { useAuth } from "./hooks/useAuth";
+import { AuthNav } from "./components/AuthNav";
 import { ScanPage } from "./pages/ScanPage";
 import { HistoryPage } from "./pages/HistoryPage";
 import { InsightPage } from "./pages/InsightPage";
@@ -11,6 +13,7 @@ export function App() {
   const [page, setPage] = useState<Page>("scan");
   const [lang, setLang] = useState<Lang>("id");
   const tr = t[lang];
+  const { user, isAuthenticated, isLoading } = useAuth();
 
   const TABS: { key: Page; label: string }[] = [
     { key: "scan", label: tr.tabScan },
@@ -20,9 +23,12 @@ export function App() {
 
   return (
     <div className="min-h-screen" style={{ background: "#FFFFFF" }}>
-      {/* Tab nav + lang toggle */}
+      {/* Tab nav + lang toggle + auth */}
       <div className="sc-nav-glass" style={{ borderBottom: "1px solid rgba(20,20,20,0.08)", position: "sticky", top: 0, zIndex: 50, boxShadow: "0 4px 24px rgba(20,20,20,0.04)" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", padding: "0 24px", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+        {/* flexWrap: kalau tab + toggle bahasa + Sign In/Sign Up nggak muat satu baris
+            (layar sempit), grup kanan (bahasa+auth) pindah ke baris sendiri di bawah
+            tab — bukan meremukkan tab jadi kepotong nggak kebaca. */}
+        <div style={{ maxWidth: 1100, margin: "0 auto", padding: "8px 24px", display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "8px 12px" }}>
           <div style={{ display: "flex" }}>
             {TABS.map((tab) => (
               <button
@@ -40,6 +46,7 @@ export function App() {
                   marginBottom: "-2px",
                   background: "none",
                   cursor: "pointer",
+                  whiteSpace: "nowrap",
                 }}
               >
                 {tab.label}
@@ -47,28 +54,32 @@ export function App() {
             ))}
           </div>
 
-          {/* Language toggle */}
-          <div style={{ display: "flex", background: "rgba(20,20,20,0.05)", borderRadius: 10, padding: 3, gap: 2 }}>
-            {(["id", "en"] as Lang[]).map((l) => (
-              <button
-                key={l}
-                onClick={() => setLang(l)}
-                style={{
-                  padding: "4px 10px",
-                  fontFamily: "Barlow Condensed, sans-serif",
-                  fontSize: "11px",
-                  letterSpacing: "0.06em",
-                  textTransform: "uppercase",
-                  borderRadius: 6,
-                  border: "none",
-                  background: lang === l ? "#141414" : "transparent",
-                  color: lang === l ? "#FFFFFF" : "#8A8A8A",
-                  cursor: "pointer",
-                }}
-              >
-                {l.toUpperCase()}
-              </button>
-            ))}
+          <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+            {/* Language toggle */}
+            <div style={{ display: "flex", background: "rgba(20,20,20,0.05)", borderRadius: 10, padding: 3, gap: 2 }}>
+              {(["id", "en"] as Lang[]).map((l) => (
+                <button
+                  key={l}
+                  onClick={() => setLang(l)}
+                  style={{
+                    padding: "4px 10px",
+                    fontFamily: "Barlow Condensed, sans-serif",
+                    fontSize: "11px",
+                    letterSpacing: "0.06em",
+                    textTransform: "uppercase",
+                    borderRadius: 6,
+                    border: "none",
+                    background: lang === l ? "#141414" : "transparent",
+                    color: lang === l ? "#FFFFFF" : "#8A8A8A",
+                    cursor: "pointer",
+                  }}
+                >
+                  {l.toUpperCase()}
+                </button>
+              ))}
+            </div>
+
+            <AuthNav lang={lang} isLoading={isLoading} isAuthenticated={isAuthenticated} user={user} />
           </div>
         </div>
       </div>
