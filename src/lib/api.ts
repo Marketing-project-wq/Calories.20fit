@@ -105,10 +105,10 @@ export const apiClient = {
     } else {
       // Guest: use /api/pub/scan — server tracks quota via httpOnly cookie.
       // Rate limit lives server-side (my.20fit.id, outside this repo) — not
-      // enforceable from here. Recommended: 5 scans/device/day. Hasil per scan
-      // sekarang lebih lengkap (kalori/makro + confidence/insight/rekomendasi,
-      // lihat ScanResult) daripada saat limit lama diusulkan, jadi angkanya
-      // sengaja lebih ketat dari sebelumnya — konfirmasi ke pemilik backend.
+      // enforceable from here. Confirmed limit: 5 scans/device, LIFETIME (no
+      // periodic reset) — matches the same cap applied to the mobile app's
+      // guest quota (my20fit_guest_consume_scan). Confirm the my.20fit.id
+      // backend enforces the same 5-lifetime rule, not a per-day/per-month one.
       const response = await fetch(`${API_BASE}/api/pub/scan`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
