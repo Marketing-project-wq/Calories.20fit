@@ -131,6 +131,126 @@ function TestimonialMarquee({ testimonials }: { testimonials: (typeof TESTIMONIA
   );
 }
 
+// Konten mockup HP di section "Cocok untuk siapa" — CONTOH statis, bukan hasil
+// scan sungguhan (tidak bisa di-scan dari sini). Angka tetap dibingkai sebagai
+// perkiraan ("±420 kkal"), bukan angka presisi — konsisten dengan framingNote
+// di seluruh halaman. Nama makanan "Soto Ayam" dipilih karena sudah dipakai
+// di testimonial di bawah, jadi terasa konsisten dengan konten sekitar,
+// bukan contoh acak. TIDAK pakai foto sungguhan (isu lisensi) — cukup emoji
+// sebagai placeholder foto, jelas terlihat sebagai ilustrasi.
+const SAMPLE_RESULT = {
+  id: {
+    badge: "Contoh hasil",
+    foodEmoji: "🍜",
+    foodName: "Soto Ayam",
+    estimate: "Estimasi dari foto · ±420 kkal",
+    macros: [
+      { label: "Protein", value: 28 },
+      { label: "Karbo", value: 42 },
+      { label: "Lemak", value: 14 },
+    ],
+    healthLabel: "Health Meter",
+    health: 72,
+    fillingLabel: "Filling Rate",
+    filling: 65,
+    description: "Kuah bening, suwiran ayam, tauge, dan bihun.",
+    caption: "Contoh tampilan hasil — bukan data asli.",
+  },
+  en: {
+    badge: "Sample result",
+    foodEmoji: "🍜",
+    foodName: "Chicken Soto",
+    estimate: "Estimate from photo · ±420 kcal",
+    macros: [
+      { label: "Protein", value: 28 },
+      { label: "Carbs", value: 42 },
+      { label: "Fat", value: 14 },
+    ],
+    healthLabel: "Health Meter",
+    health: 72,
+    fillingLabel: "Filling Rate",
+    filling: 65,
+    description: "Clear broth, shredded chicken, bean sprouts, and vermicelli.",
+    caption: "Example result display — not real data.",
+  },
+} as const;
+
+/// Mockup HP statis (bukan komponen fungsional) menampilkan CONTOH hasil scan,
+/// dipakai di section "Cocok untuk siapa" biar calon user lihat gambaran hasil
+/// sebelum coba. Gaya visual meniru kartu hasil asli (ToolPanel di atas) biar
+/// konsisten, tapi ini murni ilustrasi — badge "Contoh hasil"/"Sample result"
+/// sengaja mencolok di pojok supaya tidak dikira data pengguna.
+function SampleResultPhoneMockup({ lang }: { lang: Lang }) {
+  const s = SAMPLE_RESULT[lang];
+  return (
+    <div style={{ position: "relative", width: "100%", maxWidth: 280, margin: "0 auto" }}>
+      {/* Badge "Contoh hasil" */}
+      <span style={{ position: "absolute", top: -12, right: 8, zIndex: 3, background: RED, color: "#fff", fontFamily: "Barlow Condensed, sans-serif", fontSize: 11, letterSpacing: ".04em", textTransform: "uppercase", fontWeight: "bold", borderRadius: 999, padding: "5px 12px", boxShadow: "0 8px 16px -4px rgba(214,40,40,0.4)" }}>
+        {s.badge}
+      </span>
+
+      {/* Bezel HP */}
+      <div style={{ background: BLACK, borderRadius: 34, padding: 8, boxShadow: "0 30px 60px -20px rgba(20,20,20,0.35), 0 8px 20px -8px rgba(20,20,20,0.2)" }}>
+        <div style={{ background: "#FFFFFF", borderRadius: 26, overflow: "hidden", position: "relative" }}>
+          {/* Notch */}
+          <div style={{ position: "absolute", top: 0, left: "50%", transform: "translateX(-50%)", width: 84, height: 18, background: BLACK, borderRadius: "0 0 12px 12px", zIndex: 2 }} />
+
+          {/* "Layar": kartu hasil versi ringkas */}
+          <div style={{ paddingTop: 26 }}>
+            <div style={{ height: 100, background: TINT, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 40 }}>
+              {s.foodEmoji}
+            </div>
+            <div style={{ padding: "12px 14px 16px", display: "flex", flexDirection: "column", gap: 10 }}>
+              <div>
+                <span style={{ fontSize: 12, fontWeight: "bold", color: BLACK, display: "block", marginBottom: 3 }}>{s.foodName}</span>
+                <span style={{ fontSize: 10, color: "#9A9A9A" }}>{s.estimate}</span>
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                {s.macros.map((m) => (
+                  <div key={m.label} style={{ display: "flex", flexDirection: "column", gap: 2 }}>
+                    <div style={{ display: "flex", justifyContent: "space-between", fontSize: 10 }}>
+                      <span style={{ color: "#6A6A6A" }}>{m.label}</span>
+                      <span style={{ color: BLACK, fontWeight: 600 }}>{m.value}g</span>
+                    </div>
+                    <div style={{ height: 3, borderRadius: 999, background: BORDER, overflow: "hidden" }}>
+                      <div style={{ height: 3, width: `${Math.min(100, m.value * 2)}%`, borderRadius: 999, background: RED }} />
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 6 }}>
+                <div style={{ border: "1px solid rgba(20,20,20,0.08)", borderRadius: 10, padding: "7px 8px" }}>
+                  <span style={{ fontSize: 8, color: "#9A9A9A", textTransform: "uppercase", letterSpacing: ".04em", display: "block", marginBottom: 2 }}>{s.healthLabel}</span>
+                  <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 16, color: "#2F7D5B" }}>{s.health}</span>
+                  <span style={{ fontSize: 8, color: "#9A9A9A" }}>/100</span>
+                </div>
+                <div style={{ border: "1px solid rgba(20,20,20,0.08)", borderRadius: 10, padding: "7px 8px" }}>
+                  <span style={{ fontSize: 8, color: "#9A9A9A", textTransform: "uppercase", letterSpacing: ".04em", display: "block", marginBottom: 2 }}>{s.fillingLabel}</span>
+                  <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 16, color: "#D97706" }}>{s.filling}</span>
+                  <span style={{ fontSize: 8, color: "#9A9A9A" }}>/100</span>
+                </div>
+              </div>
+
+              <p style={{ fontSize: 10, lineHeight: 1.5, color: "#6A6A6A", margin: 0, borderTop: "1px solid rgba(20,20,20,0.06)", paddingTop: 8 }}>
+                {s.description}
+              </p>
+            </div>
+          </div>
+
+          {/* Home indicator */}
+          <div style={{ display: "flex", justifyContent: "center", paddingBottom: 8 }}>
+            <div style={{ width: 90, height: 4, borderRadius: 999, background: "rgba(20,20,20,0.15)" }} />
+          </div>
+        </div>
+      </div>
+
+      <span style={{ display: "block", textAlign: "center", fontSize: 11, color: "#9A9A9A", marginTop: 10 }}>{s.caption}</span>
+    </div>
+  );
+}
+
 function FaqItem({ q, a }: { q: string; a: string }) {
   const [open, setOpen] = useState(false);
   return (
@@ -555,18 +675,21 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
         </div>
       </div>
 
-      {/* Who this is for */}
+      {/* Who this is for — + mockup HP contoh hasil, biar calon user lihat gambaran sebelum coba */}
       <div style={{ borderBottom: "1px solid rgba(20,20,20,0.06)" }}>
-        <div style={{ maxWidth: 640, margin: "0 auto", padding: "32px 24px", display: "flex", flexDirection: "column", alignItems: "center", gap: 18, textAlign: "center" }}>
-          <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 22, textTransform: "uppercase" }}>{tr.whoForTitle}</span>
-          <div style={{ display: "flex", flexDirection: "column", gap: 12, alignItems: "flex-start" }}>
-            {tr.whoForItems.map((item) => (
-              <div key={item} style={{ display: "flex", gap: 10, alignItems: "flex-start", textAlign: "left" }}>
-                <span style={{ width: 20, height: 20, borderRadius: "50%", background: TINT, color: RED, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: "bold", flexShrink: 0, marginTop: 1 }}>✓</span>
-                <span style={{ fontSize: 14, lineHeight: 1.5, color: "#3A3A3A" }}>{item}</span>
-              </div>
-            ))}
+        <div style={{ maxWidth: W, margin: "0 auto", padding: "32px 24px", display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))", gap: 32, alignItems: "center" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: 18 }}>
+            <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 22, textTransform: "uppercase" }}>{tr.whoForTitle}</span>
+            <div style={{ display: "flex", flexDirection: "column", gap: 12, alignItems: "flex-start" }}>
+              {tr.whoForItems.map((item) => (
+                <div key={item} style={{ display: "flex", gap: 10, alignItems: "flex-start", textAlign: "left" }}>
+                  <span style={{ width: 20, height: 20, borderRadius: "50%", background: TINT, color: RED, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: "bold", flexShrink: 0, marginTop: 1 }}>✓</span>
+                  <span style={{ fontSize: 14, lineHeight: 1.5, color: "#3A3A3A" }}>{item}</span>
+                </div>
+              ))}
+            </div>
           </div>
+          <SampleResultPhoneMockup lang={lang} />
         </div>
       </div>
 
