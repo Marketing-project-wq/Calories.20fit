@@ -86,8 +86,8 @@ export function App() {
 
       <main>
         {page === "scan" && <ScanPage lang={lang} />}
-        {page === "history" && <HistoryPage />}
-        {page === "insight" && <InsightPage />}
+        {page === "history" && <HistoryPage lang={lang} />}
+        {page === "insight" && <InsightPage lang={lang} />}
       </main>
     </div>
   );
