@@ -1,4 +1,4 @@
-# CLAUDE.md — calories.20fit.id
+# CLAUDE.md — calorietracker.20fit.id
 
 ## ATURAN UTAMA: Chat ini KHUSUS untuk deploy ke PRODUCTION
 
@@ -10,7 +10,7 @@
 
 ## Project
 
-- **Nama:** calories.20fit.id
+- **Nama:** calorietracker.20fit.id
 - **Repo:** https://github.com/Marketing-project-wq/Calories.20fit
 - **Stack:** React 18 + TypeScript + Vite + TailwindCSS + Supabase
 - **Branch utama:** `main`
@@ -21,7 +21,8 @@
 - **Branch production:** `main`
 - **Supabase project:** `cpvzwqptzcxnwzfzgrmt`
 - **API base:** diatur via `VITE_API_URL` env var
-- **Production URL:** `https://calories.20fit.id`
+- **Production URL:** `https://calorietracker.20fit.id`
+  (bukan `calories.20fit.id` — nama itu belum pernah punya DNS record, diaudit & dikoreksi 2026-08-31)
 
 ## Cara Deploy ke Production
 

@@ -7,7 +7,7 @@ export const useAuth = () => {
 
   useEffect(() => {
     (async () => {
-      // SSO Hand-off: my.20fit links here as calories.20fit.id/#access_token=...&refresh_token=...
+      // SSO Hand-off: my.20fit links here as calorietracker.20fit.id/#access_token=...&refresh_token=...
       const h = new URLSearchParams(location.hash.slice(1));
       const at = h.get("access_token");
       const rt = h.get("refresh_token");
