@@ -5,7 +5,7 @@ export const t = {
     // App tabs
     tabScan: "Scan Kalori",
     tabHistory: "Riwayat",
-    tabInsight: "Insight",
+    tabInsight: "Tracker",
     // Auth nav (heading)
     signIn: "Masuk",
     signUp: "Daftar",
@@ -101,7 +101,7 @@ export const t = {
     // App tabs
     tabScan: "Calorie Scan",
     tabHistory: "History",
-    tabInsight: "Insight",
+    tabInsight: "Tracker",
     // Auth nav (heading)
     signIn: "Sign In",
     signUp: "Sign Up",
