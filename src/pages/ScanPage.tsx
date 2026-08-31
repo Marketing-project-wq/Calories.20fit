@@ -22,13 +22,13 @@ const glass = (opacity = 0.62) => ({
 
 const ECOSYSTEM = {
   id: [
-    { name: "Scan Kalori", host: "calories.20fit.id", initial: "K", accent: RED, desc: "Foto makanan, dapat estimasi kalori dan makronutriennya." },
+    { name: "Scan Kalori", host: "calorietracker.20fit.id", initial: "K", accent: RED, desc: "Foto makanan, dapat estimasi kalori dan makronutriennya." },
     { name: "Menu Diet", host: "menu.20fit.id", initial: "M", accent: "#2F7D5B", desc: "Kumpulan menu dan resep dengan hitungan kalori per porsi." },
     { name: "Panduan MCU", host: "medicalcheckup.20fit.id", initial: "C", accent: "#2D4E8F", desc: "Upload hasil lab, baca penjelasan tiap penandanya." },
     { name: "My 20FIT", host: "my.20fit.id", initial: "20", accent: BLACK, desc: "Akun, riwayat, meal plan, diet plan, dan analytics." },
   ],
   en: [
-    { name: "Calorie Scan", host: "calories.20fit.id", initial: "K", accent: RED, desc: "Photo your food, get calorie and macronutrient estimates." },
+    { name: "Calorie Scan", host: "calorietracker.20fit.id", initial: "K", accent: RED, desc: "Photo your food, get calorie and macronutrient estimates." },
     { name: "Diet Menu", host: "menu.20fit.id", initial: "M", accent: "#2F7D5B", desc: "Menu collection and recipes with calories per serving." },
     { name: "MCU Guide", host: "medicalcheckup.20fit.id", initial: "C", accent: "#2D4E8F", desc: "Upload lab results, read explanations for each marker." },
     { name: "My 20FIT", host: "my.20fit.id", initial: "20", accent: BLACK, desc: "Account, history, meal plan, diet plan, and analytics." },

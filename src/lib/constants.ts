@@ -48,7 +48,7 @@ export const SUBDOMAINS = [
   {
     name: "Scan Kalori",
     icon: "🥗",
-    url: "https://calories.20fit.id",
+    url: "https://calorietracker.20fit.id",
     key: "calories",
   },
   {
