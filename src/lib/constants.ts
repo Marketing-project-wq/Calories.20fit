@@ -13,10 +13,20 @@ export const SUPABASE = {
 
 export const MY20FIT = "https://my.20fit.id";
 
+// ?next=calories: read by my.20fit.id's login.html/code-login.html (repo
+// PROFILE20FIT) and stashed into sessionStorage so that once the person is
+// fully authenticated there (verified + onboarded + has a password), it
+// calls its existing Auth.caloriesSso() hand-off back to this app instead of
+// landing on my.20fit.id's own dashboard — same #access_token=...&
+// refresh_token=... fragment useAuth.ts already knows how to consume (the
+// SAME mechanism the my.20fit.id dashboard's own Calorie card already uses
+// to jump here pre-authenticated). Without it, someone who arrives on
+// calorietracker directly, signs in, and would otherwise be stranded on
+// my.20fit.id's dashboard instead of back here where they started.
 export const URLS = {
   MY_20FIT: MY20FIT,
-  LOGIN: `${MY20FIT}/login`,
-  SIGN_UP: `${MY20FIT}/login`,
+  LOGIN: `${MY20FIT}/login?next=calories`,
+  SIGN_UP: `${MY20FIT}/login?mode=up&next=calories`,
   TOPUP: `${MY20FIT}/calories`,
 };
 
@@ -27,8 +37,6 @@ export const API = {
   SCAN_TEXT: "/api/scan/food-text",
   SCAN_QUOTA: "/api/scan/quota",
   SCAN_BUY: "/api/scan/buy",
-  SCAN_HISTORY: "/api/scan/history",
-  SCAN_INSIGHT: "/api/scan/insight",
 };
 
 export const SCAN_LIMITS = {

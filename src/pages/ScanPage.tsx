@@ -3,6 +3,8 @@ import { URLS } from "../lib/constants";
 import { apiClient, ScanResult } from "../lib/api";
 import { useAuth } from "../hooks/useAuth";
 import { t, Lang } from "../lib/i18n";
+import { DailyFoodItem, MemberProfile, appendTodayFoodItem, getMemberProfile, getTodayFoodItems, nowHHMM } from "../lib/memberTracker";
+import { TodayTracker } from "../components/TodayTracker";
 
 const RED = "#D62828";
 const BLACK = "#141414";
@@ -277,6 +279,40 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
   const [resultTab, setResultTab] = useState<"result" | "insights" | "summary">("result");
   const fileInputRef = useRef<HTMLInputElement>(null);
 
+  // Member tracker (Food Summary tab): target harian/macro dari my20fit_profile
+  // + log makanan hari ini dari my20fit_daily_log — data NYATA, langsung dari
+  // Supabase yang sama dipakai my.20fit.id (lihat src/lib/memberTracker.ts).
+  const [memberProfile, setMemberProfile] = useState<MemberProfile | null>(null);
+  const [todayItems, setTodayItems] = useState<DailyFoodItem[] | null>(null);
+  const [summaryLoading, setSummaryLoading] = useState(false);
+  const [summaryError, setSummaryError] = useState<string | null>(null);
+  const [savedToLog, setSavedToLog] = useState(false);
+  const [savingToLog, setSavingToLog] = useState(false);
+  const [saveError, setSaveError] = useState<string | null>(null);
+
+  const loadTodaySummary = async () => {
+    if (!isAuthenticated || summaryLoading) return;
+    setSummaryLoading(true); setSummaryError(null);
+    try {
+      const [profile, items] = await Promise.all([getMemberProfile(), getTodayFoodItems()]);
+      setMemberProfile(profile); setTodayItems(items);
+    } catch (err) {
+      setSummaryError(err instanceof Error ? err.message : "error");
+    } finally { setSummaryLoading(false); }
+  };
+
+  const saveScanToLog = async () => {
+    if (!scanResult || !isAuthenticated || savingToLog || savedToLog) return;
+    setSavingToLog(true); setSaveError(null);
+    try {
+      const item: DailyFoodItem = { name: scanResult.food_name, kcal: scanResult.calories, p: scanResult.protein, c: scanResult.carbs, f: scanResult.fat, t: nowHHMM() };
+      const items = await appendTodayFoodItem(item);
+      setTodayItems(items); setSavedToLog(true);
+    } catch (err) {
+      setSaveError(err instanceof Error ? err.message : "error");
+    } finally { setSavingToLog(false); }
+  };
+
   const handleFile = (file: File) => {
     if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) { setError(tr.errFormat); return; }
     if (file.size > 5 * 1024 * 1024) { setError(tr.errSize); return; }
@@ -304,8 +340,8 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
     } finally { setIsLoading(false); }
   };
 
-  const resetAll = () => { if (photoPreview) URL.revokeObjectURL(photoPreview); setScanResult(null); setPhotoFile(null); setPhotoPreview(null); setError(null); };
-  const scanAgain = () => { setScanResult(null); setError(null); };
+  const resetAll = () => { if (photoPreview) URL.revokeObjectURL(photoPreview); setScanResult(null); setPhotoFile(null); setPhotoPreview(null); setError(null); setSavedToLog(false); setSaveError(null); };
+  const scanAgain = () => { setScanResult(null); setError(null); setSavedToLog(false); setSaveError(null); };
 
   const ToolPanel = () => {
     if (isLoading || authLoading) return (
@@ -490,6 +526,19 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
               </div>
             )}
 
+            {/* Simpan ke log harian — cuma untuk member (butuh akun buat riwayat).
+                Nulis ke my20fit_daily_log.cal_items yang SAMA dibaca my.20fit.id,
+                jadi scan dari sini langsung kelihatan di tracker my.20fit.id juga. */}
+            {isAuthenticated && (
+              <div style={{ display: "flex", flexDirection: "column", gap: 4 }}>
+                <button onClick={saveScanToLog} disabled={savingToLog || savedToLog} className={savedToLog ? "" : "sc-btn-primary"}
+                  style={{ border: savedToLog ? `1px solid #2F7D5B` : "none", borderRadius: 10, padding: "9px 0", fontFamily: "inherit", fontSize: 12, fontWeight: "bold", cursor: savedToLog ? "default" : "pointer", background: savedToLog ? "#EAF6EF" : "#141414", color: savedToLog ? "#2F7D5B" : "#FFFFFF" }}>
+                  {savedToLog ? `✓ ${tr.savedToLog}` : savingToLog ? tr.savingToLog : tr.saveToLog}
+                </button>
+                {saveError && <span style={{ fontSize: 11, color: RED }}>{tr.saveToLogError}</span>}
+              </div>
+            )}
+
             <div style={{ display: "flex", gap: 8 }}>
               <button onClick={scanAgain} className="sc-btn-primary" style={{ flex: 1, background: RED, color: "#fff", border: "none", borderRadius: 10, padding: "9px 0", fontFamily: "inherit", fontSize: 12, fontWeight: "bold", cursor: "pointer" }}>{tr.scanAgain}</button>
               <button onClick={resetAll} className="sc-btn-ghost" style={{ background: "transparent", border: "1px solid rgba(20,20,20,0.12)", color: "#6A6A6A", borderRadius: 10, padding: "9px 12px", fontFamily: "inherit", fontSize: 12, cursor: "pointer" }}>{tr.reset}</button>
@@ -513,7 +562,7 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
                 summary: lang === "id" ? "Food Summary" : "Food Summary",
               };
               return (
-                <button key={tab} onClick={() => setResultTab(tab)}
+                <button key={tab} onClick={() => { setResultTab(tab); if (tab === "summary" && isAuthenticated && todayItems === null) loadTodaySummary(); }}
                   style={{ flex: 1, padding: "10px 8px", fontFamily: "Barlow Condensed, sans-serif", fontSize: 12, letterSpacing: ".06em", textTransform: "uppercase", background: "none", border: "none", borderBottom: resultTab === tab ? `2px solid ${RED}` : "2px solid transparent", color: resultTab === tab ? RED : locked ? "#C0B8B0" : "#6A6A6A", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 4 }}>
                   {locked && <span style={{ fontSize: 10 }}>🔒</span>}
                   {labels[tab]}
@@ -575,9 +624,8 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
                 </div>
               </div>
             ) : (
-              <div style={{ padding: "16px 18px" }}>
-                <span style={{ fontSize: 12, color: "#8A8A8A" }}>{lang === "id" ? "Summary tersedia setelah beberapa scan tersimpan." : "Summary available after a few scans are saved."}</span>
-              </div>
+              <TodayTracker tr={tr} loading={summaryLoading} error={summaryError}
+                profile={memberProfile} items={todayItems} onRetry={loadTodaySummary} />
             )
           )}
         </div>

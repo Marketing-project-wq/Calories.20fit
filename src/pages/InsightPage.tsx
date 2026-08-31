@@ -1,28 +1,37 @@
 import { useEffect, useState } from "react";
-import { COLORS } from "../lib/constants";
-import { apiClient, InsightData } from "../lib/api";
 import { CTAFull } from "../components/CTA";
+import { TodayTracker } from "../components/TodayTracker";
 import { useAuth } from "../hooks/useAuth";
+import { t, Lang } from "../lib/i18n";
+import { DailyFoodItem, MemberProfile, getMemberProfile, getTodayFoodItems } from "../lib/memberTracker";
 
-export const InsightPage = () => {
+// Standalone "today's target/macro/log" view — same data + same component as
+// the Food Summary tab inside a scan result (TodayTracker), reachable
+// without having to scan first. Previously this page called a non-existent
+// backend endpoint (/api/scan/insight — verified absent from my.20fit.id's
+// server.js) and would just show a generic error for any real member; now
+// it reads my20fit_profile + my20fit_daily_log directly, same as
+// calorietracker's own ScanPage "Food Summary" tab.
+export const InsightPage = ({ lang = "id" }: { lang?: Lang }) => {
+  const tr = t[lang];
   const { isAuthenticated, isLoading: authLoading } = useAuth();
-  const [insight, setInsight] = useState<InsightData | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [profile, setProfile] = useState<MemberProfile | null>(null);
+  const [items, setItems] = useState<DailyFoodItem[] | null>(null);
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (!isAuthenticated) return;
+  const load = async () => {
+    setLoading(true); setError(null);
+    try {
+      const [p, i] = await Promise.all([getMemberProfile(), getTodayFoodItems()]);
+      setProfile(p); setItems(i);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "error");
+    } finally { setLoading(false); }
+  };
 
-    (async () => {
-      setIsLoading(true);
-      try {
-        setInsight(await apiClient.getInsight());
-      } catch (err) {
-        setError(err instanceof Error ? err.message : "Gagal memuat insight");
-      } finally {
-        setIsLoading(false);
-      }
-    })();
+  useEffect(() => {
+    if (isAuthenticated) load();
   }, [isAuthenticated]);
 
   if (authLoading) return null;
@@ -30,73 +39,24 @@ export const InsightPage = () => {
   if (!isAuthenticated) {
     return (
       <CTAFull
-        title="Tracking Kalori Harian"
-        description="Kebutuhan kalori harian, sisa kalori, dan insight nutrisi hanya tersedia untuk akun yang sudah masuk."
+        title={lang === "id" ? "Target Kalori & Log Harian" : "Daily Calorie Target & Log"}
+        description={lang === "id"
+          ? "Target kalori harian, breakdown makro, dan log makanan hanya tersedia untuk akun yang sudah masuk — datanya sama dengan yang kelihatan di my.20fit.id/calories."
+          : "Your daily calorie target, macro breakdown, and food log are only available once signed in — the same data you'd see on my.20fit.id/calories."}
         bullets={[
-          "Tahu berapa kalori yang masih boleh kamu makan hari ini",
-          "Bandingkan asupan dengan kebutuhan kalori harianmu",
-          "Insight otomatis dari kebiasaan makan kamu",
+          lang === "id" ? "Tahu berapa kalori yang masih boleh kamu makan hari ini" : "Know how many calories you still have left today",
+          lang === "id" ? "Breakdown makro (protein/karbo/lemak) vs target" : "Macro breakdown (protein/carbs/fat) vs target",
+          lang === "id" ? "Log makanan tersambung ke akun 20FIT kamu" : "Food log connected to your 20FIT account",
         ]}
       />
     );
   }
 
-  if (isLoading) {
-    return (
-      <div className="max-w-2xl mx-auto px-4 py-12 text-center">
-        <div className="w-12 h-12 border-4 rounded-full animate-spin inline-block" style={{ borderColor: COLORS.RED, borderTopColor: "transparent" }}></div>
-        <p className="mt-4 text-gray-600">Memuat insight...</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="max-w-2xl mx-auto px-4 py-8">
-        <div className="rounded-lg p-6 border" style={{ borderColor: "#FFD1D1", backgroundColor: "#FFE6E6" }}>
-          <p style={{ color: COLORS.RED }}>{error}</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!insight) return null;
-
-  const percentUsed = insight.target_calories > 0 ? Math.min(100, Math.round((insight.consumed_today / insight.target_calories) * 100)) : 0;
-
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
-      <h2 className="font-display text-2xl font-bold uppercase mb-6">Kebutuhan Kalori Harian</h2>
-
-      <div className="grid grid-cols-3 gap-4 mb-6">
-        <div className="rounded-lg p-4 text-center" style={{ backgroundColor: COLORS.PINK_ACCENT }}>
-          <div className="font-bold text-xl">{insight.target_calories}</div>
-          <div className="text-xs text-gray-600">Target Harian</div>
-        </div>
-        <div className="rounded-lg p-4 text-center" style={{ backgroundColor: COLORS.PINK_ACCENT }}>
-          <div className="font-bold text-xl">{insight.consumed_today}</div>
-          <div className="text-xs text-gray-600">Sudah Dimakan</div>
-        </div>
-        <div className="rounded-lg p-4 text-center" style={{ backgroundColor: COLORS.PINK_ACCENT }}>
-          <div className="font-bold text-xl">{insight.remaining_calories}</div>
-          <div className="text-xs text-gray-600">Sisa Kalori</div>
-        </div>
-      </div>
-
-      <div className="mb-6">
-        <div className="flex justify-between text-xs text-gray-600 mb-1">
-          <span>Progress hari ini</span>
-          <span>{percentUsed}%</span>
-        </div>
-        <div className="w-full h-3 rounded-full bg-gray-100 overflow-hidden">
-          <div className="h-full rounded-full" style={{ width: `${percentUsed}%`, backgroundColor: COLORS.RED }}></div>
-        </div>
-      </div>
-
-      <div className="text-center text-xs text-gray-600 p-3 bg-gray-50 rounded-lg">
-        {insight.remaining_calories > 0
-          ? `Kamu masih punya ${insight.remaining_calories} kcal untuk hari ini.`
-          : "Kamu sudah mencapai target kalori hari ini."}
+      <h2 className="font-display text-2xl font-bold uppercase mb-6">{lang === "id" ? "Kebutuhan Kalori Harian" : "Daily Calorie Needs"}</h2>
+      <div className="rounded-2xl border" style={{ borderColor: "#E4E0DB" }}>
+        <TodayTracker tr={tr} loading={loading} error={error} profile={profile} items={items} onRetry={load} />
       </div>
     </div>
   );

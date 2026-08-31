@@ -48,23 +48,6 @@ export interface QuotaData {
   limit: number;
 }
 
-export interface HistoryItem {
-  id: string;
-  food_name: string;
-  calories: number;
-  protein: number;
-  carbs: number;
-  fat: number;
-  image_url: string;
-  created_at: string;
-}
-
-export interface InsightData {
-  target_calories: number;
-  consumed_today: number;
-  remaining_calories: number;
-}
-
 async function getSession() {
   const { data } = await supabase.auth.getSession();
   return data.session;
@@ -141,30 +124,13 @@ export const apiClient = {
     return { remaining: q.remaining ?? 0, limit: q.freeLimit ?? 10 };
   },
 
-  async getHistory(): Promise<HistoryItem[]> {
-    const session = await getSession();
-    if (!session?.access_token) throw new Error("login_required");
-    const response = await fetch(`${API_BASE}${API.SCAN_HISTORY}`, {
-      headers: { "Authorization": `Bearer ${session.access_token}` },
-      credentials: "include",
-    });
-    if (response.status === 401) throw new Error("login_required");
-    if (!response.ok) throw new Error("Gagal memuat riwayat");
-    const data = await response.json();
-    return data.items ?? data;
-  },
-
-  async getInsight(): Promise<InsightData> {
-    const session = await getSession();
-    if (!session?.access_token) throw new Error("login_required");
-    const response = await fetch(`${API_BASE}${API.SCAN_INSIGHT}`, {
-      headers: { "Authorization": `Bearer ${session.access_token}` },
-      credentials: "include",
-    });
-    if (response.status === 401) throw new Error("login_required");
-    if (!response.ok) throw new Error("Gagal memuat insight");
-    return response.json();
-  },
+  // getHistory()/getInsight() removed: they called /api/scan/history and
+  // /api/scan/insight, neither of which exists on my.20fit.id's backend
+  // (verified against its server.js source) — they never worked for a real
+  // member. HistoryPage and InsightPage now read my20fit_daily_log /
+  // my20fit_profile directly via src/lib/memberHistory.ts and
+  // src/lib/memberTracker.ts, the same tables my.20fit.id's own /calories
+  // page uses.
 };
 
 function normalizeResult(data: any): ScanResult {

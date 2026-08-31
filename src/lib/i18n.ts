@@ -60,6 +60,21 @@ export const t = {
     keyInsightsTitle: "Insight Utama",
     recommendationTitle: "Rekomendasi",
     needsMoreTitle: "Perlu ditambah",
+    // Food Summary tab (member, akun tersambung ke my.20fit.id)
+    saveToLog: "Simpan ke log hari ini",
+    savingToLog: "Menyimpan…",
+    savedToLog: "Tersimpan ke log hari ini",
+    summaryTargetLabel: "Target Harian",
+    summaryConsumedLabel: "Sudah Dimakan",
+    summaryRemainingLabel: "Sisa",
+    summaryOverLabel: "Lewat target",
+    summaryMacroTitle: "Makro Hari Ini",
+    summaryLogTitle: "Log Hari Ini",
+    summaryEmptyLog: "Belum ada makanan yang di-log hari ini. Simpan hasil scan untuk mulai.",
+    summaryEstimatedNote: "Target diperkirakan — lengkapi profil di my.20fit.id untuk target personal.",
+    summarySyncNote: "Tersimpan di akun 20FIT kamu — juga kelihatan di my.20fit.id/calories.",
+    summaryLoadError: "Gagal memuat log hari ini.",
+    saveToLogError: "Gagal menyimpan ke log. Coba lagi.",
     // How it works
     howItWorks: "Cara kerja",
     whatYouCan: "Yang bisa kamu lakukan",
@@ -141,6 +156,21 @@ export const t = {
     keyInsightsTitle: "Key Insights",
     recommendationTitle: "Recommendation",
     needsMoreTitle: "Needs more",
+    // Food Summary tab (member, account linked to my.20fit.id)
+    saveToLog: "Save to today's log",
+    savingToLog: "Saving…",
+    savedToLog: "Saved to today's log",
+    summaryTargetLabel: "Daily Target",
+    summaryConsumedLabel: "Consumed",
+    summaryRemainingLabel: "Remaining",
+    summaryOverLabel: "Over target",
+    summaryMacroTitle: "Today's Macros",
+    summaryLogTitle: "Today's Log",
+    summaryEmptyLog: "No food logged today yet. Save a scan result to get started.",
+    summaryEstimatedNote: "Targets are estimated — complete your profile at my.20fit.id for personalized goals.",
+    summarySyncNote: "Saved to your 20FIT account — also visible on my.20fit.id/calories.",
+    summaryLoadError: "Failed to load today's log.",
+    saveToLogError: "Failed to save to log. Try again.",
     // How it works
     howItWorks: "How it works",
     whatYouCan: "What you can do",
@@ -165,4 +195,16 @@ export const t = {
   },
 } as const;
 
-export type Translations = typeof t.id;
+// `t.id`/`t.en` are `as const`, so TS infers each string as ITS OWN literal
+// type (e.g. tabScan: "Scan Kalori"), not `string`. That's fine as long as
+// you only ever read `t[lang]` inline, but a component that takes the
+// active translation set as a typed prop (e.g. `tr: Translations`) needs
+// the WIDENED shape — otherwise passing `t.en` where `Translations` (pinned
+// to `t.id`'s literals) is expected fails to typecheck even though it's the
+// exact same shape. Widen strings/string-arrays, keep functions as-is.
+type WidenTranslationValue<V> =
+  V extends (...args: any[]) => any ? V :
+  V extends readonly string[] ? readonly string[] :
+  V extends string ? string :
+  V;
+export type Translations = { [K in keyof typeof t.id]: WidenTranslationValue<(typeof t.id)[K]> };
