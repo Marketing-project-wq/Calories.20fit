@@ -1,5 +1,6 @@
 import { API, API_BASE } from "./constants";
 import { supabase } from "./supabase";
+import { getAnonId } from "./anon";
 
 export interface ScanTag {
   label: string;
@@ -74,6 +75,7 @@ export const apiClient = {
         headers: {
           "Authorization": `Bearer ${session.access_token}`,
           "Content-Type": "application/json",
+          "x-anon-id": getAnonId(),
         },
         body: JSON.stringify({ action: "food", image }),
         credentials: "include",
@@ -94,7 +96,7 @@ export const apiClient = {
       // backend enforces the same 5-lifetime rule, not a per-day/per-month one.
       const response = await fetch(`${API_BASE}/api/pub/scan`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "x-anon-id": getAnonId() },
         body: JSON.stringify({ action: "food", image }),
         credentials: "include",
       });
@@ -110,7 +112,7 @@ export const apiClient = {
 
   async getQuota(): Promise<QuotaData> {
     const session = await getSession();
-    const headers: Record<string, string> = {};
+    const headers: Record<string, string> = { "x-anon-id": getAnonId() };
     if (session?.access_token) headers["Authorization"] = `Bearer ${session.access_token}`;
     const response = await fetch(`${API_BASE}${API.SCAN_QUOTA}`, {
       headers,
