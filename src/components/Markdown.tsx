@@ -22,12 +22,20 @@ function renderInline(text: string, kp: string): ReactNode[] {
     else if (m[3]) nodes.push(<em key={`${kp}-i${i}`}>{m[4]}</em>);
     else if (m[5]) {
       const href = m[7];
-      const internal = href.startsWith("/");
-      nodes.push(
-        <a key={`${kp}-a${i}`} href={href} style={LINK_STYLE} {...(internal ? {} : { target: "_blank", rel: "noreferrer" })}>
-          {m[6]}
-        </a>
-      );
+      // Only allow safe href schemes (defense-in-depth for a future where
+      // article content is not fully first-party); anything else renders as
+      // plain text, never a javascript:/data: link.
+      const safe = /^(https?:\/\/|\/|#|mailto:)/i.test(href);
+      if (safe) {
+        const internal = href.startsWith("/") || href.startsWith("#");
+        nodes.push(
+          <a key={`${kp}-a${i}`} href={href} style={LINK_STYLE} {...(internal ? {} : { target: "_blank", rel: "noreferrer" })}>
+            {m[6]}
+          </a>
+        );
+      } else {
+        nodes.push(m[6]);
+      }
     } else if (m[8]) nodes.push(<code key={`${kp}-c${i}`}>{m[9]}</code>);
     last = re.lastIndex;
     i++;
