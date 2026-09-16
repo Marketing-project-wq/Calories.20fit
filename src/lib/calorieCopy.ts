@@ -111,6 +111,25 @@ export const copy = {
       snack: "Snack",
     },
 
+    // ---- Daily tracker ----
+    tracker: {
+      pageTitle: "Tracker Hari Ini",
+      addFood: "Tambah Makanan",
+      panelTitle: "Tambah ke log",
+      chooseMeal: "Waktu makan",
+      tabSearch: "Cari Database",
+      tabManual: "Manual",
+      empty: "Belum diisi",
+      done: "Selesai",
+      gateTitle: "Tracker Kalori Harian",
+      gateSub: "Tracking kalori & makro harian dengan target personal — datanya tersambung ke akun 20FIT kamu, juga kelihatan di my.20fit.id/calories.",
+      gateBullets: [
+        "Target kalori personal dari profilmu",
+        "Log makanan per waktu makan (sarapan, siang, malam, snack)",
+        "Progress kalori & makro real-time",
+      ],
+    },
+
     // ---- Full-feature teaser (Section 2) ----
     teaser: {
       title: "Mau tracking kalori harianmu?",
@@ -240,6 +259,24 @@ export const copy = {
       lunch: "Lunch",
       dinner: "Dinner",
       snack: "Snack",
+    },
+
+    tracker: {
+      pageTitle: "Today's Tracker",
+      addFood: "Add Food",
+      panelTitle: "Add to log",
+      chooseMeal: "Meal",
+      tabSearch: "Search Database",
+      tabManual: "Manual",
+      empty: "Empty",
+      done: "Done",
+      gateTitle: "Daily Calorie Tracker",
+      gateSub: "Track daily calories & macros against a personal target — linked to your 20FIT account, also visible on my.20fit.id/calories.",
+      gateBullets: [
+        "Personal calorie target from your profile",
+        "Log food by meal (breakfast, lunch, dinner, snack)",
+        "Real-time calorie & macro progress",
+      ],
     },
 
     teaser: {

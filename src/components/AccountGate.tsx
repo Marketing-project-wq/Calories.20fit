@@ -24,7 +24,7 @@ export function AccountGate({
   lang: Lang;
   title?: string;
   sub?: string;
-  bullets?: string[];
+  bullets?: readonly string[];
   icon?: string;
 }) {
   const g = cc(lang).gate;

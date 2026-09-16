@@ -16,6 +16,29 @@ export interface DailyFoodItem {
   c: number; // carbs, grams
   f: number; // fat, grams
   t: string; // "HH:MM", local time logged
+  // Optional meal bucket. ADDITIVE to the cal_items shape my.20fit.id shares:
+  // my.20fit.id only reads name/kcal/p/c/f/t, so this extra key is preserved
+  // by the append RPC and safely ignored there. Items created before this (or
+  // from my.20fit.id / photo-scan saves) have no `m` — itemMeal() infers one
+  // from the time so grouping still works for every item.
+  m?: MealType;
+}
+
+export type MealType = "breakfast" | "lunch" | "dinner" | "snack";
+export const MEAL_TYPES: MealType[] = ["breakfast", "lunch", "dinner", "snack"];
+
+/** Bucket an un-tagged item by the hour it was logged. */
+export function inferMeal(t: string): MealType {
+  const h = parseInt(String(t || "").slice(0, 2), 10);
+  if (Number.isNaN(h)) return "snack";
+  if (h < 10) return "breakfast"; // pagi
+  if (h < 15) return "lunch"; // siang
+  if (h < 21) return "dinner"; // malam
+  return "snack";
+}
+
+export function itemMeal(item: DailyFoodItem): MealType {
+  return item.m && MEAL_TYPES.includes(item.m) ? item.m : inferMeal(item.t);
 }
 
 export interface MemberProfile {

@@ -8,7 +8,6 @@ import { Link, useLocation, matchRoute } from "./lib/router";
 import { LandingPage } from "./pages/LandingPage";
 import { ScanRoute } from "./pages/ScanRoute";
 import { HistoryPage } from "./pages/HistoryPage";
-import { InsightPage } from "./pages/InsightPage";
 import { ArticlesPage } from "./pages/ArticlesPage";
 import { ArticleDetailPage } from "./pages/ArticleDetailPage";
 import { TrackerPage } from "./pages/TrackerPage";
