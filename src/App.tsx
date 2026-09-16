@@ -10,7 +10,7 @@ import { ScanRoute } from "./pages/ScanRoute";
 import { HistoryPage } from "./pages/HistoryPage";
 import { ArticlesPage } from "./pages/ArticlesPage";
 import { ArticleDetailPage } from "./pages/ArticleDetailPage";
-import { TrackerPage } from "./pages/TrackerPage";
+import { InsightPage } from "./pages/InsightPage";
 import { MealPlanPage } from "./pages/MealPlanPage";
 import { SiteFooter } from "./components/SiteFooter";
 
@@ -82,7 +82,7 @@ export function App() {
   else if (path === ROUTES.SCAN) page = <ScanRoute lang={lang} />;
   else if (path === ROUTES.ARTICLES) page = <ArticlesPage lang={lang} />;
   else if (articleMatch) page = <ArticleDetailPage lang={lang} slug={articleMatch.slug} />;
-  else if (path === ROUTES.TRACKER) page = <TrackerPage lang={lang} />;
+  else if (path === ROUTES.TRACKER) page = <InsightPage lang={lang} />;
   else if (path === ROUTES.MEAL_PLAN) page = <MealPlanPage lang={lang} />;
   else if (path === ROUTES.HISTORY) page = <HistoryPage lang={lang} />;
   else if (path === "/register") page = <SsoRedirect url={URLS.SIGN_UP} lang={lang} />;
