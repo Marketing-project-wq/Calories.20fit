@@ -1,7 +1,10 @@
 // Nutrition articles. Content is authored as Markdown in ./articles/<slug>.md
-// and pulled in at build time via Vite's `?raw` import, so 2000-2500 word,
-// fact-based bodies live as plain Markdown (easy to read/diff/edit) instead of
-// escaped TypeScript template strings.
+// (Indonesian) and ./articles/<slug>.en.md (English), pulled in at build time
+// via Vite's `?raw` import, so 900-1100 word, fact-based bodies live as plain
+// Markdown (easy to read/diff/edit) instead of escaped TypeScript template
+// strings. Bilingual fields (title/excerpt/content/tags/sources/disclaimer)
+// are keyed by `Lang` so the app's language toggle (see App.tsx `lang` state)
+// can select the right copy — pages read `art.title[lang]` etc.
 //
 // WHY STATIC (not the brief's nutrition_articles Postgres table): this repo
 // has no migration runner and no Supabase write access from CI — every schema
@@ -14,18 +17,30 @@
 import { Lang } from "../lib/i18n";
 import { IconName } from "../components/Icon";
 
-import memahamiKalori from "./articles/memahami-kalori-dan-makronutrien.md?raw";
-import caraHitungKalori from "./articles/cara-hitung-kebutuhan-kalori-harian.md?raw";
-import panduanIndonesia from "./articles/panduan-nutrisi-makanan-indonesia.md?raw";
-import mitosDiet from "./articles/mitos-dan-fakta-diet-populer.md?raw";
-import nutrisiOlahraga from "./articles/nutrisi-untuk-olahraga-dan-fitness.md?raw";
-import turunBerat from "./articles/cara-sehat-turun-berat-badan.md?raw";
-import proteinKebutuhan from "./articles/protein-kebutuhan-sumber-dan-waktu-terbaik.md?raw";
-import seratPencernaan from "./articles/serat-pencernaan-dan-kontrol-berat-badan.md?raw";
-import gulaTambahan from "./articles/gula-tambahan-dan-kalori-tersembunyi.md?raw";
-import hidrasiPerforma from "./articles/hidrasi-air-putih-dan-performa-olahraga.md?raw";
-import labelGizi from "./articles/cara-membaca-label-informasi-nilai-gizi.md?raw";
-import mealPrep from "./articles/meal-prep-dasar-untuk-pemula.md?raw";
+import memahamiKaloriId from "./articles/memahami-kalori-dan-makronutrien.md?raw";
+import memahamiKaloriEn from "./articles/memahami-kalori-dan-makronutrien.en.md?raw";
+import caraHitungKaloriId from "./articles/cara-hitung-kebutuhan-kalori-harian.md?raw";
+import caraHitungKaloriEn from "./articles/cara-hitung-kebutuhan-kalori-harian.en.md?raw";
+import panduanIndonesiaId from "./articles/panduan-nutrisi-makanan-indonesia.md?raw";
+import panduanIndonesiaEn from "./articles/panduan-nutrisi-makanan-indonesia.en.md?raw";
+import mitosDietId from "./articles/mitos-dan-fakta-diet-populer.md?raw";
+import mitosDietEn from "./articles/mitos-dan-fakta-diet-populer.en.md?raw";
+import nutrisiOlahragaId from "./articles/nutrisi-untuk-olahraga-dan-fitness.md?raw";
+import nutrisiOlahragaEn from "./articles/nutrisi-untuk-olahraga-dan-fitness.en.md?raw";
+import turunBeratId from "./articles/cara-sehat-turun-berat-badan.md?raw";
+import turunBeratEn from "./articles/cara-sehat-turun-berat-badan.en.md?raw";
+import proteinKebutuhanId from "./articles/protein-kebutuhan-sumber-dan-waktu-terbaik.md?raw";
+import proteinKebutuhanEn from "./articles/protein-kebutuhan-sumber-dan-waktu-terbaik.en.md?raw";
+import seratPencernaanId from "./articles/serat-pencernaan-dan-kontrol-berat-badan.md?raw";
+import seratPencernaanEn from "./articles/serat-pencernaan-dan-kontrol-berat-badan.en.md?raw";
+import gulaTambahanId from "./articles/gula-tambahan-dan-kalori-tersembunyi.md?raw";
+import gulaTambahanEn from "./articles/gula-tambahan-dan-kalori-tersembunyi.en.md?raw";
+import hidrasiPerformaId from "./articles/hidrasi-air-putih-dan-performa-olahraga.md?raw";
+import hidrasiPerformaEn from "./articles/hidrasi-air-putih-dan-performa-olahraga.en.md?raw";
+import labelGiziId from "./articles/cara-membaca-label-informasi-nilai-gizi.md?raw";
+import labelGiziEn from "./articles/cara-membaca-label-informasi-nilai-gizi.en.md?raw";
+import mealPrepId from "./articles/meal-prep-dasar-untuk-pemula.md?raw";
+import mealPrepEn from "./articles/meal-prep-dasar-untuk-pemula.en.md?raw";
 
 export type ArticleCategory =
   | "nutrition-basics"
@@ -39,42 +54,61 @@ export type ArticleCategory =
 
 export interface Article {
   slug: string;
-  title: string;
-  excerpt: string;
-  content: string; // markdown
+  title: Record<Lang, string>;
+  excerpt: Record<Lang, string>;
+  content: Record<Lang, string>; // markdown
   category: ArticleCategory;
-  tags: string[];
+  tags: Record<Lang, string[]>;
   readTimeMinutes: number;
   isPremium: boolean; // true = full read needs an account
-  sources: string[];
+  sources: Record<Lang, string[]>;
   author: string;
-  disclaimer: string;
+  disclaimer: Record<Lang, string>;
   coverIcon: IconName; // fallback shown if coverPhoto fails to load
   coverPhoto: string; // real photo URL — 20FIT's own article-covers bucket (shared with recipe.20fit.id's article system), matched by topic
   accent: string; // cover gradient accent (loading/fallback background)
   publishedAt: string; // ISO date
 }
 
-const DEFAULT_DISCLAIMER =
-  "Artikel ini bersifat edukatif dan informasional. Bukan pengganti konsultasi medis. Untuk kebutuhan diet spesifik, konsultasikan dengan ahli gizi atau dokter.";
+const DEFAULT_DISCLAIMER: Record<Lang, string> = {
+  id: "Artikel ini bersifat edukatif dan informasional. Bukan pengganti konsultasi medis. Untuk kebutuhan diet spesifik, konsultasikan dengan ahli gizi atau dokter.",
+  en: "This article is educational and informational. It is not a substitute for medical consultation. For specific dietary needs, consult a registered dietitian or doctor.",
+};
 const AUTHOR = "20fit Nutrition Team";
+const AKG_ID = "Angka Kecukupan Gizi (AKG) — Permenkes RI No. 28 Tahun 2019";
+const AKG_EN = "Indonesian Nutritional Adequacy Rate (AKG) — Ministry of Health Regulation No. 28/2019";
 
 export const ARTICLES: Article[] = [
   {
     slug: "memahami-kalori-dan-makronutrien",
-    title: "Memahami Kalori & Makronutrien: Panduan Lengkap untuk Pemula",
-    excerpt:
-      "Apa itu kalori sebenarnya, kenapa protein, karbohidrat, dan lemak penting, dan berapa kebutuhan harianmu — dijelaskan dari nol.",
-    content: memahamiKalori,
+    title: {
+      id: "Memahami Kalori & Makronutrien: Panduan Lengkap untuk Pemula",
+      en: "Understanding Calories & Macronutrients: A Complete Beginner's Guide",
+    },
+    excerpt: {
+      id: "Apa itu kalori sebenarnya, kenapa protein, karbohidrat, dan lemak penting, dan berapa kebutuhan harianmu — dijelaskan dari nol.",
+      en: "What a calorie actually is, why protein, carbs, and fat matter, and how much you need daily — explained from the ground up.",
+    },
+    content: { id: memahamiKaloriId, en: memahamiKaloriEn },
     category: "nutrition-basics",
-    tags: ["kalori", "makronutrien", "protein", "karbohidrat", "lemak", "dasar nutrisi"],
+    tags: {
+      id: ["kalori", "makronutrien", "protein", "karbohidrat", "lemak", "dasar nutrisi"],
+      en: ["calories", "macronutrients", "protein", "carbohydrates", "fat", "nutrition basics"],
+    },
     readTimeMinutes: 5,
     isPremium: false,
-    sources: [
-      "WHO — Healthy diet fact sheet & nutrition guidelines",
-      "Angka Kecukupan Gizi (AKG) — Permenkes RI No. 28 Tahun 2019",
-      "Harvard T.H. Chan School of Public Health — The Nutrition Source",
-    ],
+    sources: {
+      id: [
+        "WHO — Healthy diet fact sheet & nutrition guidelines",
+        AKG_ID,
+        "Harvard T.H. Chan School of Public Health — The Nutrition Source",
+      ],
+      en: [
+        "WHO — Healthy diet fact sheet & nutrition guidelines",
+        AKG_EN,
+        "Harvard T.H. Chan School of Public Health — The Nutrition Source",
+      ],
+    },
     author: AUTHOR,
     disclaimer: DEFAULT_DISCLAIMER,
     coverIcon: "apple",
@@ -84,19 +118,34 @@ export const ARTICLES: Article[] = [
   },
   {
     slug: "cara-hitung-kebutuhan-kalori-harian",
-    title: "Cara Menghitung Kebutuhan Kalori Harian: TDEE, BMR, dan Defisit Kalori",
-    excerpt:
-      "BMR, TDEE, activity multiplier, dan defisit kalori yang aman — plus kenapa rumus Mifflin-St Jeor lebih akurat dari yang lama.",
-    content: caraHitungKalori,
+    title: {
+      id: "Cara Menghitung Kebutuhan Kalori Harian: TDEE, BMR, dan Defisit Kalori",
+      en: "How to Calculate Your Daily Calorie Needs: TDEE, BMR, and Calorie Deficit",
+    },
+    excerpt: {
+      id: "BMR, TDEE, activity multiplier, dan defisit kalori yang aman — plus kenapa rumus Mifflin-St Jeor lebih akurat dari yang lama.",
+      en: "BMR, TDEE, activity multipliers, and a safe calorie deficit — plus why the Mifflin-St Jeor formula is more accurate than the old one.",
+    },
+    content: { id: caraHitungKaloriId, en: caraHitungKaloriEn },
     category: "nutrition-basics",
-    tags: ["BMR", "TDEE", "defisit kalori", "Mifflin-St Jeor", "metabolisme"],
+    tags: {
+      id: ["BMR", "TDEE", "defisit kalori", "Mifflin-St Jeor", "metabolisme"],
+      en: ["BMR", "TDEE", "calorie deficit", "Mifflin-St Jeor", "metabolism"],
+    },
     readTimeMinutes: 5,
     isPremium: false,
-    sources: [
-      "Mifflin MD, St Jeor ST, et al. (1990) — Am J Clin Nutr",
-      "Mayo Clinic — Counting calories & weight loss basics",
-      "ACSM — Guidelines for Exercise Testing and Prescription",
-    ],
+    sources: {
+      id: [
+        "Mifflin MD, St Jeor ST, et al. (1990) — Am J Clin Nutr",
+        "Mayo Clinic — Counting calories & weight loss basics",
+        "ACSM — Guidelines for Exercise Testing and Prescription",
+      ],
+      en: [
+        "Mifflin MD, St Jeor ST, et al. (1990) — Am J Clin Nutr",
+        "Mayo Clinic — Counting calories & weight loss basics",
+        "ACSM — Guidelines for Exercise Testing and Prescription",
+      ],
+    },
     author: AUTHOR,
     disclaimer: DEFAULT_DISCLAIMER,
     coverIcon: "calculator",
@@ -106,19 +155,34 @@ export const ARTICLES: Article[] = [
   },
   {
     slug: "panduan-nutrisi-makanan-indonesia",
-    title: "Panduan Nutrisi Makanan Indonesia Sehari-hari: Dari Nasi Padang sampai Pecel Lele",
-    excerpt:
-      "Breakdown kalori makanan Indonesia yang paling sering dimakan, dampak cara masak, dan cara makan di warteg tetap terkontrol.",
-    content: panduanIndonesia,
+    title: {
+      id: "Panduan Nutrisi Makanan Indonesia Sehari-hari: Dari Nasi Padang sampai Pecel Lele",
+      en: "Everyday Indonesian Food Nutrition Guide: From Nasi Padang to Pecel Lele",
+    },
+    excerpt: {
+      id: "Breakdown kalori makanan Indonesia yang paling sering dimakan, dampak cara masak, dan cara makan di warteg tetap terkontrol.",
+      en: "A calorie breakdown of the most commonly eaten Indonesian foods, how cooking method changes it, and how to stay in control eating at a warteg.",
+    },
+    content: { id: panduanIndonesiaId, en: panduanIndonesiaEn },
     category: "indonesian-food",
-    tags: ["makanan indonesia", "TKPI", "nasi padang", "gorengan", "warteg"],
+    tags: {
+      id: ["makanan indonesia", "TKPI", "nasi padang", "gorengan", "warteg"],
+      en: ["indonesian food", "TKPI", "nasi padang", "fried food", "warteg"],
+    },
     readTimeMinutes: 5,
     isPremium: false,
-    sources: [
-      "TKPI — Tabel Komposisi Pangan Indonesia, Kemenkes RI",
-      "Data Konsumsi Pangan — Susenas, Badan Pusat Statistik (BPS)",
-      "Angka Kecukupan Gizi (AKG) — Permenkes RI No. 28 Tahun 2019",
-    ],
+    sources: {
+      id: [
+        "TKPI — Tabel Komposisi Pangan Indonesia, Kemenkes RI",
+        "Data Konsumsi Pangan — Susenas, Badan Pusat Statistik (BPS)",
+        AKG_ID,
+      ],
+      en: [
+        "TKPI — Indonesian Food Composition Table, Ministry of Health",
+        "Food Consumption Data — Susenas, Statistics Indonesia (BPS)",
+        AKG_EN,
+      ],
+    },
     author: AUTHOR,
     disclaimer: DEFAULT_DISCLAIMER,
     coverIcon: "bowl",
@@ -128,19 +192,34 @@ export const ARTICLES: Article[] = [
   },
   {
     slug: "mitos-dan-fakta-diet-populer",
-    title: "Mitos vs Fakta: Intermittent Fasting, Keto, dan Diet Populer Lainnya",
-    excerpt:
-      "Apa kata riset tentang IF, keto, low-carb vs low-fat, dan detox — plus cara mengenali red flags diet yang viral di sosial media.",
-    content: mitosDiet,
+    title: {
+      id: "Mitos vs Fakta: Intermittent Fasting, Keto, dan Diet Populer Lainnya",
+      en: "Myth vs. Fact: Intermittent Fasting, Keto, and Other Popular Diets",
+    },
+    excerpt: {
+      id: "Apa kata riset tentang IF, keto, low-carb vs low-fat, dan detox — plus cara mengenali red flags diet yang viral di sosial media.",
+      en: "What research actually says about IF, keto, low-carb vs. low-fat, and detox — plus how to spot red flags in viral social media diets.",
+    },
+    content: { id: mitosDietId, en: mitosDietEn },
     category: "food-myths",
-    tags: ["intermittent fasting", "keto", "low-carb", "detox", "mitos diet"],
+    tags: {
+      id: ["intermittent fasting", "keto", "low-carb", "detox", "mitos diet"],
+      en: ["intermittent fasting", "keto", "low-carb", "detox", "diet myths"],
+    },
     readTimeMinutes: 5,
     isPremium: false,
-    sources: [
-      "The New England Journal of Medicine (NEJM) — Intermittent fasting reviews",
-      "The Lancet & Cochrane Reviews — Diet comparison meta-analyses",
-      "ISSN Position Stands — Diets and body composition",
-    ],
+    sources: {
+      id: [
+        "The New England Journal of Medicine (NEJM) — Intermittent fasting reviews",
+        "The Lancet & Cochrane Reviews — Diet comparison meta-analyses",
+        "ISSN Position Stands — Diets and body composition",
+      ],
+      en: [
+        "The New England Journal of Medicine (NEJM) — Intermittent fasting reviews",
+        "The Lancet & Cochrane Reviews — Diet comparison meta-analyses",
+        "ISSN Position Stands — Diets and body composition",
+      ],
+    },
     author: AUTHOR,
     disclaimer: DEFAULT_DISCLAIMER,
     coverIcon: "flask",
@@ -150,19 +229,34 @@ export const ARTICLES: Article[] = [
   },
   {
     slug: "nutrisi-untuk-olahraga-dan-fitness",
-    title: "Makan Apa Sebelum & Sesudah Olahraga? Panduan Nutrisi Olahraga Berbasis Riset",
-    excerpt:
-      "Pre & post-workout nutrition, kebutuhan protein, hidrasi, dan suplemen mana yang benar-benar evidence-based — bukan hype.",
-    content: nutrisiOlahraga,
+    title: {
+      id: "Makan Apa Sebelum & Sesudah Olahraga? Panduan Nutrisi Olahraga Berbasis Riset",
+      en: "What to Eat Before & After Exercise? A Research-Based Sports Nutrition Guide",
+    },
+    excerpt: {
+      id: "Pre & post-workout nutrition, kebutuhan protein, hidrasi, dan suplemen mana yang benar-benar evidence-based — bukan hype.",
+      en: "Pre- and post-workout nutrition, protein needs, hydration, and which supplements are actually evidence-based — not hype.",
+    },
+    content: { id: nutrisiOlahragaId, en: nutrisiOlahragaEn },
     category: "sports-nutrition",
-    tags: ["pre-workout", "post-workout", "protein", "kreatin", "EMS", "HYROX"],
+    tags: {
+      id: ["pre-workout", "post-workout", "protein", "kreatin", "EMS", "HYROX"],
+      en: ["pre-workout", "post-workout", "protein", "creatine", "EMS", "HYROX"],
+    },
     readTimeMinutes: 5,
     isPremium: false,
-    sources: [
-      "ISSN Position Stand — Nutrient Timing (Kerksick CM et al., 2017, JISSN)",
-      "ISSN Position Stand — Protein and Exercise (Jäger R et al., 2017, JISSN)",
-      "ACSM — Nutrition and Athletic Performance Joint Position Stand",
-    ],
+    sources: {
+      id: [
+        "ISSN Position Stand — Nutrient Timing (Kerksick CM et al., 2017, JISSN)",
+        "ISSN Position Stand — Protein and Exercise (Jäger R et al., 2017, JISSN)",
+        "ACSM — Nutrition and Athletic Performance Joint Position Stand",
+      ],
+      en: [
+        "ISSN Position Stand — Nutrient Timing (Kerksick CM et al., 2017, JISSN)",
+        "ISSN Position Stand — Protein and Exercise (Jäger R et al., 2017, JISSN)",
+        "ACSM — Nutrition and Athletic Performance Joint Position Stand",
+      ],
+    },
     author: AUTHOR,
     disclaimer: DEFAULT_DISCLAIMER,
     coverIcon: "dumbbell",
@@ -172,19 +266,34 @@ export const ARTICLES: Article[] = [
   },
   {
     slug: "cara-sehat-turun-berat-badan",
-    title: "Cara Turun Berat Badan yang Sehat dan Sustainable: Bukan Diet Crash, Tapi Perubahan Gaya Hidup",
-    excerpt:
-      "Kenapa diet crash gagal, peran strength training, tidur, dan stres, serta cara tracking progress yang benar (bukan cuma timbangan).",
-    content: turunBerat,
+    title: {
+      id: "Cara Turun Berat Badan yang Sehat dan Sustainable: Bukan Diet Crash, Tapi Perubahan Gaya Hidup",
+      en: "How to Lose Weight in a Healthy, Sustainable Way: Not a Crash Diet, But a Lifestyle Change",
+    },
+    excerpt: {
+      id: "Kenapa diet crash gagal, peran strength training, tidur, dan stres, serta cara tracking progress yang benar (bukan cuma timbangan).",
+      en: "Why crash diets fail, the role of strength training, sleep, and stress, and how to track progress the right way (not just the scale).",
+    },
+    content: { id: turunBeratId, en: turunBeratEn },
     category: "weight-management",
-    tags: ["turun berat badan", "defisit kalori", "metabolic adaptation", "tidur", "body recomposition"],
+    tags: {
+      id: ["turun berat badan", "defisit kalori", "metabolic adaptation", "tidur", "body recomposition"],
+      en: ["weight loss", "calorie deficit", "metabolic adaptation", "sleep", "body recomposition"],
+    },
     readTimeMinutes: 5,
     isPremium: false,
-    sources: [
-      "Mann T et al. (2007) — Medicare's search for effective obesity treatments, Am Psychol (UCLA)",
-      "Hall KD et al. (2011) — Quantification of the effect of energy imbalance, The Lancet",
-      "Trexler ET et al. (2014) — Metabolic adaptation to weight loss, JISSN; NIH & WHO guidance",
-    ],
+    sources: {
+      id: [
+        "Mann T et al. (2007) — Medicare's search for effective obesity treatments, Am Psychol (UCLA)",
+        "Hall KD et al. (2011) — Quantification of the effect of energy imbalance, The Lancet",
+        "Trexler ET et al. (2014) — Metabolic adaptation to weight loss, JISSN; NIH & WHO guidance",
+      ],
+      en: [
+        "Mann T et al. (2007) — Medicare's search for effective obesity treatments, Am Psychol (UCLA)",
+        "Hall KD et al. (2011) — Quantification of the effect of energy imbalance, The Lancet",
+        "Trexler ET et al. (2014) — Metabolic adaptation to weight loss, JISSN; NIH & WHO guidance",
+      ],
+    },
     author: AUTHOR,
     disclaimer: DEFAULT_DISCLAIMER,
     coverIcon: "scale",
@@ -194,19 +303,34 @@ export const ARTICLES: Article[] = [
   },
   {
     slug: "protein-kebutuhan-sumber-dan-waktu-terbaik",
-    title: "Protein: Berapa Kebutuhan Harian, Sumber Terbaik, dan Soal Waktu Makan",
-    excerpt:
-      "Rumus kebutuhan protein untuk orang biasa vs yang rutin latihan beban, sumber nabati/hewani yang terjangkau, dan fakta soal 'anabolic window'.",
-    content: proteinKebutuhan,
+    title: {
+      id: "Protein: Berapa Kebutuhan Harian, Sumber Terbaik, dan Soal Waktu Makan",
+      en: "Protein: Daily Needs, Best Sources, and the Truth About Timing",
+    },
+    excerpt: {
+      id: "Rumus kebutuhan protein untuk orang biasa vs yang rutin latihan beban, sumber nabati/hewani yang terjangkau, dan fakta soal 'anabolic window'.",
+      en: "Protein requirement formulas for average people vs. regular weightlifters, affordable plant/animal sources, and the facts about the 'anabolic window'.",
+    },
+    content: { id: proteinKebutuhanId, en: proteinKebutuhanEn },
     category: "nutrition-basics",
-    tags: ["protein", "asam amino", "tempe", "tahu", "anabolic window", "latihan beban"],
+    tags: {
+      id: ["protein", "asam amino", "tempe", "tahu", "anabolic window", "latihan beban"],
+      en: ["protein", "amino acids", "tempeh", "tofu", "anabolic window", "strength training"],
+    },
     readTimeMinutes: 5,
     isPremium: false,
-    sources: [
-      "Angka Kecukupan Gizi (AKG) — Permenkes RI No. 28 Tahun 2019",
-      "ISSN Position Stand — Protein and Exercise (Jäger R et al., 2017, JISSN)",
-      "Academy of Nutrition and Dietetics — Vegetarian diets position paper",
-    ],
+    sources: {
+      id: [
+        AKG_ID,
+        "ISSN Position Stand — Protein and Exercise (Jäger R et al., 2017, JISSN)",
+        "Academy of Nutrition and Dietetics — Vegetarian diets position paper",
+      ],
+      en: [
+        AKG_EN,
+        "ISSN Position Stand — Protein and Exercise (Jäger R et al., 2017, JISSN)",
+        "Academy of Nutrition and Dietetics — Vegetarian diets position paper",
+      ],
+    },
     author: AUTHOR,
     disclaimer: DEFAULT_DISCLAIMER,
     coverIcon: "drumstick",
@@ -216,19 +340,26 @@ export const ARTICLES: Article[] = [
   },
   {
     slug: "serat-pencernaan-dan-kontrol-berat-badan",
-    title: "Serat: Kenapa Penting untuk Pencernaan dan Kontrol Berat Badan",
-    excerpt:
-      "Serat larut vs tidak larut, kenapa makanan tinggi serat bikin kenyang lebih lama, dan cara menambah asupan tanpa bikin kembung.",
-    content: seratPencernaan,
+    title: {
+      id: "Serat: Kenapa Penting untuk Pencernaan dan Kontrol Berat Badan",
+      en: "Fiber: Why It Matters for Digestion and Weight Control",
+    },
+    excerpt: {
+      id: "Serat larut vs tidak larut, kenapa makanan tinggi serat bikin kenyang lebih lama, dan cara menambah asupan tanpa bikin kembung.",
+      en: "Soluble vs. insoluble fiber, why high-fiber foods keep you fuller longer, and how to increase intake without the bloating.",
+    },
+    content: { id: seratPencernaanId, en: seratPencernaanEn },
     category: "nutrition-basics",
-    tags: ["serat", "pencernaan", "kenyang lebih lama", "mikrobiota usus"],
+    tags: {
+      id: ["serat", "pencernaan", "kenyang lebih lama", "mikrobiota usus"],
+      en: ["fiber", "digestion", "longer fullness", "gut microbiome"],
+    },
     readTimeMinutes: 5,
     isPremium: false,
-    sources: [
-      "Angka Kecukupan Gizi (AKG) — Permenkes RI No. 28 Tahun 2019",
-      "WHO — Healthy diet fact sheet",
-      "Riskesdas & Data Konsumsi Pangan — Susenas, Badan Pusat Statistik (BPS)",
-    ],
+    sources: {
+      id: [AKG_ID, "WHO — Healthy diet fact sheet", "Riskesdas & Data Konsumsi Pangan — Susenas, Badan Pusat Statistik (BPS)"],
+      en: [AKG_EN, "WHO — Healthy diet fact sheet", "Riskesdas & Food Consumption Data — Susenas, Statistics Indonesia (BPS)"],
+    },
     author: AUTHOR,
     disclaimer: DEFAULT_DISCLAIMER,
     coverIcon: "leaf",
@@ -238,19 +369,26 @@ export const ARTICLES: Article[] = [
   },
   {
     slug: "gula-tambahan-dan-kalori-tersembunyi",
-    title: "Gula Tambahan dan Kalori Tersembunyi: Kenapa Minuman Manis Paling Sering Jadi Biang Kerok",
-    excerpt:
-      "Bedanya gula alami dan gula tambahan, kenapa kalori cair 'tidak terasa menghitung', dan cara mengenali gula tersembunyi di label.",
-    content: gulaTambahan,
+    title: {
+      id: "Gula Tambahan dan Kalori Tersembunyi: Kenapa Minuman Manis Paling Sering Jadi Biang Kerok",
+      en: "Added Sugar and Hidden Calories: Why Sweet Drinks Are Often the Real Culprit",
+    },
+    excerpt: {
+      id: "Bedanya gula alami dan gula tambahan, kenapa kalori cair 'tidak terasa menghitung', dan cara mengenali gula tersembunyi di label.",
+      en: "The difference between natural and added sugar, why liquid calories 'don't feel like they count', and how to spot hidden sugar on labels.",
+    },
+    content: { id: gulaTambahanId, en: gulaTambahanEn },
     category: "weight-management",
-    tags: ["gula tambahan", "kalori cair", "minuman manis", "label gizi"],
+    tags: {
+      id: ["gula tambahan", "kalori cair", "minuman manis", "label gizi"],
+      en: ["added sugar", "liquid calories", "sweet drinks", "nutrition label"],
+    },
     readTimeMinutes: 5,
     isPremium: false,
-    sources: [
-      "WHO — Guideline: Sugars intake for adults and children",
-      "Angka Kecukupan Gizi (AKG) — Permenkes RI No. 28 Tahun 2019",
-      "Harvard T.H. Chan School of Public Health — The Nutrition Source",
-    ],
+    sources: {
+      id: ["WHO — Guideline: Sugars intake for adults and children", AKG_ID, "Harvard T.H. Chan School of Public Health — The Nutrition Source"],
+      en: ["WHO — Guideline: Sugars intake for adults and children", AKG_EN, "Harvard T.H. Chan School of Public Health — The Nutrition Source"],
+    },
     author: AUTHOR,
     disclaimer: DEFAULT_DISCLAIMER,
     coverIcon: "cup",
@@ -260,19 +398,34 @@ export const ARTICLES: Article[] = [
   },
   {
     slug: "hidrasi-air-putih-dan-performa-olahraga",
-    title: "Hidrasi: Kebutuhan Cairan Harian dan Dampaknya ke Performa Olahraga",
-    excerpt:
-      "Berapa sebenarnya kebutuhan air putih harian, kenapa dehidrasi ringan bisa menurunkan performa, dan mitos 'minum air bikin gemuk'.",
-    content: hidrasiPerforma,
+    title: {
+      id: "Hidrasi: Kebutuhan Cairan Harian dan Dampaknya ke Performa Olahraga",
+      en: "Hydration: Daily Fluid Needs and Its Impact on Exercise Performance",
+    },
+    excerpt: {
+      id: "Berapa sebenarnya kebutuhan air putih harian, kenapa dehidrasi ringan bisa menurunkan performa, dan mitos 'minum air bikin gemuk'.",
+      en: "How much water you actually need daily, why mild dehydration can hurt performance, and the myth that 'drinking water makes you fat'.",
+    },
+    content: { id: hidrasiPerformaId, en: hidrasiPerformaEn },
     category: "sports-nutrition",
-    tags: ["hidrasi", "air putih", "elektrolit", "performa olahraga"],
+    tags: {
+      id: ["hidrasi", "air putih", "elektrolit", "performa olahraga"],
+      en: ["hydration", "water", "electrolytes", "exercise performance"],
+    },
     readTimeMinutes: 5,
     isPremium: false,
-    sources: [
-      "National Academies of Sciences — Dietary Reference Intakes for Water",
-      "ACSM — Nutrition and Athletic Performance Joint Position Stand",
-      "WHO — Healthy diet fact sheet",
-    ],
+    sources: {
+      id: [
+        "National Academies of Sciences — Dietary Reference Intakes for Water",
+        "ACSM — Nutrition and Athletic Performance Joint Position Stand",
+        "WHO — Healthy diet fact sheet",
+      ],
+      en: [
+        "National Academies of Sciences — Dietary Reference Intakes for Water",
+        "ACSM — Nutrition and Athletic Performance Joint Position Stand",
+        "WHO — Healthy diet fact sheet",
+      ],
+    },
     author: AUTHOR,
     disclaimer: DEFAULT_DISCLAIMER,
     coverIcon: "droplet",
@@ -282,19 +435,26 @@ export const ARTICLES: Article[] = [
   },
   {
     slug: "cara-membaca-label-informasi-nilai-gizi",
-    title: "Cara Membaca Label Informasi Nilai Gizi Kemasan Makanan Indonesia",
-    excerpt:
-      "Jebakan takaran saji yang bikin salah hitung kalori, cara membaca %AKG dengan benar, dan arti klaim 'rendah lemak' atau 'tanpa gula tambahan'.",
-    content: labelGizi,
+    title: {
+      id: "Cara Membaca Label Informasi Nilai Gizi Kemasan Makanan Indonesia",
+      en: "How to Read the Nutrition Facts Label on Indonesian Food Packaging",
+    },
+    excerpt: {
+      id: "Jebakan takaran saji yang bikin salah hitung kalori, cara membaca %AKG dengan benar, dan arti klaim 'rendah lemak' atau 'tanpa gula tambahan'.",
+      en: "The serving-size trap that leads to miscounted calories, how to correctly read %AKG, and what claims like 'low fat' or 'no added sugar' really mean.",
+    },
+    content: { id: labelGiziId, en: labelGiziEn },
     category: "indonesian-food",
-    tags: ["label gizi", "ING", "BPOM", "%AKG", "takaran saji"],
+    tags: {
+      id: ["label gizi", "ING", "BPOM", "%AKG", "takaran saji"],
+      en: ["nutrition label", "ING", "BPOM", "%AKG", "serving size"],
+    },
     readTimeMinutes: 5,
     isPremium: false,
-    sources: [
-      "BPOM — Regulasi Label Pangan Olahan",
-      "Angka Kecukupan Gizi (AKG) — Permenkes RI No. 28 Tahun 2019",
-      "WHO — Healthy diet fact sheet (lemak jenuh & natrium)",
-    ],
+    sources: {
+      id: ["BPOM — Regulasi Label Pangan Olahan", AKG_ID, "WHO — Healthy diet fact sheet (lemak jenuh & natrium)"],
+      en: ["BPOM — Processed Food Labeling Regulations", AKG_EN, "WHO — Healthy diet fact sheet (saturated fat & sodium)"],
+    },
     author: AUTHOR,
     disclaimer: DEFAULT_DISCLAIMER,
     coverIcon: "tag",
@@ -304,18 +464,26 @@ export const ARTICLES: Article[] = [
   },
   {
     slug: "meal-prep-dasar-untuk-pemula",
-    title: "Meal Prep untuk Pemula: Cara Mulai dan Keamanan Pangan yang Sering Terlewat",
-    excerpt:
-      "Langkah dasar menyiapkan makanan sehat untuk beberapa hari sekaligus, plus panduan penyimpanan dan pemanasan ulang yang aman.",
-    content: mealPrep,
+    title: {
+      id: "Meal Prep untuk Pemula: Cara Mulai dan Keamanan Pangan yang Sering Terlewat",
+      en: "Meal Prep for Beginners: How to Start and the Food Safety Steps People Skip",
+    },
+    excerpt: {
+      id: "Langkah dasar menyiapkan makanan sehat untuk beberapa hari sekaligus, plus panduan penyimpanan dan pemanasan ulang yang aman.",
+      en: "The basic steps to prepping healthy food for several days at once, plus a guide to safe storage and reheating.",
+    },
+    content: { id: mealPrepId, en: mealPrepEn },
     category: "meal-planning",
-    tags: ["meal prep", "keamanan pangan", "penyimpanan makanan", "kontrol porsi"],
+    tags: {
+      id: ["meal prep", "keamanan pangan", "penyimpanan makanan", "kontrol porsi"],
+      en: ["meal prep", "food safety", "food storage", "portion control"],
+    },
     readTimeMinutes: 5,
     isPremium: false,
-    sources: [
-      "USDA Food Safety and Inspection Service — Safe food storage guidelines",
-      "Angka Kecukupan Gizi (AKG) — Permenkes RI No. 28 Tahun 2019",
-    ],
+    sources: {
+      id: ["USDA Food Safety and Inspection Service — Safe food storage guidelines", AKG_ID],
+      en: ["USDA Food Safety and Inspection Service — Safe food storage guidelines", AKG_EN],
+    },
     author: AUTHOR,
     disclaimer: DEFAULT_DISCLAIMER,
     coverIcon: "box",

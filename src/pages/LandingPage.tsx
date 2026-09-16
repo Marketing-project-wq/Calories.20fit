@@ -178,9 +178,9 @@ export function LandingPage({ lang }: { lang: Lang }) {
                   {a.isPremium && <Icon name="lock" size={12} color="#9A9A9A" style={{ marginLeft: 4 }} />}
                 </div>
                 <h3 style={{ fontSize: 16, fontWeight: 700, color: COLORS.BLACK, lineHeight: 1.25, margin: "0 0 8px", fontFamily: "Manrope, sans-serif" }}>
-                  {a.title}
+                  {a.title[lang]}
                 </h3>
-                <p style={{ fontSize: 13, color: "#6A6A6A", lineHeight: 1.5, margin: "0 0 10px" }}>{a.excerpt}</p>
+                <p style={{ fontSize: 13, color: "#6A6A6A", lineHeight: 1.5, margin: "0 0 10px" }}>{a.excerpt[lang]}</p>
                 <span style={{ fontSize: 12, color: "#9A9A9A", display: "inline-flex", alignItems: "center", gap: 5 }}>
                   <Icon name="clock" size={12} /> {a.readTimeMinutes} {lang === "id" ? "menit baca" : "min read"}
                 </span>

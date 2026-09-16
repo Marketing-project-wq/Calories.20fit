@@ -74,9 +74,9 @@ export function ArticlesPage({ lang }: { lang: Lang }) {
                   {CATEGORY_LABELS[lang][art.category]}
                 </span>
                 <h2 style={{ fontFamily: "Manrope, sans-serif", fontSize: 17, fontWeight: 700, color: COLORS.BLACK, lineHeight: 1.28, margin: "0 0 8px" }}>
-                  {art.title}
+                  {art.title[lang]}
                 </h2>
-                <p style={{ fontSize: 13.5, color: "#6A6A6A", lineHeight: 1.55, margin: "0 0 12px", flex: 1 }}>{art.excerpt}</p>
+                <p style={{ fontSize: 13.5, color: "#6A6A6A", lineHeight: 1.55, margin: "0 0 12px", flex: 1 }}>{art.excerpt[lang]}</p>
                 <span style={{ fontSize: 12, color: "#9A9A9A", display: "inline-flex", alignItems: "center", gap: 5 }}>
                   <Icon name="clock" size={12} /> {a.minRead(art.readTimeMinutes)}
                 </span>
