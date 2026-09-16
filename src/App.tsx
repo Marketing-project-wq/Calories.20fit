@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { COLORS, ROUTES } from "./lib/constants";
+import { useState, useEffect } from "react";
+import { COLORS, ROUTES, URLS } from "./lib/constants";
 import { t, Lang } from "./lib/i18n";
 import { cc } from "./lib/calorieCopy";
 import { useAuth } from "./hooks/useAuth";
@@ -13,6 +13,26 @@ import { ArticleDetailPage } from "./pages/ArticleDetailPage";
 import { TrackerPage } from "./pages/TrackerPage";
 import { MealPlanPage } from "./pages/MealPlanPage";
 import { SiteFooter } from "./components/SiteFooter";
+
+// The brief lists /register + /login. Auth is centralised at my.20fit.id, so
+// these routes hand off to its SSO flow (which returns here via ?next=calories)
+// rather than hosting a parallel form. Rendered as a redirect with a manual
+// fallback link in case the automatic redirect is blocked.
+function SsoRedirect({ url, lang }: { url: string; lang: Lang }) {
+  useEffect(() => {
+    window.location.replace(url);
+  }, [url]);
+  return (
+    <div style={{ maxWidth: 420, margin: "0 auto", padding: "80px 20px", textAlign: "center" }}>
+      <p style={{ fontSize: 15, color: "#6A6A6A", marginBottom: 16 }}>
+        {lang === "id" ? "Mengarahkan ke halaman akun 20FIT…" : "Redirecting to the 20FIT account page…"}
+      </p>
+      <a href={url} className="sc-btn-primary" style={{ display: "inline-block", background: COLORS.RED, color: "#fff", borderRadius: 12, padding: "11px 20px", fontSize: 14, fontWeight: 700 }}>
+        {lang === "id" ? "Lanjut" : "Continue"} →
+      </a>
+    </div>
+  );
+}
 
 function NotFound({ lang }: { lang: Lang }) {
   const c = cc(lang).common;
@@ -65,6 +85,8 @@ export function App() {
   else if (path === ROUTES.TRACKER) page = <TrackerPage lang={lang} />;
   else if (path === ROUTES.MEAL_PLAN) page = <MealPlanPage lang={lang} />;
   else if (path === ROUTES.HISTORY) page = <HistoryPage lang={lang} />;
+  else if (path === "/register") page = <SsoRedirect url={URLS.SIGN_UP} lang={lang} />;
+  else if (path === "/login") page = <SsoRedirect url={URLS.LOGIN} lang={lang} />;
   else page = <NotFound lang={lang} />;
 
   return (
