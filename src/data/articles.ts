@@ -68,7 +68,7 @@ export const ARTICLES: Article[] = [
     content: memahamiKalori,
     category: "nutrition-basics",
     tags: ["kalori", "makronutrien", "protein", "karbohidrat", "lemak", "dasar nutrisi"],
-    readTimeMinutes: 10,
+    readTimeMinutes: 5,
     isPremium: false,
     sources: [
       "WHO — Healthy diet fact sheet & nutrition guidelines",
@@ -90,7 +90,7 @@ export const ARTICLES: Article[] = [
     content: caraHitungKalori,
     category: "nutrition-basics",
     tags: ["BMR", "TDEE", "defisit kalori", "Mifflin-St Jeor", "metabolisme"],
-    readTimeMinutes: 10,
+    readTimeMinutes: 5,
     isPremium: false,
     sources: [
       "Mifflin MD, St Jeor ST, et al. (1990) — Am J Clin Nutr",
@@ -112,7 +112,7 @@ export const ARTICLES: Article[] = [
     content: panduanIndonesia,
     category: "indonesian-food",
     tags: ["makanan indonesia", "TKPI", "nasi padang", "gorengan", "warteg"],
-    readTimeMinutes: 11,
+    readTimeMinutes: 5,
     isPremium: false,
     sources: [
       "TKPI — Tabel Komposisi Pangan Indonesia, Kemenkes RI",
@@ -134,7 +134,7 @@ export const ARTICLES: Article[] = [
     content: mitosDiet,
     category: "food-myths",
     tags: ["intermittent fasting", "keto", "low-carb", "detox", "mitos diet"],
-    readTimeMinutes: 10,
+    readTimeMinutes: 5,
     isPremium: false,
     sources: [
       "The New England Journal of Medicine (NEJM) — Intermittent fasting reviews",
@@ -156,7 +156,7 @@ export const ARTICLES: Article[] = [
     content: nutrisiOlahraga,
     category: "sports-nutrition",
     tags: ["pre-workout", "post-workout", "protein", "kreatin", "EMS", "HYROX"],
-    readTimeMinutes: 10,
+    readTimeMinutes: 5,
     isPremium: false,
     sources: [
       "ISSN Position Stand — Nutrient Timing (Kerksick CM et al., 2017, JISSN)",
@@ -178,7 +178,7 @@ export const ARTICLES: Article[] = [
     content: turunBerat,
     category: "weight-management",
     tags: ["turun berat badan", "defisit kalori", "metabolic adaptation", "tidur", "body recomposition"],
-    readTimeMinutes: 10,
+    readTimeMinutes: 5,
     isPremium: false,
     sources: [
       "Mann T et al. (2007) — Medicare's search for effective obesity treatments, Am Psychol (UCLA)",
@@ -200,7 +200,7 @@ export const ARTICLES: Article[] = [
     content: proteinKebutuhan,
     category: "nutrition-basics",
     tags: ["protein", "asam amino", "tempe", "tahu", "anabolic window", "latihan beban"],
-    readTimeMinutes: 10,
+    readTimeMinutes: 5,
     isPremium: false,
     sources: [
       "Angka Kecukupan Gizi (AKG) — Permenkes RI No. 28 Tahun 2019",
@@ -222,7 +222,7 @@ export const ARTICLES: Article[] = [
     content: seratPencernaan,
     category: "nutrition-basics",
     tags: ["serat", "pencernaan", "kenyang lebih lama", "mikrobiota usus"],
-    readTimeMinutes: 10,
+    readTimeMinutes: 5,
     isPremium: false,
     sources: [
       "Angka Kecukupan Gizi (AKG) — Permenkes RI No. 28 Tahun 2019",
@@ -244,7 +244,7 @@ export const ARTICLES: Article[] = [
     content: gulaTambahan,
     category: "weight-management",
     tags: ["gula tambahan", "kalori cair", "minuman manis", "label gizi"],
-    readTimeMinutes: 10,
+    readTimeMinutes: 5,
     isPremium: false,
     sources: [
       "WHO — Guideline: Sugars intake for adults and children",
@@ -266,7 +266,7 @@ export const ARTICLES: Article[] = [
     content: hidrasiPerforma,
     category: "sports-nutrition",
     tags: ["hidrasi", "air putih", "elektrolit", "performa olahraga"],
-    readTimeMinutes: 10,
+    readTimeMinutes: 5,
     isPremium: false,
     sources: [
       "National Academies of Sciences — Dietary Reference Intakes for Water",
@@ -288,7 +288,7 @@ export const ARTICLES: Article[] = [
     content: labelGizi,
     category: "indonesian-food",
     tags: ["label gizi", "ING", "BPOM", "%AKG", "takaran saji"],
-    readTimeMinutes: 10,
+    readTimeMinutes: 5,
     isPremium: false,
     sources: [
       "BPOM — Regulasi Label Pangan Olahan",
@@ -310,7 +310,7 @@ export const ARTICLES: Article[] = [
     content: mealPrep,
     category: "meal-planning",
     tags: ["meal prep", "keamanan pangan", "penyimpanan makanan", "kontrol porsi"],
-    readTimeMinutes: 10,
+    readTimeMinutes: 5,
     isPremium: false,
     sources: [
       "USDA Food Safety and Inspection Service — Safe food storage guidelines",
