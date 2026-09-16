@@ -4,6 +4,7 @@ import { t, Lang } from "./lib/i18n";
 import { cc } from "./lib/calorieCopy";
 import { useAuth } from "./hooks/useAuth";
 import { AuthNav } from "./components/AuthNav";
+import { Icon } from "./components/Icon";
 import { Link, useLocation, matchRoute } from "./lib/router";
 import { LandingPage } from "./pages/LandingPage";
 import { ScanRoute } from "./pages/ScanRoute";
@@ -39,7 +40,7 @@ function NotFound({ lang }: { lang: Lang }) {
   return (
     <div>
       <div style={{ maxWidth: 560, margin: "0 auto", padding: "72px 20px", textAlign: "center" }}>
-        <div style={{ fontSize: 52, marginBottom: 12 }}>🍽️</div>
+        <div style={{ marginBottom: 12, color: "#B0ABA4" }}><Icon name="utensils" size={48} /></div>
         <h1 style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 34, textTransform: "uppercase", color: COLORS.BLACK, margin: "0 0 8px" }}>
           {c.notFoundTitle}
         </h1>
@@ -98,7 +99,7 @@ export function App() {
             <Link href={ROUTES.HOME} style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }} aria-label="20FIT Calorie Tracker">
               <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 20, color: COLORS.RED, letterSpacing: ".02em" }}>20FIT</span>
               <span style={{ width: 1, height: 16, background: "rgba(20,20,20,0.15)" }} />
-              <span style={{ fontSize: 12, fontWeight: 700, color: COLORS.BLACK }}>🥗</span>
+              <Icon name="leaf" size={14} color={COLORS.BLACK} />
             </Link>
             <nav
               style={{ display: "flex", gap: 2, overflowX: "auto", scrollbarWidth: "none", minWidth: 0 }}

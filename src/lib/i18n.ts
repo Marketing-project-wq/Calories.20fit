@@ -50,7 +50,7 @@ export const t = {
     protein: "Protein",
     carbs: "Karbo",
     fat: "Lemak",
-    locked: "🔒 Perlu akun",
+    locked: "Perlu akun",
     // Estimate range + confidence (hasil analisis — selalu terbuka)
     estimateLabel: "Estimasi dari foto",
     estimateRange: (min: number, max: number) => `${min}–${max} kkal`,
@@ -146,7 +146,7 @@ export const t = {
     protein: "Protein",
     carbs: "Carbs",
     fat: "Fat",
-    locked: "🔒 Account required",
+    locked: "Account required",
     // Estimate range + confidence (part of the analysis result — always open)
     estimateLabel: "Estimate from photo",
     estimateRange: (min: number, max: number) => `${min}–${max} kcal`,

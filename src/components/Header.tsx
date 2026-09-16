@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { SUBDOMAINS, URLS } from "../lib/constants";
 import { AuthStatus } from "./AuthStatus";
+import { Icon } from "./Icon";
 
 interface HeaderProps {
   subdomainKey: string;
@@ -64,7 +65,7 @@ export const Header = ({ subdomainKey, isAuthenticated, user }: HeaderProps) => 
                   fontWeight: 600,
                 }}
               >
-                <span>{sub.icon}</span>
+                <Icon name={sub.icon} size={15} />
                 <span>{sub.name}</span>
               </a>
             ))}

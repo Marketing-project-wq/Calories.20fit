@@ -6,6 +6,7 @@ import { Link } from "../lib/router";
 import { ROUTES } from "../lib/constants";
 import { SiteFooter } from "../components/SiteFooter";
 import { ARTICLES, ArticleCategory, CATEGORY_LABELS } from "../data/articles";
+import { Icon } from "../components/Icon";
 
 export function ArticlesPage({ lang }: { lang: Lang }) {
   const a = cc(lang).articles;
@@ -53,11 +54,18 @@ export function ArticlesPage({ lang }: { lang: Lang }) {
               className="sc-card"
               style={{ display: "flex", flexDirection: "column", background: "#fff", border: "1px solid #E4E0DB", borderRadius: 16, overflow: "hidden", textDecoration: "none" }}
             >
-              <div style={{ height: 120, background: `linear-gradient(135deg, ${art.accent}26, ${art.accent}0a)`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 50, position: "relative" }}>
-                {art.coverEmoji}
+              <div style={{ height: 120, background: `linear-gradient(135deg, ${art.accent}26, ${art.accent}0a)`, display: "flex", alignItems: "center", justifyContent: "center", color: art.accent, position: "relative", overflow: "hidden" }}>
+                <Icon name={art.coverIcon} size={42} strokeWidth={1.5} />
+                <img
+                  src={art.coverPhoto}
+                  alt=""
+                  loading="lazy"
+                  onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+                  style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+                />
                 {art.isPremium && (
-                  <span style={{ position: "absolute", top: 10, right: 10, fontSize: 11, fontWeight: 700, background: "rgba(20,20,20,0.72)", color: "#fff", borderRadius: 999, padding: "3px 9px" }}>
-                    🔒 {a.premium}
+                  <span style={{ position: "absolute", top: 10, right: 10, fontSize: 11, fontWeight: 700, background: "rgba(20,20,20,0.72)", color: "#fff", borderRadius: 999, padding: "3px 9px", display: "flex", alignItems: "center", gap: 4 }}>
+                    <Icon name="lock" size={11} /> {a.premium}
                   </span>
                 )}
               </div>
@@ -69,7 +77,9 @@ export function ArticlesPage({ lang }: { lang: Lang }) {
                   {art.title}
                 </h2>
                 <p style={{ fontSize: 13.5, color: "#6A6A6A", lineHeight: 1.55, margin: "0 0 12px", flex: 1 }}>{art.excerpt}</p>
-                <span style={{ fontSize: 12, color: "#9A9A9A" }}>⏱ {a.minRead(art.readTimeMinutes)}</span>
+                <span style={{ fontSize: 12, color: "#9A9A9A", display: "inline-flex", alignItems: "center", gap: 5 }}>
+                  <Icon name="clock" size={12} /> {a.minRead(art.readTimeMinutes)}
+                </span>
               </div>
             </Link>
           ))}

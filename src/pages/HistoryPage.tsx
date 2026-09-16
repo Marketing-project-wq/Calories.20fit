@@ -6,6 +6,7 @@ import { t, Lang } from "../lib/i18n";
 import { getRecentHistory, HistoryDay } from "../lib/memberHistory";
 import { MemberProfile, getMemberProfile } from "../lib/memberTracker";
 import { dailyCalorieGoal } from "../lib/nutrition";
+import { Icon } from "../components/Icon";
 
 function formatDayLabel(dateStr: string, lang: Lang): string {
   const d = new Date(dateStr + "T00:00:00");
@@ -122,7 +123,7 @@ export const HistoryPage = ({ lang = "id" }: { lang?: Lang }) => {
   if (days.length === 0) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-12 text-center">
-        <div className="text-5xl mb-4">📭</div>
+        <div className="mb-4" style={{ display: "flex", justifyContent: "center", color: "#B0ABA4" }}><Icon name="inbox" size={44} /></div>
         <h2 className="font-display text-2xl font-bold uppercase mb-2">{lang === "id" ? "Belum Ada Riwayat" : "No History Yet"}</h2>
         <p className="text-gray-600">{lang === "id" ? "Simpan hasil scan ke log untuk melihat riwayat di sini" : "Save a scan result to your log to see history here"}</p>
       </div>

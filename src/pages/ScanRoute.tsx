@@ -5,6 +5,7 @@ import { useAuth } from "../hooks/useAuth";
 import { Link } from "../lib/router";
 import { FoodSearch } from "../components/FoodSearch";
 import { ScanPage } from "./ScanPage";
+import { Icon } from "../components/Icon";
 
 /**
  * /scan = two ways to check a food's calories:
@@ -25,7 +26,7 @@ export function ScanRoute({ lang }: { lang: Lang }) {
       <section style={{ maxWidth: 720, margin: "0 auto", padding: "28px 20px 8px" }}>
         <div style={{ background: "#fff", border: `1px solid #E4E0DB`, borderRadius: 18, padding: "20px 18px", boxShadow: "0 10px 34px -22px rgba(20,20,20,0.22)" }}>
           <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 4 }}>
-            <span style={{ fontSize: 22 }}>🔎</span>
+            <Icon name="search" size={20} color={COLORS.RED} />
             <h2 style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 24, textTransform: "uppercase", color: COLORS.BLACK, margin: 0 }}>{f.searchTitle}</h2>
           </div>
           <p style={{ fontSize: 13.5, color: "#6A6A6A", margin: "0 0 16px" }}>{f.searchSub}</p>
@@ -39,8 +40,8 @@ export function ScanRoute({ lang }: { lang: Lang }) {
           )}
 
           {isAuthenticated && (
-            <p style={{ fontSize: 12.5, color: NUTRI.GREEN_DARK, margin: "14px 0 0" }}>
-              💡{" "}
+            <p style={{ fontSize: 12.5, color: NUTRI.GREEN_DARK, margin: "14px 0 0", display: "flex", alignItems: "flex-start", gap: 6 }}>
+              <Icon name="lightbulb" size={14} style={{ marginTop: 1, flexShrink: 0 }} />
               <Link href={ROUTES.TRACKER} style={{ color: NUTRI.GREEN_DARK, fontWeight: 700, textDecoration: "underline" }}>
                 {lang === "id" ? "Buka Tracker untuk simpan makanan ke log harian" : "Open Tracker to save food to your daily log"}
               </Link>

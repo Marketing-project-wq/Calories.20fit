@@ -1,6 +1,7 @@
 import { COLORS, NUTRI, URLS } from "../lib/constants";
 import { cc } from "../lib/calorieCopy";
 import { Lang } from "../lib/i18n";
+import { Icon, IconName } from "./Icon";
 
 /**
  * Shared "you need an account" wall for pages/features gated behind sign-in
@@ -19,13 +20,13 @@ export function AccountGate({
   title,
   sub,
   bullets = [],
-  icon = "🔒",
+  icon = "lock",
 }: {
   lang: Lang;
   title?: string;
   sub?: string;
   bullets?: readonly string[];
-  icon?: string;
+  icon?: IconName;
 }) {
   const g = cc(lang).gate;
   return (
@@ -50,11 +51,11 @@ export function AccountGate({
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
-              fontSize: 24,
+              color: NUTRI.GREEN_DARK,
               marginBottom: 16,
             }}
           >
-            {icon}
+            <Icon name={icon} size={24} />
           </div>
           <h2
             style={{

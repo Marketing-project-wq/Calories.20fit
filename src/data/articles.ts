@@ -12,6 +12,7 @@
 // supabase/migrations for teams that later want it DB-backed; the app reads
 // this bundle today.
 import { Lang } from "../lib/i18n";
+import { IconName } from "../components/Icon";
 
 import memahamiKalori from "./articles/memahami-kalori-dan-makronutrien.md?raw";
 import caraHitungKalori from "./articles/cara-hitung-kebutuhan-kalori-harian.md?raw";
@@ -48,8 +49,9 @@ export interface Article {
   sources: string[];
   author: string;
   disclaimer: string;
-  coverEmoji: string;
-  accent: string; // cover gradient accent
+  coverIcon: IconName; // fallback shown if coverPhoto fails to load
+  coverPhoto: string; // real photo URL — 20FIT's own article-covers bucket (shared with recipe.20fit.id's article system), matched by topic
+  accent: string; // cover gradient accent (loading/fallback background)
   publishedAt: string; // ISO date
 }
 
@@ -66,7 +68,7 @@ export const ARTICLES: Article[] = [
     content: memahamiKalori,
     category: "nutrition-basics",
     tags: ["kalori", "makronutrien", "protein", "karbohidrat", "lemak", "dasar nutrisi"],
-    readTimeMinutes: 10,
+    readTimeMinutes: 5,
     isPremium: false,
     sources: [
       "WHO — Healthy diet fact sheet & nutrition guidelines",
@@ -75,7 +77,8 @@ export const ARTICLES: Article[] = [
     ],
     author: AUTHOR,
     disclaimer: DEFAULT_DISCLAIMER,
-    coverEmoji: "🍎",
+    coverIcon: "apple",
+    coverPhoto: "https://cpvzwqptzcxnwzfzgrmt.supabase.co/storage/v1/object/public/article-covers/1f140483-36ad-4d28-8936-bb20f06d7605.jpg",
     accent: "#22C55E",
     publishedAt: "2026-09-01",
   },
@@ -87,7 +90,7 @@ export const ARTICLES: Article[] = [
     content: caraHitungKalori,
     category: "nutrition-basics",
     tags: ["BMR", "TDEE", "defisit kalori", "Mifflin-St Jeor", "metabolisme"],
-    readTimeMinutes: 10,
+    readTimeMinutes: 5,
     isPremium: false,
     sources: [
       "Mifflin MD, St Jeor ST, et al. (1990) — Am J Clin Nutr",
@@ -96,7 +99,8 @@ export const ARTICLES: Article[] = [
     ],
     author: AUTHOR,
     disclaimer: DEFAULT_DISCLAIMER,
-    coverEmoji: "🔢",
+    coverIcon: "calculator",
+    coverPhoto: "https://cpvzwqptzcxnwzfzgrmt.supabase.co/storage/v1/object/public/article-covers/ce257234-46e8-4b91-bf9c-097881f1a8e1.jpg",
     accent: "#C41101",
     publishedAt: "2026-09-02",
   },
@@ -108,7 +112,7 @@ export const ARTICLES: Article[] = [
     content: panduanIndonesia,
     category: "indonesian-food",
     tags: ["makanan indonesia", "TKPI", "nasi padang", "gorengan", "warteg"],
-    readTimeMinutes: 11,
+    readTimeMinutes: 5,
     isPremium: false,
     sources: [
       "TKPI — Tabel Komposisi Pangan Indonesia, Kemenkes RI",
@@ -117,7 +121,8 @@ export const ARTICLES: Article[] = [
     ],
     author: AUTHOR,
     disclaimer: DEFAULT_DISCLAIMER,
-    coverEmoji: "🍛",
+    coverIcon: "bowl",
+    coverPhoto: "https://cpvzwqptzcxnwzfzgrmt.supabase.co/storage/v1/object/public/article-covers/6d4d64f1-183e-486f-928b-b1427a055718.jpg",
     accent: "#F59E0B",
     publishedAt: "2026-09-03",
   },
@@ -129,7 +134,7 @@ export const ARTICLES: Article[] = [
     content: mitosDiet,
     category: "food-myths",
     tags: ["intermittent fasting", "keto", "low-carb", "detox", "mitos diet"],
-    readTimeMinutes: 11,
+    readTimeMinutes: 5,
     isPremium: false,
     sources: [
       "The New England Journal of Medicine (NEJM) — Intermittent fasting reviews",
@@ -138,7 +143,8 @@ export const ARTICLES: Article[] = [
     ],
     author: AUTHOR,
     disclaimer: DEFAULT_DISCLAIMER,
-    coverEmoji: "🔬",
+    coverIcon: "flask",
+    coverPhoto: "https://cpvzwqptzcxnwzfzgrmt.supabase.co/storage/v1/object/public/article-covers/c5aa06d2-d1e0-49b9-894f-63cec6a171df.jpg",
     accent: "#2D4E8F",
     publishedAt: "2026-09-04",
   },
@@ -150,7 +156,7 @@ export const ARTICLES: Article[] = [
     content: nutrisiOlahraga,
     category: "sports-nutrition",
     tags: ["pre-workout", "post-workout", "protein", "kreatin", "EMS", "HYROX"],
-    readTimeMinutes: 11,
+    readTimeMinutes: 5,
     isPremium: false,
     sources: [
       "ISSN Position Stand — Nutrient Timing (Kerksick CM et al., 2017, JISSN)",
@@ -159,7 +165,8 @@ export const ARTICLES: Article[] = [
     ],
     author: AUTHOR,
     disclaimer: DEFAULT_DISCLAIMER,
-    coverEmoji: "🏋️",
+    coverIcon: "dumbbell",
+    coverPhoto: "https://cpvzwqptzcxnwzfzgrmt.supabase.co/storage/v1/object/public/article-covers/babdbcbd-4b48-49b4-9dec-ada3273cd0ef.jpg",
     accent: "#16A34A",
     publishedAt: "2026-09-05",
   },
@@ -171,7 +178,7 @@ export const ARTICLES: Article[] = [
     content: turunBerat,
     category: "weight-management",
     tags: ["turun berat badan", "defisit kalori", "metabolic adaptation", "tidur", "body recomposition"],
-    readTimeMinutes: 12,
+    readTimeMinutes: 5,
     isPremium: false,
     sources: [
       "Mann T et al. (2007) — Medicare's search for effective obesity treatments, Am Psychol (UCLA)",
@@ -180,7 +187,8 @@ export const ARTICLES: Article[] = [
     ],
     author: AUTHOR,
     disclaimer: DEFAULT_DISCLAIMER,
-    coverEmoji: "⚖️",
+    coverIcon: "scale",
+    coverPhoto: "https://cpvzwqptzcxnwzfzgrmt.supabase.co/storage/v1/object/public/article-covers/eff949b3-d57e-4f73-ab19-3563dbf2103f.jpg",
     accent: "#C41101",
     publishedAt: "2026-09-06",
   },
@@ -192,7 +200,7 @@ export const ARTICLES: Article[] = [
     content: proteinKebutuhan,
     category: "nutrition-basics",
     tags: ["protein", "asam amino", "tempe", "tahu", "anabolic window", "latihan beban"],
-    readTimeMinutes: 6,
+    readTimeMinutes: 5,
     isPremium: false,
     sources: [
       "Angka Kecukupan Gizi (AKG) — Permenkes RI No. 28 Tahun 2019",
@@ -201,7 +209,8 @@ export const ARTICLES: Article[] = [
     ],
     author: AUTHOR,
     disclaimer: DEFAULT_DISCLAIMER,
-    coverEmoji: "🍗",
+    coverIcon: "drumstick",
+    coverPhoto: "https://cpvzwqptzcxnwzfzgrmt.supabase.co/storage/v1/object/public/article-covers/6837dad5-69d4-4e73-a36c-5cbb56c6cae3.jpg",
     accent: "#2D4E8F",
     publishedAt: "2026-09-16",
   },
@@ -222,7 +231,8 @@ export const ARTICLES: Article[] = [
     ],
     author: AUTHOR,
     disclaimer: DEFAULT_DISCLAIMER,
-    coverEmoji: "🥦",
+    coverIcon: "leaf",
+    coverPhoto: "https://cpvzwqptzcxnwzfzgrmt.supabase.co/storage/v1/object/public/article-covers/46c280db-156f-45b1-a9bc-dccb3d617c3a.jpg",
     accent: "#22C55E",
     publishedAt: "2026-09-16",
   },
@@ -243,7 +253,8 @@ export const ARTICLES: Article[] = [
     ],
     author: AUTHOR,
     disclaimer: DEFAULT_DISCLAIMER,
-    coverEmoji: "🥤",
+    coverIcon: "cup",
+    coverPhoto: "https://cpvzwqptzcxnwzfzgrmt.supabase.co/storage/v1/object/public/article-covers/03f16aa7-1344-4113-92dd-f081081d6f44.jpg",
     accent: "#F59E0B",
     publishedAt: "2026-09-16",
   },
@@ -264,7 +275,8 @@ export const ARTICLES: Article[] = [
     ],
     author: AUTHOR,
     disclaimer: DEFAULT_DISCLAIMER,
-    coverEmoji: "💧",
+    coverIcon: "droplet",
+    coverPhoto: "https://cpvzwqptzcxnwzfzgrmt.supabase.co/storage/v1/object/public/article-covers/1025f915-aa3c-40a7-92a5-3356cccacc63.jpg",
     accent: "#2D4E8F",
     publishedAt: "2026-09-16",
   },
@@ -276,7 +288,7 @@ export const ARTICLES: Article[] = [
     content: labelGizi,
     category: "indonesian-food",
     tags: ["label gizi", "ING", "BPOM", "%AKG", "takaran saji"],
-    readTimeMinutes: 6,
+    readTimeMinutes: 5,
     isPremium: false,
     sources: [
       "BPOM — Regulasi Label Pangan Olahan",
@@ -285,7 +297,8 @@ export const ARTICLES: Article[] = [
     ],
     author: AUTHOR,
     disclaimer: DEFAULT_DISCLAIMER,
-    coverEmoji: "🏷️",
+    coverIcon: "tag",
+    coverPhoto: "https://cpvzwqptzcxnwzfzgrmt.supabase.co/storage/v1/object/public/article-covers/ac74ba9c-a2be-4133-85a0-e2b93600ba43.jpg",
     accent: "#C41101",
     publishedAt: "2026-09-16",
   },
@@ -305,7 +318,8 @@ export const ARTICLES: Article[] = [
     ],
     author: AUTHOR,
     disclaimer: DEFAULT_DISCLAIMER,
-    coverEmoji: "🍱",
+    coverIcon: "box",
+    coverPhoto: "https://cpvzwqptzcxnwzfzgrmt.supabase.co/storage/v1/object/public/article-covers/ea615960-3306-4abd-bb7a-3b1d664935a6.jpg",
     accent: "#16A34A",
     publishedAt: "2026-09-16",
   },
