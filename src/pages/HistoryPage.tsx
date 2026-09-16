@@ -1,9 +1,11 @@
 import { useEffect, useState } from "react";
-import { COLORS } from "../lib/constants";
+import { COLORS, NUTRI } from "../lib/constants";
 import { CTAFull } from "../components/CTA";
 import { useAuth } from "../hooks/useAuth";
 import { t, Lang } from "../lib/i18n";
 import { getRecentHistory, HistoryDay } from "../lib/memberHistory";
+import { MemberProfile, getMemberProfile } from "../lib/memberTracker";
+import { dailyCalorieGoal } from "../lib/nutrition";
 
 function formatDayLabel(dateStr: string, lang: Lang): string {
   const d = new Date(dateStr + "T00:00:00");
@@ -14,6 +16,47 @@ function formatDayLabel(dateStr: string, lang: Lang): string {
   return d.toLocaleDateString(lang === "id" ? "id-ID" : "en-US", { weekday: "short", day: "numeric", month: "short" });
 }
 
+// Weekly-progress bar chart: daily calorie totals vs target, oldest→newest.
+function WeeklyChart({ days, target, lang }: { days: HistoryDay[]; target: number; lang: Lang }) {
+  const recent = days.slice(0, 14).reverse(); // chronological
+  if (recent.length < 2) return null;
+  const totals = recent.map((d) => ({ date: d.log_date, total: d.items.reduce((s, it) => s + (Number(it.kcal) || 0), 0) }));
+  const max = Math.max(target, ...totals.map((x) => x.total)) * 1.12 || 1;
+  const avg = Math.round(totals.reduce((s, x) => s + x.total, 0) / totals.length);
+  const targetPct = (target / max) * 100;
+
+  return (
+    <div className="rounded-2xl border p-4 mb-6" style={{ borderColor: "#E4E0DB", background: "#fff" }}>
+      <div className="flex justify-between items-baseline mb-3">
+        <h3 className="font-semibold text-sm">{lang === "id" ? "Progres Mingguan" : "Weekly Progress"}</h3>
+        <span className="text-xs" style={{ color: "#8A8A8A" }}>
+          {lang === "id" ? "Rata-rata" : "Avg"} <b style={{ color: COLORS.BLACK }}>{avg.toLocaleString("id-ID")}</b> {lang === "id" ? "kkal/hari" : "kcal/day"}
+        </span>
+      </div>
+      <div style={{ position: "relative", height: 120, display: "flex", alignItems: "flex-end", gap: 4 }}>
+        {/* target reference line */}
+        {target > 0 && (
+          <div style={{ position: "absolute", left: 0, right: 0, bottom: `${targetPct}%`, borderTop: `1px dashed ${NUTRI.GREEN_DARK}`, zIndex: 1 }}>
+            <span style={{ position: "absolute", right: 0, top: -14, fontSize: 9, color: NUTRI.GREEN_DARK, background: "#fff", padding: "0 3px" }}>
+              {lang === "id" ? "target" : "target"} {target.toLocaleString("id-ID")}
+            </span>
+          </div>
+        )}
+        {totals.map((x) => {
+          const h = Math.max(2, (x.total / max) * 100);
+          const over = target > 0 && x.total > target;
+          return (
+            <div key={x.date} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", height: "100%" }} title={`${x.date}: ${x.total} kkal`}>
+              <div className="sc-bar-fill" style={{ width: "100%", maxWidth: 22, height: `${h}%`, background: over ? COLORS.RED : NUTRI.GREEN, borderRadius: "4px 4px 0 0" }} />
+              <span style={{ fontSize: 8.5, color: "#B0B0B0", marginTop: 3 }}>{x.date.slice(8, 10)}</span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+}
+
 // Real log history, read from my20fit_daily_log (same table my.20fit.id's
 // own /calories page writes to) — replaces a previous implementation that
 // called /api/scan/history, an endpoint that does not exist on my.20fit.id's
@@ -21,6 +64,7 @@ function formatDayLabel(dateStr: string, lang: Lang): string {
 export const HistoryPage = ({ lang = "id" }: { lang?: Lang }) => {
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const [days, setDays] = useState<HistoryDay[]>([]);
+  const [profile, setProfile] = useState<MemberProfile | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -29,7 +73,9 @@ export const HistoryPage = ({ lang = "id" }: { lang?: Lang }) => {
     (async () => {
       setIsLoading(true);
       try {
-        setDays(await getRecentHistory());
+        const [d, p] = await Promise.all([getRecentHistory(), getMemberProfile()]);
+        setDays(d);
+        setProfile(p);
       } catch (err) {
         setError(err instanceof Error ? err.message : (lang === "id" ? "Gagal memuat riwayat" : "Failed to load history"));
       } finally {
@@ -86,6 +132,8 @@ export const HistoryPage = ({ lang = "id" }: { lang?: Lang }) => {
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
       <h2 className="font-display text-2xl font-bold uppercase mb-6">{lang === "id" ? "Riwayat Log Kamu" : "Your Log History"}</h2>
+
+      <WeeklyChart days={days} target={dailyCalorieGoal(profile)} lang={lang} />
 
       <div className="space-y-6">
         {days.map((day) => {

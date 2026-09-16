@@ -253,3 +253,86 @@ textarea:focus {
   backdrop-filter: blur(18px) saturate(180%);
   -webkit-backdrop-filter: blur(18px) saturate(180%);
 }
+
+/* ---- Long-form article typography (Markdown renderer output) ---- */
+.ct-article {
+  font-family: "Manrope", sans-serif;
+  font-weight: 400;
+  font-size: 17px;
+  line-height: 1.78;
+  color: #2A2A2A;
+}
+.ct-article h2 {
+  font-family: "Barlow Condensed", sans-serif;
+  font-weight: 800;
+  font-size: 27px;
+  line-height: 1.1;
+  color: #16170F;
+  margin: 34px 0 12px;
+}
+.ct-article h3 {
+  font-family: "Barlow Condensed", sans-serif;
+  font-weight: 700;
+  font-size: 21px;
+  line-height: 1.15;
+  color: #16170F;
+  margin: 24px 0 8px;
+}
+.ct-article p {
+  margin: 0 0 16px;
+}
+.ct-article ul,
+.ct-article ol {
+  margin: 0 0 16px;
+  padding-left: 24px;
+}
+.ct-article li {
+  margin: 0 0 7px;
+}
+.ct-article strong {
+  font-weight: 700;
+  color: #16170F;
+}
+.ct-article blockquote {
+  margin: 20px 0;
+  padding: 14px 18px;
+  border-left: 4px solid #22C55E;
+  background: #F0FBF3;
+  border-radius: 0 10px 10px 0;
+  font-size: 16px;
+  color: #1f4d33;
+}
+.ct-article blockquote strong {
+  color: #16A34A;
+}
+.ct-article code {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.9em;
+  background: rgba(20, 20, 20, 0.06);
+  padding: 1px 5px;
+  border-radius: 4px;
+}
+.ct-article hr {
+  border: none;
+  border-top: 1px solid #E4E0DB;
+  margin: 28px 0;
+}
+.ct-article a {
+  color: #C41101;
+}
+@media (max-width: 640px) {
+  .ct-article { font-size: 16px; line-height: 1.75; }
+  .ct-article h2 { font-size: 24px; }
+  .ct-article h3 { font-size: 19px; }
+}
+
+/* Reading-progress bar (article detail) */
+.ct-readbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  background: linear-gradient(90deg, #C41101, #22C55E);
+  z-index: 60;
+  transition: width 0.1s linear;
+}

@@ -111,6 +111,43 @@ export const copy = {
       snack: "Snack",
     },
 
+    // ---- Meal plan ----
+    mealPlan: {
+      pageTitle: "Rekomendasi Meal Plan",
+      sub: "Contoh susunan makan harian dari database makanan Indonesia, disesuaikan dengan target kalorimu.",
+      targetLabel: "Target",
+      goalLabel: "Tujuan",
+      regenerate: "Variasi lain",
+      dayTotal: "Total hari ini",
+      note: "Ini contoh otomatis untuk inspirasi — sesuaikan dengan selera, budget, dan kebutuhanmu. Simpan makanan yang kamu makan di Tracker.",
+      addToTracker: "Buka Tracker",
+      gateTitle: "Rekomendasi Meal Plan Personal",
+      gateSub: "Dapatkan contoh susunan makan harian sesuai target kalori & tujuanmu — butuh akun untuk mengambil target personal dari profilmu.",
+      gateBullets: [
+        "Meal plan sarapan sampai snack sesuai target",
+        "Variasi menu tiap hari dari makanan Indonesia",
+        "Estimasi kalori & makro per makanan",
+      ],
+      goals: { lose: "Turun berat", muscle: "Naik massa otot", fit: "Bugar", maintain: "Jaga berat" },
+    },
+
+    // ---- Articles ----
+    articles: {
+      listTitle: "Artikel Nutrisi",
+      listSub: "Berbasis fakta dari sumber terpercaya — WHO, Kemenkes, jurnal ilmiah. Bukan mitos diet.",
+      all: "Semua",
+      minRead: (n: number) => `${n} menit baca`,
+      premium: "Perlu akun",
+      byAuthor: (a: string) => `Oleh ${a}`,
+      sourcesTitle: "Sumber Referensi",
+      relatedTitle: "Artikel Terkait",
+      backToList: "Semua artikel",
+      gateTitle: "Lanjutkan membaca dengan akun gratis",
+      gateSub: "Artikel ini tersedia penuh untuk pengguna yang sudah masuk. Buat akun gratis untuk baca selengkapnya + akses semua fitur.",
+      notFound: "Artikel tidak ditemukan.",
+      updated: "Dipublikasikan",
+    },
+
     // ---- Daily tracker ----
     tracker: {
       pageTitle: "Tracker Hari Ini",
@@ -259,6 +296,41 @@ export const copy = {
       lunch: "Lunch",
       dinner: "Dinner",
       snack: "Snack",
+    },
+
+    articles: {
+      listTitle: "Nutrition Articles",
+      listSub: "Fact-based, from trusted sources — WHO, Kemenkes, scientific journals. Not diet myths.",
+      all: "All",
+      minRead: (n: number) => `${n} min read`,
+      premium: "Account required",
+      byAuthor: (a: string) => `By ${a}`,
+      sourcesTitle: "References",
+      relatedTitle: "Related Articles",
+      backToList: "All articles",
+      gateTitle: "Keep reading with a free account",
+      gateSub: "This article is fully available to signed-in users. Create a free account to read the rest + unlock every feature.",
+      notFound: "Article not found.",
+      updated: "Published",
+    },
+
+    mealPlan: {
+      pageTitle: "Meal Plan Recommendation",
+      sub: "A sample daily meal layout from the Indonesian food database, tuned to your calorie target.",
+      targetLabel: "Target",
+      goalLabel: "Goal",
+      regenerate: "Another variation",
+      dayTotal: "Day total",
+      note: "This is an auto-generated sample for inspiration — adjust to your taste, budget, and needs. Log what you actually eat in the Tracker.",
+      addToTracker: "Open Tracker",
+      gateTitle: "Personal Meal Plan Recommendations",
+      gateSub: "Get a sample daily meal layout for your calorie target & goal — an account is needed to pull your personal target from your profile.",
+      gateBullets: [
+        "Breakfast-to-snack plan for your target",
+        "A different menu each day from Indonesian foods",
+        "Calorie & macro estimate per food",
+      ],
+      goals: { lose: "Lose weight", muscle: "Build muscle", fit: "Get fit", maintain: "Maintain" },
     },
 
     tracker: {
