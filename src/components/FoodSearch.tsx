@@ -11,6 +11,7 @@ import {
   searchFoods,
 } from "../data/foods";
 import { GUEST_KEYS, guestConsume, guestRemaining } from "../lib/guestLimit";
+import { Icon } from "./Icon";
 
 const BORDER = "#E4E0DB";
 const GUEST_MAX = 3;
@@ -141,7 +142,9 @@ export function FoodSearch({
         <div style={{ marginTop: 14, border: `1px solid ${NUTRI.GREEN_TINT}`, borderRadius: 14, overflow: "hidden" }}>
           <div style={{ height: 5, background: `linear-gradient(90deg,${COLORS.RED},${NUTRI.GREEN})` }} />
           <div style={{ padding: "18px 16px" }}>
-            <h4 style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 20, textTransform: "uppercase", color: COLORS.BLACK, margin: "0 0 6px" }}>🔒 {f.limitTitle}</h4>
+            <h4 style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 20, textTransform: "uppercase", color: COLORS.BLACK, margin: "0 0 6px", display: "flex", alignItems: "center", gap: 8 }}>
+              <Icon name="lock" size={18} /> {f.limitTitle}
+            </h4>
             <p style={{ fontSize: 13.5, color: "#5A5A5A", lineHeight: 1.6, margin: "0 0 14px" }}>{f.limitSub}</p>
             <a href={URLS.SIGN_UP} className="sc-btn-primary" style={{ display: "inline-block", background: COLORS.RED, color: "#fff", borderRadius: 10, padding: "10px 18px", fontSize: 14, fontWeight: 700, textDecoration: "none" }}>
               {cc(lang).gate.signUp} →

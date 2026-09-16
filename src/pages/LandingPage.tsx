@@ -6,6 +6,7 @@ import { useAuth } from "../hooks/useAuth";
 import { TdeeCalculator } from "../components/TdeeCalculator";
 import { SiteFooter } from "../components/SiteFooter";
 import { getFeatured, CATEGORY_LABELS } from "../data/articles";
+import { Icon } from "../components/Icon";
 
 const MAXW = 1100;
 
@@ -77,7 +78,7 @@ export function LandingPage({ lang }: { lang: Lang }) {
               {c.landing.heroSub}
             </p>
             <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: "#6A6A6A" }}>
-              <span style={{ fontSize: 18 }}>🔥</span>
+              <Icon name="flame" size={17} color={COLORS.RED} />
               <span>{c.common.poweredBy}</span>
             </div>
           </div>
@@ -99,14 +100,14 @@ export function LandingPage({ lang }: { lang: Lang }) {
             padding: "32px 26px",
           }}
         >
-          <h2 style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: "clamp(26px,4vw,36px)", textTransform: "uppercase", margin: "0 0 6px" }}>
-            🎯 {c.teaser.title}
+          <h2 style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: "clamp(26px,4vw,36px)", textTransform: "uppercase", margin: "0 0 6px", display: "flex", alignItems: "center", gap: 10 }}>
+            <Icon name="target" size={26} color={NUTRI.GREEN} /> {c.teaser.title}
           </h2>
           <p style={{ fontSize: 15, color: "#D8D8D8", margin: "0 0 20px" }}>{c.teaser.sub}</p>
           <ul style={{ listStyle: "none", padding: 0, margin: "0 0 24px", display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(240px,1fr))", gap: "10px 20px" }}>
             {c.teaser.bullets.map((b) => (
               <li key={b} style={{ display: "flex", gap: 10, alignItems: "flex-start", fontSize: 14.5, color: "#EDEDED" }}>
-                <span style={{ color: NUTRI.GREEN, fontWeight: 800, flexShrink: 0 }}>✅</span>
+                <Icon name="check-circle" size={16} color={NUTRI.GREEN} style={{ flexShrink: 0, marginTop: 1 }} />
                 <span>{b}</span>
               </li>
             ))}
@@ -159,22 +160,22 @@ export function LandingPage({ lang }: { lang: Lang }) {
               className="sc-card"
               style={{ display: "block", background: "#fff", border: "1px solid #E4E0DB", borderRadius: 16, overflow: "hidden", textDecoration: "none" }}
             >
-              <div style={{ height: 96, background: `linear-gradient(135deg, ${a.accent}22, ${a.accent}0a)`, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 40 }}>
-                {a.coverEmoji}
+              <div style={{ height: 96, background: `linear-gradient(135deg, ${a.accent}22, ${a.accent}0a)`, display: "flex", alignItems: "center", justifyContent: "center", color: a.accent }}>
+                <Icon name={a.coverIcon} size={34} strokeWidth={1.5} />
               </div>
               <div style={{ padding: "14px 16px 16px" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
                   <span style={{ fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".04em", color: a.accent, background: `${a.accent}1a`, borderRadius: 999, padding: "3px 9px" }}>
                     {CATEGORY_LABELS[lang][a.category]}
                   </span>
-                  {a.isPremium && <span style={{ fontSize: 11, color: "#9A9A9A" }} title="Perlu akun">🔒</span>}
+                  {a.isPremium && <Icon name="lock" size={12} color="#9A9A9A" style={{ marginLeft: 4 }} />}
                 </div>
                 <h3 style={{ fontSize: 16, fontWeight: 700, color: COLORS.BLACK, lineHeight: 1.25, margin: "0 0 8px", fontFamily: "Manrope, sans-serif" }}>
                   {a.title}
                 </h3>
                 <p style={{ fontSize: 13, color: "#6A6A6A", lineHeight: 1.5, margin: "0 0 10px" }}>{a.excerpt}</p>
-                <span style={{ fontSize: 12, color: "#9A9A9A" }}>
-                  ⏱ {a.readTimeMinutes} {lang === "id" ? "menit baca" : "min read"}
+                <span style={{ fontSize: 12, color: "#9A9A9A", display: "inline-flex", alignItems: "center", gap: 5 }}>
+                  <Icon name="clock" size={12} /> {a.readTimeMinutes} {lang === "id" ? "menit baca" : "min read"}
                 </span>
               </div>
             </Link>
@@ -197,8 +198,8 @@ export function LandingPage({ lang }: { lang: Lang }) {
           }}
         >
           <div>
-            <h2 style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: "clamp(24px,4vw,34px)", textTransform: "uppercase", color: COLORS.BLACK, margin: "0 0 8px" }}>
-              📸 {c.landing.previewScanTitle}
+            <h2 style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: "clamp(24px,4vw,34px)", textTransform: "uppercase", color: COLORS.BLACK, margin: "0 0 8px", display: "flex", alignItems: "center", gap: 10 }}>
+              <Icon name="camera" size={24} color={COLORS.RED} /> {c.landing.previewScanTitle}
             </h2>
             <p style={{ fontSize: 15, color: "#5A5A5A", lineHeight: 1.6, margin: "0 0 16px" }}>{c.landing.previewScanSub}</p>
             <ul style={{ listStyle: "none", padding: 0, margin: "0 0 20px", display: "flex", flexDirection: "column", gap: 8 }}>
@@ -235,7 +236,7 @@ export function LandingPage({ lang }: { lang: Lang }) {
           {/* Simple scan mock */}
           <div style={{ display: "flex", justifyContent: "center" }}>
             <div style={{ width: "100%", maxWidth: 280, border: "1px solid #E4E0DB", borderRadius: 18, overflow: "hidden", boxShadow: "0 16px 40px -22px rgba(20,20,20,0.3)" }}>
-              <div style={{ height: 120, background: "linear-gradient(135deg,#FCEBED,#DCFCE7)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: 52 }}>🍛</div>
+              <div style={{ height: 120, background: "linear-gradient(135deg,#FCEBED,#DCFCE7)", display: "flex", alignItems: "center", justifyContent: "center", color: COLORS.RED }}><Icon name="bowl" size={44} strokeWidth={1.4} /></div>
               <div style={{ padding: "14px 16px" }}>
                 <div style={{ fontSize: 14, fontWeight: 700, color: COLORS.BLACK, marginBottom: 8 }}>Nasi Goreng</div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>

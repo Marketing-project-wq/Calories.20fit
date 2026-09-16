@@ -5,6 +5,7 @@ import { useAuth } from "../hooks/useAuth";
 import { t, Lang } from "../lib/i18n";
 import { DailyFoodItem, MemberProfile, appendTodayFoodItem, getMemberProfile, getTodayFoodItems, nowHHMM } from "../lib/memberTracker";
 import { TodayTracker } from "../components/TodayTracker";
+import { Icon } from "../components/Icon";
 
 const RED = "#D62828";
 const BLACK = "#141414";
@@ -84,16 +85,16 @@ const STEPS = {
 
 const FEATURES = {
   id: [
-    { icon: "📷", title: "Scan dari foto", body: "Upload foto makanan, sistem mengenali dan memperkirakan kalori, protein, karbo, dan lemak." },
-    { icon: "📊", title: "Riwayat dan tren", body: "Setiap scan tersimpan, lalu dibaca sebagai tren lintas hari." },
-    { icon: "🥗", title: "Meal plan & diet plan", body: "Rencana makan dari target dan preferensi kamu, bukan template umum." },
-    { icon: "👨‍🍳", title: "Resep dari makanan yang di-scan", body: "Bahan dan langkah diuraikan dari makanan yang kamu suka." },
+    { icon: "camera" as const, title: "Scan dari foto", body: "Upload foto makanan, sistem mengenali dan memperkirakan kalori, protein, karbo, dan lemak." },
+    { icon: "chart" as const, title: "Riwayat dan tren", body: "Setiap scan tersimpan, lalu dibaca sebagai tren lintas hari." },
+    { icon: "leaf" as const, title: "Meal plan & diet plan", body: "Rencana makan dari target dan preferensi kamu, bukan template umum." },
+    { icon: "book" as const, title: "Resep dari makanan yang di-scan", body: "Bahan dan langkah diuraikan dari makanan yang kamu suka." },
   ],
   en: [
-    { icon: "📷", title: "Scan from photo", body: "Upload a food photo, system identifies and estimates calories, protein, carbs, and fat." },
-    { icon: "📊", title: "History and trends", body: "Every scan is saved, then read as cross-day trends." },
-    { icon: "🥗", title: "Meal plan & diet plan", body: "A meal plan built from your targets and preferences, not a generic template." },
-    { icon: "👨‍🍳", title: "Recipes from scanned food", body: "Ingredients and steps are broken down from food you like." },
+    { icon: "camera" as const, title: "Scan from photo", body: "Upload a food photo, system identifies and estimates calories, protein, carbs, and fat." },
+    { icon: "chart" as const, title: "History and trends", body: "Every scan is saved, then read as cross-day trends." },
+    { icon: "leaf" as const, title: "Meal plan & diet plan", body: "A meal plan built from your targets and preferences, not a generic template." },
+    { icon: "book" as const, title: "Recipes from scanned food", body: "Ingredients and steps are broken down from food you like." },
   ],
 };
 
@@ -138,12 +139,12 @@ function TestimonialMarquee({ testimonials }: { testimonials: (typeof TESTIMONIA
 // perkiraan ("±420 kkal"), bukan angka presisi — konsisten dengan framingNote
 // di seluruh halaman. Nama makanan "Soto Ayam" dipilih karena sudah dipakai
 // di testimonial di bawah, jadi terasa konsisten dengan konten sekitar,
-// bukan contoh acak. TIDAK pakai foto sungguhan (isu lisensi) — cukup emoji
-// sebagai placeholder foto, jelas terlihat sebagai ilustrasi.
+// bukan contoh acak. TIDAK pakai foto sungguhan (isu lisensi) — cukup ikon
+// minimalis sebagai placeholder foto, jelas terlihat sebagai ilustrasi.
 const SAMPLE_RESULT = {
   id: {
     badge: "Contoh hasil",
-    foodEmoji: "🍜",
+    foodIcon: "bowl" as const,
     foodName: "Soto Ayam",
     estimate: "Estimasi dari foto · ±420 kkal",
     macros: [
@@ -160,7 +161,7 @@ const SAMPLE_RESULT = {
   },
   en: {
     badge: "Sample result",
-    foodEmoji: "🍜",
+    foodIcon: "bowl" as const,
     foodName: "Chicken Soto",
     estimate: "Estimate from photo · ±420 kcal",
     macros: [
@@ -199,8 +200,8 @@ function SampleResultPhoneMockup({ lang }: { lang: Lang }) {
 
           {/* "Layar": kartu hasil versi ringkas */}
           <div style={{ paddingTop: 26 }}>
-            <div style={{ height: 100, background: TINT, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 40 }}>
-              {s.foodEmoji}
+            <div style={{ height: 100, background: TINT, display: "flex", alignItems: "center", justifyContent: "center", color: RED }}>
+              <Icon name={s.foodIcon} size={36} strokeWidth={1.4} />
             </div>
             <div style={{ padding: "12px 14px 16px", display: "flex", flexDirection: "column", gap: 10 }}>
               <div>
@@ -564,7 +565,7 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
               return (
                 <button key={tab} onClick={() => { setResultTab(tab); if (tab === "summary" && isAuthenticated && todayItems === null) loadTodaySummary(); }}
                   style={{ flex: 1, padding: "10px 8px", fontFamily: "Barlow Condensed, sans-serif", fontSize: 12, letterSpacing: ".06em", textTransform: "uppercase", background: "none", border: "none", borderBottom: resultTab === tab ? `2px solid ${RED}` : "2px solid transparent", color: resultTab === tab ? RED : locked ? "#C0B8B0" : "#6A6A6A", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 4 }}>
-                  {locked && <span style={{ fontSize: 10 }}>🔒</span>}
+                  {locked && <Icon name="lock" size={10} />}
                   {labels[tab]}
                 </button>
               );
@@ -586,7 +587,7 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
                 </div>
                 {/* Overlay */}
                 <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 10, background: "rgba(255,255,255,0.7)", backdropFilter: "blur(2px)" }}>
-                  <span style={{ fontSize: 22 }}>🔒</span>
+                  <Icon name="lock" size={20} color={RED} />
                   <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 15, textTransform: "uppercase", fontWeight: "bold" }}>{lang === "id" ? "Butuh akun" : "Account required"}</span>
                   <a href={URLS.SIGN_UP} style={{ background: RED, color: "#fff", borderRadius: 8, padding: "8px 18px", fontSize: 13, fontWeight: "bold", textDecoration: "none" }}>
                     {lang === "id" ? "Buat akun gratis" : "Create free account"}
@@ -616,7 +617,7 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
                 </div>
                 {/* Overlay */}
                 <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: 10, background: "rgba(255,255,255,0.7)", backdropFilter: "blur(2px)" }}>
-                  <span style={{ fontSize: 22 }}>🔒</span>
+                  <Icon name="lock" size={20} color={RED} />
                   <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 15, textTransform: "uppercase", fontWeight: "bold" }}>{lang === "id" ? "Butuh akun" : "Account required"}</span>
                   <a href={URLS.SIGN_UP} style={{ background: RED, color: "#fff", borderRadius: 8, padding: "8px 18px", fontSize: 13, fontWeight: "bold", textDecoration: "none" }}>
                     {lang === "id" ? "Buat akun gratis" : "Create free account"}
@@ -763,7 +764,7 @@ export const ScanPage = ({ lang = "id" }: { lang?: Lang }) => {
             <div style={{ display: "flex", flexDirection: "column", gap: 9 }}>
               {features.map((f, i) => (
                 <div key={f.title} className="sc-card" style={i === 0 ? { border: `1px solid ${RED}`, borderRadius: 16, padding: "13px 15px", display: "flex", gap: 12, alignItems: "flex-start", background: TINT } : { ...glass(0.5), borderRadius: 16, padding: "13px 15px", display: "flex", gap: 12, alignItems: "flex-start" }}>
-                  <span style={{ width: 34, height: 34, borderRadius: 10, background: i === 0 ? "#FFFFFF" : TINT, display: "flex", alignItems: "center", justifyContent: "center", fontSize: 18, flexShrink: 0 }}>{f.icon}</span>
+                  <span style={{ width: 34, height: 34, borderRadius: 10, background: i === 0 ? "#FFFFFF" : TINT, display: "flex", alignItems: "center", justifyContent: "center", color: RED, flexShrink: 0 }}><Icon name={f.icon} size={17} /></span>
                   <div style={{ display: "flex", flexDirection: "column", gap: 3 }}>
                     <span style={{ fontSize: 13, fontWeight: "bold" }}>{f.title}</span>
                     <span style={{ fontSize: 12, lineHeight: 1.5, color: "#6A6A6A" }}>{f.body}</span>

@@ -1,4 +1,5 @@
 import { SUBDOMAINS, COLORS } from "../lib/constants";
+import { Icon } from "./Icon";
 
 interface AppSwitcherProps {
   currentKey: string;
@@ -16,7 +17,7 @@ export const AppSwitcher = ({ currentKey }: AppSwitcherProps) => {
             className="p-3 rounded-lg text-center transition-all hover:bg-gray-100"
             style={{ backgroundColor: isActive ? "#FCEBED" : "transparent" }}
           >
-            <div className="text-2xl mb-1">{subdomain.icon}</div>
+            <div className="mb-1" style={{ display: "flex", justifyContent: "center" }}><Icon name={subdomain.icon} size={22} /></div>
             <div className="text-xs font-semibold" style={{ color: isActive ? COLORS.RED : "#606060" }}>
               {subdomain.name}
             </div>

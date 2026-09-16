@@ -9,9 +9,10 @@ import { SiteFooter } from "../components/SiteFooter";
 import { MemberProfile, MealType, getMemberProfile } from "../lib/memberTracker";
 import { dailyCalorieGoal } from "../lib/nutrition";
 import { generateMealPlan, dayOfYearSeed } from "../lib/mealPlan";
+import { Icon, IconName } from "../components/Icon";
 
 const BORDER = "#E4E0DB";
-const MEAL_EMOJI: Record<MealType, string> = { breakfast: "🥚", lunch: "🍛", dinner: "🍽️", snack: "🍿" };
+const MEAL_ICON: Record<MealType, IconName> = { breakfast: "egg", lunch: "bowl", dinner: "utensils", snack: "bowl" };
 
 export function MealPlanPage({ lang }: { lang: Lang }) {
   const tr = t[lang];
@@ -47,7 +48,7 @@ export function MealPlanPage({ lang }: { lang: Lang }) {
   if (!isAuthenticated) {
     return (
       <div>
-        <AccountGate lang={lang} icon="🍽️" title={mp.gateTitle} sub={mp.gateSub} bullets={mp.gateBullets} />
+        <AccountGate lang={lang} icon="utensils" title={mp.gateTitle} sub={mp.gateSub} bullets={mp.gateBullets} />
         <SiteFooter lang={lang} />
       </div>
     );
@@ -80,8 +81,8 @@ export function MealPlanPage({ lang }: { lang: Lang }) {
                   <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 22, color: NUTRI.GREEN_DARK }}>{goalName}</span>
                 </div>
               </div>
-              <button onClick={() => setSeed((s) => s + 1)} className="sc-btn-ghost" style={{ border: `1px solid ${BORDER}`, borderRadius: 10, padding: "9px 14px", fontSize: 13, fontWeight: 700, color: COLORS.BLACK, background: "#fff", cursor: "pointer" }}>
-                🔄 {mp.regenerate}
+              <button onClick={() => setSeed((s) => s + 1)} className="sc-btn-ghost" style={{ border: `1px solid ${BORDER}`, borderRadius: 10, padding: "9px 14px", fontSize: 13, fontWeight: 700, color: COLORS.BLACK, background: "#fff", cursor: "pointer", display: "inline-flex", alignItems: "center", gap: 6 }}>
+                <Icon name="refresh" size={14} /> {mp.regenerate}
               </button>
             </div>
 
@@ -90,7 +91,9 @@ export function MealPlanPage({ lang }: { lang: Lang }) {
               {plan.meals.map((meal) => (
                 <div key={meal.meal} style={{ background: "#fff", border: `1px solid ${BORDER}`, borderRadius: 14, padding: "14px 16px" }}>
                   <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
-                    <span style={{ fontSize: 15, fontWeight: 700, color: COLORS.BLACK }}>{MEAL_EMOJI[meal.meal]} {c.food[meal.meal]}</span>
+                    <span style={{ fontSize: 15, fontWeight: 700, color: COLORS.BLACK, display: "inline-flex", alignItems: "center", gap: 8 }}>
+                      <Icon name={MEAL_ICON[meal.meal]} size={16} /> {c.food[meal.meal]}
+                    </span>
                     <span style={{ fontSize: 13, color: COLORS.RED, fontWeight: 700, fontVariantNumeric: "tabular-nums" }}>~{meal.kcal} {tr.kcal}</span>
                   </div>
                   <div style={{ display: "flex", flexDirection: "column" }}>

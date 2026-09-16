@@ -12,6 +12,7 @@
 // supabase/migrations for teams that later want it DB-backed; the app reads
 // this bundle today.
 import { Lang } from "../lib/i18n";
+import { IconName } from "../components/Icon";
 
 import memahamiKalori from "./articles/memahami-kalori-dan-makronutrien.md?raw";
 import caraHitungKalori from "./articles/cara-hitung-kebutuhan-kalori-harian.md?raw";
@@ -48,7 +49,7 @@ export interface Article {
   sources: string[];
   author: string;
   disclaimer: string;
-  coverEmoji: string;
+  coverIcon: IconName;
   accent: string; // cover gradient accent
   publishedAt: string; // ISO date
 }
@@ -75,7 +76,7 @@ export const ARTICLES: Article[] = [
     ],
     author: AUTHOR,
     disclaimer: DEFAULT_DISCLAIMER,
-    coverEmoji: "🍎",
+    coverIcon: "apple",
     accent: "#22C55E",
     publishedAt: "2026-09-01",
   },
@@ -96,7 +97,7 @@ export const ARTICLES: Article[] = [
     ],
     author: AUTHOR,
     disclaimer: DEFAULT_DISCLAIMER,
-    coverEmoji: "🔢",
+    coverIcon: "calculator",
     accent: "#C41101",
     publishedAt: "2026-09-02",
   },
@@ -117,7 +118,7 @@ export const ARTICLES: Article[] = [
     ],
     author: AUTHOR,
     disclaimer: DEFAULT_DISCLAIMER,
-    coverEmoji: "🍛",
+    coverIcon: "bowl",
     accent: "#F59E0B",
     publishedAt: "2026-09-03",
   },
@@ -138,7 +139,7 @@ export const ARTICLES: Article[] = [
     ],
     author: AUTHOR,
     disclaimer: DEFAULT_DISCLAIMER,
-    coverEmoji: "🔬",
+    coverIcon: "flask",
     accent: "#2D4E8F",
     publishedAt: "2026-09-04",
   },
@@ -159,7 +160,7 @@ export const ARTICLES: Article[] = [
     ],
     author: AUTHOR,
     disclaimer: DEFAULT_DISCLAIMER,
-    coverEmoji: "🏋️",
+    coverIcon: "dumbbell",
     accent: "#16A34A",
     publishedAt: "2026-09-05",
   },
@@ -180,7 +181,7 @@ export const ARTICLES: Article[] = [
     ],
     author: AUTHOR,
     disclaimer: DEFAULT_DISCLAIMER,
-    coverEmoji: "⚖️",
+    coverIcon: "scale",
     accent: "#C41101",
     publishedAt: "2026-09-06",
   },
@@ -201,7 +202,7 @@ export const ARTICLES: Article[] = [
     ],
     author: AUTHOR,
     disclaimer: DEFAULT_DISCLAIMER,
-    coverEmoji: "🍗",
+    coverIcon: "drumstick",
     accent: "#2D4E8F",
     publishedAt: "2026-09-16",
   },
@@ -222,7 +223,7 @@ export const ARTICLES: Article[] = [
     ],
     author: AUTHOR,
     disclaimer: DEFAULT_DISCLAIMER,
-    coverEmoji: "🥦",
+    coverIcon: "leaf",
     accent: "#22C55E",
     publishedAt: "2026-09-16",
   },
@@ -243,7 +244,7 @@ export const ARTICLES: Article[] = [
     ],
     author: AUTHOR,
     disclaimer: DEFAULT_DISCLAIMER,
-    coverEmoji: "🥤",
+    coverIcon: "cup",
     accent: "#F59E0B",
     publishedAt: "2026-09-16",
   },
@@ -264,7 +265,7 @@ export const ARTICLES: Article[] = [
     ],
     author: AUTHOR,
     disclaimer: DEFAULT_DISCLAIMER,
-    coverEmoji: "💧",
+    coverIcon: "droplet",
     accent: "#2D4E8F",
     publishedAt: "2026-09-16",
   },
@@ -285,7 +286,7 @@ export const ARTICLES: Article[] = [
     ],
     author: AUTHOR,
     disclaimer: DEFAULT_DISCLAIMER,
-    coverEmoji: "🏷️",
+    coverIcon: "tag",
     accent: "#C41101",
     publishedAt: "2026-09-16",
   },
@@ -305,7 +306,7 @@ export const ARTICLES: Article[] = [
     ],
     author: AUTHOR,
     disclaimer: DEFAULT_DISCLAIMER,
-    coverEmoji: "🍱",
+    coverIcon: "box",
     accent: "#16A34A",
     publishedAt: "2026-09-16",
   },

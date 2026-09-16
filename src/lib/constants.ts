@@ -76,13 +76,13 @@ export const SCAN_LIMITS = {
 export const SUBDOMAINS = [
   {
     name: "Scan Kalori",
-    icon: "🥗",
+    icon: "leaf" as const,
     url: "https://calorietracker.20fit.id",
     key: "calories",
   },
   {
     name: "My 20FIT",
-    icon: "🎯",
+    icon: "target" as const,
     url: MY20FIT,
     key: "my20fit",
   },
