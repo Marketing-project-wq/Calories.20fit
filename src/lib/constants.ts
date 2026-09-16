@@ -5,6 +5,35 @@ export const COLORS = {
   WHITE: "#FFFFFF",
 };
 
+// Nutrition/health accent. The brief asks for a green health accent alongside
+// the primary brand colour. NOTE: the brief calls the primary "#FF6B35
+// orange", but the ACTUAL, shipped 20FIT brand colour in this codebase is red
+// (#C41101 / the brighter #D62828 used inside ScanPage) — see COLORS.RED,
+// tailwind.config, index.css scrollbar, every existing component. We keep the
+// established red as primary and add green ONLY as the nutrition accent
+// (progress "good" state, calculator/tracker highlights), rather than
+// introducing an orange that would clash with the live brand.
+export const NUTRI = {
+  GREEN: "#22C55E",
+  GREEN_DARK: "#16A34A",
+  GREEN_TINT: "#DCFCE7",
+  AMBER: "#F59E0B", // mid-range progress
+  BLUE: "#2D4E8F", // protein macro (matches TodayTracker)
+};
+
+// Route paths. Served at the app root; the router also accepts a /calories
+// prefix on any of these (see src/lib/router.tsx). Kept here so links and the
+// route table never drift apart.
+export const ROUTES = {
+  HOME: "/",
+  SCAN: "/scan",
+  ARTICLES: "/articles",
+  article: (slug: string) => `/articles/${slug}`,
+  TRACKER: "/tracker",
+  MEAL_PLAN: "/meal-plan",
+  HISTORY: "/history",
+};
+
 export const SUPABASE = {
   URL: "https://cpvzwqptzcxnwzfzgrmt.supabase.co",
   ANON_KEY: import.meta.env.VITE_SUPABASE_ANON_KEY as string,
