@@ -59,11 +59,55 @@ Yang lebih didukung bukti:
 
 > Kalau harus memilih fokus antara "protein tepat 30 menit setelah gym" versus "protein cukup dan tersebar merata sepanjang hari", pilih yang kedua — dampaknya jauh lebih besar untuk hasil jangka panjang.
 
+## Efek Termik Protein: Kenapa Sering Disebut "Membakar Kalori Saat Dicerna"
+
+Setiap makronutrien butuh energi untuk dicerna, diserap, dan diproses tubuh — fenomena ini disebut efek termik makanan (Thermic Effect of Food, TEF). Dari ketiga makronutrien, protein punya TEF paling tinggi: sekitar 20-30% dari kalori protein yang dikonsumsi langsung terpakai untuk mencernanya sendiri, dibanding karbohidrat (5-10%) dan lemak (0-3%).
+
+Artinya, dari 100 kkal protein yang dimakan, sekitar 20-30 kkal "hilang" untuk proses pencernaan itu sendiri, menyisakan energi bersih yang lebih sedikit dibanding jumlah kalori yang tertulis di label. Efek ini salah satu alasan pola makan tinggi protein sering dikaitkan dengan manajemen berat badan yang lebih mudah — bukan karena protein "membakar lemak", tapi karena kombinasi TEF yang lebih tinggi dan efek kenyang yang lebih besar per kalori membuat total asupan kalori harian cenderung lebih terkendali secara alami.
+
+Meski begitu, efek TEF ini tidak cukup besar untuk dijadikan strategi utama menurunkan berat badan dengan sendirinya — perannya lebih sebagai bonus kecil yang menyertai manfaat protein yang lebih signifikan seperti rasa kenyang dan mempertahankan massa otot saat defisit kalori.
+
+## Protein Powder: Kapan Benar-Benar Perlu
+
+Suplemen protein (whey, kasein, atau protein nabati seperti kacang polong dan kedelai) bukan kebutuhan wajib bagi semua orang — targetnya tetap bisa dipenuhi sepenuhnya dari makanan utuh. Tapi ada situasi di mana protein powder jadi solusi praktis:
+
+- **Kebutuhan protein tinggi tapi nafsu makan terbatas** — misalnya saat sedang defisit kalori dalam, di mana total porsi makanan yang bisa dihabiskan lebih sedikit dari biasanya, membuat sulit mencapai target protein hanya dari makanan padat.
+- **Keterbatasan waktu** — protein shake jauh lebih cepat disiapkan dibanding memasak sumber protein padat, berguna terutama segera setelah latihan bagi yang jadwalnya padat.
+- **Pilihan makanan terbatas** — bagi vegetarian/vegan yang kesulitan mencapai target protein tinggi (misalnya untuk latihan beban intensif) hanya dari tempe, tahu, dan kacang-kacangan karena volume makanannya jadi sangat besar.
+
+Yang perlu diingat: protein powder tetaplah suplemen, bukan pengganti pola makan seimbang. Kandungan mikronutrien (vitamin, mineral, serat) yang didapat dari makanan utuh seperti ikan, telur, atau tempe tidak tergantikan oleh bubuk protein, yang pada dasarnya hanya menyumbang protein (dan sedikit karbohidrat/lemak tergantung jenisnya).
+
+## Tanda-Tanda Asupan Protein Kurang
+
+Defisiensi protein yang parah (kwashiorkor) jarang terjadi pada masyarakat dengan akses pangan cukup, tapi asupan protein yang *kurang optimal* — di bawah kebutuhan tapi belum sampai taraf defisiensi klinis — cukup umum, terutama pada orang yang sedang diet ketat atau kurang memperhatikan komposisi makanan. Beberapa tanda yang bisa mengindikasikan asupan protein kurang dari kebutuhan:
+
+- **Mudah lapar dan sulit kenyang**, karena protein adalah makronutrien dengan efek kenyang tertinggi — kekurangannya membuat rasa lapar datang lebih cepat meski total kalori sudah tercukupi dari karbohidrat/lemak.
+- **Pemulihan lambat setelah olahraga** dan rasa pegal/lelah otot yang bertahan lebih lama dari biasanya.
+- **Rambut rontok dan kuku rapuh** — protein adalah bahan baku keratin, komponen utama rambut dan kuku.
+- **Kehilangan massa otot** yang tidak proporsional dengan penurunan berat badan, terutama saat sedang defisit kalori tanpa asupan protein memadai.
+- **Penyembuhan luka yang lebih lambat**, karena protein dibutuhkan untuk regenerasi jaringan.
+
+Kalau beberapa tanda ini muncul bersamaan, terutama saat sedang menjalani diet defisit kalori, evaluasi kembali apakah target protein harian (0,8-2,2 g/kg tergantung tingkat aktivitas, seperti dibahas di atas) sudah benar-benar tercapai — bukan sekadar diasumsikan tercukupi.
+
 ## Bisakah Kelebihan Protein?
 
 Untuk orang dewasa dengan fungsi ginjal normal, penelitian tidak menemukan bukti kuat bahwa asupan protein tinggi (dalam rentang yang direkomendasikan riset olahraga, sekitar hingga 2–2,2 g/kg) berbahaya bagi ginjal. Kekhawatiran soal "protein merusak ginjal" umumnya berasal dari studi pada orang yang sudah memiliki gangguan ginjal sebelumnya, bukan populasi sehat — pada kelompok tersebut, pembatasan protein memang relevan, dan sebaiknya dikonsultasikan dengan dokter atau ahli gizi.
 
 Yang lebih realistis dijadikan perhatian adalah soal keseimbangan kalori: protein tetap menyumbang sekitar 4 kkal per gram, sehingga asupan yang jauh melebihi kebutuhan tetap bisa berkontribusi pada surplus kalori kalau tidak diimbangi total asupan harian.
+
+## Kebutuhan Protein untuk Kelompok Usia Lanjut
+
+Salah satu kelompok yang sering kekurangan protein tanpa disadari adalah orang dewasa usia lanjut. Seiring bertambahnya usia, tubuh secara alami kehilangan massa otot — proses yang disebut **sarcopenia** — dan penelitian menunjukkan orang lanjut usia sebenarnya butuh protein per kilogram berat badan yang **lebih tinggi**, bukan lebih rendah, dibanding orang dewasa muda untuk mengimbangi penurunan efisiensi tubuh dalam menggunakan asam amino untuk sintesis protein otot (fenomena yang disebut *anabolic resistance*).
+
+Sayangnya, yang sering terjadi justru sebaliknya: nafsu makan menurun seiring usia, gigi yang tidak lagi kuat mengunyah daging membuat sebagian orang lanjut usia menghindari sumber protein padat, dan porsi makan yang mengecil secara keseluruhan ikut memangkas asupan protein. Kombinasi sarcopenia alami dengan asupan protein yang justru menurun ini yang membuat kelemahan fisik dan risiko jatuh meningkat pada usia lanjut. Sumber protein yang mudah dikunyah dan dicerna seperti telur, ikan lunak, tahu, tempe yang dimasak empuk, atau susu dan yogurt bisa jadi solusi praktis untuk kelompok ini.
+
+## Kombinasi Protein Nabati agar Asam Amino Lebih Lengkap
+
+Bagi yang mengandalkan sumber protein nabati sepenuhnya (vegetarian/vegan) atau sekadar ingin mengurangi protein hewani, ada trik sederhana untuk memaksimalkan kualitas protein yang didapat: **mengombinasikan** dua jenis sumber nabati yang saling melengkapi profil asam amino esensialnya, meski tidak harus dalam satu kali makan yang sama persis.
+
+- **Serealia + kacang-kacangan** — misalnya nasi dengan kacang merah, atau roti dengan selai kacang. Serealia cenderung rendah lisin tapi cukup metionin, sedangkan kacang-kacangan sebaliknya — kombinasi keduanya saling menutupi kekurangan masing-masing.
+- **Tempe/tahu + biji-bijian** — kombinasi klasik Indonesia seperti nasi dengan tempe atau tahu sebenarnya sudah secara alami menerapkan prinsip ini tanpa perlu dipikirkan secara sadar.
+- **Variasi harian, bukan tiap suapan** — riset gizi modern menunjukkan tubuh menyimpan "kumpulan" asam amino dari makanan yang dikonsumsi sepanjang hari, sehingga kombinasi protein nabati tidak harus terjadi dalam satu piring yang sama, selama variasinya cukup dalam rentang sehari penuh.
 
 ## Ringkasan Praktis
 
@@ -71,3 +115,4 @@ Yang lebih realistis dijadikan perhatian adalah soal keseimbangan kalori: protei
 - Variasikan sumber hewani dan nabati — tempe, tahu, telur, ikan, dan ayam semuanya pilihan terjangkau di Indonesia.
 - Sebar asupan protein ke beberapa kali makan sepanjang hari, ketimbang mengejar "jendela waktu" yang sempit setelah olahraga.
 - Fokus pada konsistensi total harian — itu yang paling menentukan hasil jangka panjang, baik untuk kenyang lebih lama maupun mempertahankan massa otot.
+- Untuk usia lanjut dan siapa pun yang sedang defisit kalori, cenderung ke sisi lebih tinggi dari rentang kebutuhan protein, bukan sisi lebih rendah — risiko dari kekurangan protein jauh lebih nyata dibanding risiko dari kelebihannya dalam rentang wajar.

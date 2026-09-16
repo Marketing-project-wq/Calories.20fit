@@ -72,22 +72,7 @@ Langkah 2 — kalikan dengan activity multiplier untuk aktivitas sedang (1,55):
 
 Artinya, untuk mempertahankan berat badan tetap stabil di angka 60 kg, wanita pada contoh ini membutuhkan sekitar 2.000 kkal per hari.
 
-### Contoh 2: Pria, 30 Tahun, Berat 70 kg, Tinggi 170 cm, Aktivitas Sedang
-
-Langkah 1 — hitung BMR memakai rumus Mifflin-St Jeor untuk pria:
-
-- BMR = (10 × 70) + (6,25 × 170) − (5 × 30) + 5
-- BMR = 700 + 1.062,5 − 150 + 5
-- BMR = 1.617,5 kkal/hari
-
-Langkah 2 — kalikan dengan activity multiplier untuk aktivitas sedang (1,55):
-
-- TDEE = 1.617,5 × 1,55
-- TDEE ≈ 2.507 kkal/hari, dibulatkan menjadi sekitar 2.500 kkal/hari
-
-Artinya, pria pada contoh ini membutuhkan sekitar 2.500 kkal per hari untuk mempertahankan berat badannya di angka 70 kg.
-
-> Dua contoh di atas memakai asumsi aktivitas sedang. Kalau level aktivitas harianmu berbeda, tinggal ganti angka activity multiplier-nya sesuai kategori yang paling mendekati gaya hidupmu sehari-hari.
+Rumus untuk pria memakai "+5" alih-alih "−161" di langkah terakhir — beda kecil di formula, tapi hasilnya bisa cukup jauh karena pria umumnya punya lebih banyak massa otot pada berat badan yang sama. Untuk aktivitas harian yang berbeda dari contoh di atas, tinggal ganti angka activity multiplier-nya sesuai kategori yang paling mendekati gaya hidupmu.
 
 ## Defisit Kalori dan Surplus Kalori: Apa Bedanya?
 
@@ -133,15 +118,8 @@ Selain itu, pola makan yang terlalu ekstrem biasanya sulit dipertahankan dalam j
 
 Satu hal penting yang perlu diingat: rumus Mifflin-St Jeor dan activity multiplier adalah hasil generalisasi statistik dari data populasi, bukan pengukuran langsung terhadap tubuh seseorang secara spesifik. Faktor-faktor seperti genetik, komposisi tubuh, kondisi hormon, kualitas tidur, tingkat stres, sampai riwayat diet sebelumnya, semuanya bisa membuat BMR dan TDEE aktual seseorang sedikit berbeda dari hasil rumus.
 
-Karena itu, angka yang keluar dari kalkulator kalori sebaiknya diperlakukan sebagai **estimasi awal** — titik mulai yang masuk akal, bukan patokan mati. Langkah paling tepat setelah mendapat angka target kalori:
-
-1. Terapkan target kalori hasil perhitungan secara konsisten selama 2–4 minggu.
-2. Pantau berat badan secara rutin, idealnya di waktu yang sama setiap hari misalnya pagi hari setelah bangun tidur, untuk melihat tren, bukan angka harian yang naik-turun.
-3. Bandingkan hasil aktual dengan prediksi. Jika penurunan atau kenaikan berat badan sesuai perkiraan, berarti angka target kalori sudah cukup akurat untuk kondisi tubuh tersebut, dan bisa dilanjutkan.
-4. Jika hasil aktual meleset jauh dari prediksi setelah 2–4 minggu dijalankan secara konsisten, sesuaikan target kalori naik atau turun sekitar 100–200 kkal, lalu evaluasi lagi pada periode berikutnya.
-
-Pendekatan bertahap seperti ini jauh lebih realistis dibanding berharap satu angka dari rumus langsung cocok sepenuhnya sejak hari pertama.
+Karena itu, angka yang keluar dari kalkulator kalori sebaiknya diperlakukan sebagai **estimasi awal** — titik mulai yang masuk akal, bukan patokan mati. Terapkan target kalori hasil perhitungan secara konsisten selama 2–4 minggu, pantau berat badan rutin di waktu yang sama tiap hari untuk melihat tren (bukan angka harian yang naik-turun), lalu bandingkan hasil aktual dengan prediksi. Kalau hasilnya meleset jauh setelah 2–4 minggu konsisten, sesuaikan target naik/turun sekitar 100–200 kkal dan evaluasi lagi di periode berikutnya — jauh lebih realistis dibanding berharap satu angka dari rumus langsung cocok sejak hari pertama.
 
 > Target kalori yang tepat bukan yang paling rendah, tapi yang paling bisa dijalani secara konsisten dalam waktu lama.
 
-Pada akhirnya, menghitung kebutuhan kalori harian bukan soal mencari angka ajaib, tapi soal memahami cara kerja tubuh sendiri. Mulai dari menghitung BMR dengan rumus Mifflin-St Jeor, kalikan dengan activity multiplier untuk mendapatkan TDEE, lalu sesuaikan dengan tujuan masing-masing: defisit sekitar 500 kkal per hari untuk turun berat badan secara bertahap dan aman, atau surplus moderat untuk menambah berat badan dan massa otot. Catat asupan makanan secara konsisten, pantau hasil nyata selama beberapa minggu, dan sesuaikan angkanya berdasarkan respons tubuh masing-masing. Itu cara paling masuk akal untuk mencapai target berat badan tanpa mengorbankan kesehatan jangka panjang.
+Pada akhirnya, menghitung kebutuhan kalori harian bukan soal mencari angka ajaib, tapi soal memahami cara kerja tubuh sendiri: hitung BMR, kalikan activity multiplier untuk dapat TDEE, sesuaikan dengan tujuan (defisit ~500 kkal untuk turun berat badan, surplus moderat untuk menambah otot), lalu pantau dan sesuaikan berdasarkan respons tubuh — bukan patokan mati dari rumus.

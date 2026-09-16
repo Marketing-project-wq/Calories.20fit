@@ -74,28 +74,9 @@ Sebagai gambaran, seseorang dengan berat badan 70 kg yang menyasar sekitar 0,3-0
 3. Camilan sore atau pascalatihan: yogurt, susu, atau protein shake
 4. Makan malam: ikan, ayam, tahu/tempe, atau telur dengan porsi karbohidrat yang disesuaikan kebutuhan
 
-## Hidrasi: Bukan Cuma Soal 8 Gelas Sehari
+## Hidrasi: Jangan Tunggu Haus
 
-Anjuran "minum air putih 8 gelas sehari" gampang diingat, tapi sebenarnya terlalu general untuk kebutuhan orang yang aktif berolahraga. Kebutuhan cairan sebenarnya dipengaruhi banyak faktor: **berat badan**, **tingkat keringat** yang berbeda-beda pada tiap orang, **durasi dan intensitas latihan**, serta **cuaca dan kelembapan** — faktor yang sangat relevan mengingat iklim tropis Indonesia yang panas dan lembap sepanjang tahun.
-
-ACSM dalam pedomannya soal penggantian cairan menekankan pentingnya strategi hidrasi di tiga fase: sebelum latihan, dengan memastikan tubuh sudah cukup terhidrasi; selama latihan, dengan mengganti cairan yang hilang lewat keringat secara bertahap; dan setelah latihan, dengan mengembalikan cairan serta elektrolit yang hilang. Pendekatan semacam ini jauh lebih personal dibanding sekadar patokan jumlah gelas yang sama untuk semua orang.
-
-### Cara Memantau Status Hidrasi
-
-Salah satu cara paling praktis dan murah untuk memantau status hidrasi harian adalah lewat **warna urine**. Urine yang berwarna kuning muda seperti jerami umumnya menandakan hidrasi yang cukup baik, sementara warna yang semakin gelap dan pekat, apalagi mendekati warna teh, biasanya jadi sinyal untuk minum lebih banyak air.
-
-> **Patokan cepat:** urine berwarna kuning muda menandakan hidrasi yang cukup baik. Semakin gelap dan pekat warnanya, semakin besar kemungkinan tubuhmu butuh cairan tambahan.
-
-### Elektrolit dan Latihan Intensitas Tinggi
-
-Untuk latihan ringan sampai sedang dengan durasi singkat, air putih biasanya sudah cukup. Tapi untuk sesi latihan intensitas tinggi yang bikin keringat deras dan berlangsung cukup lama — seperti circuit ala HYROX yang menggabungkan lari dengan stasiun-stasiun fungsional, atau sesi EMS yang meski singkat tapi memicu kontraksi otot sangat intens — kehilangan cairan dan elektrolit, terutama natrium, bisa jadi cukup signifikan.
-
-Beberapa hal yang bisa membantu menjaga keseimbangan cairan dan elektrolit saat latihan berat:
-
-- Minum secara bertahap selama latihan, bukan menunggu sampai haus berat baru minum banyak sekaligus
-- Mempertimbangkan minuman yang mengandung elektrolit (natrium, kalium) untuk sesi yang berlangsung lama atau bikin sangat berkeringat
-- Menambah sedikit asupan garam pada makanan pascalatihan kalau keringat yang keluar tergolong banyak, terutama saat cuaca panas
-- Menimbang berat badan sebelum dan sesudah latihan sesekali, sebagai indikator kasar seberapa banyak cairan yang hilang lewat keringat
+Kebutuhan cairan orang yang aktif berolahraga jauh lebih tinggi dari anjuran umum "8 gelas sehari", apalagi di iklim tropis Indonesia. Patokan paling praktis: warna urine kuning muda menandakan hidrasi cukup baik; semakin gelap dan pekat, semakin besar kemungkinan butuh cairan tambahan. Untuk sesi intensitas tinggi dan berlangsung lama seperti HYROX-style atau cuaca panas, pertimbangkan minuman berelektrolit, bukan air putih saja. *(Detail lengkap ada di artikel terpisah "Hidrasi: Kebutuhan Cairan Harian dan Dampaknya ke Performa Olahraga".)*
 
 ## Suplemen: Mana yang Terbukti, Mana yang Sekadar Hype
 
@@ -118,23 +99,9 @@ Rak suplemen di toko olahraga atau linimasa media sosial sering bikin bingung ka
 
 Susunan menu berikut sekadar gambaran umum, dan bisa disesuaikan lagi dengan kebutuhan kalori, preferensi rasa, serta toleransi pencernaan masing-masing orang.
 
-### Skenario Latihan Pagi
+**Latihan pagi** (jam 6-7): bangun tidur cukup air putih (opsional pisang/kurma kalau butuh energi cepat), lalu sesudah latihan sarapan pemulihan (telur, roti gandum/nasi, buah), makan siang lengkap (nasi, ayam/ikan, sayur, tempe/tahu), camilan sore (yogurt/kacang-kacangan), makan malam ringan dengan sayur porsi banyak.
 
-- Bangun tidur: air putih, opsional camilan kecil seperti pisang atau kurma kalau memang butuh energi cepat sebelum latihan
-- Sesi latihan pagi, misalnya sekitar jam 6-7 pagi
-- Sesudah latihan sebagai sarapan pemulihan: telur dadar atau telur rebus, roti gandum atau nasi porsi sedang, ditambah buah
-- Makan siang: nasi, ayam atau ikan, sayur, dan tempe atau tahu
-- Camilan sore: yogurt dengan buah, atau segenggam kacang-kacangan
-- Makan malam: nasi atau kentang porsi disesuaikan, ikan atau daging tanpa lemak berlebih, dan sayur dalam porsi banyak
-
-### Skenario Latihan Sore
-
-- Sarapan: nasi atau roti gandum dengan telur dan sayur
-- Makan siang, sekitar 2-3 jam sebelum latihan sore: nasi, ayam atau ikan panggang, sayur, dan sedikit lemak sehat seperti alpukat
-- Camilan pra-latihan 30-60 menit sebelum, kalau jarak dari makan siang sudah cukup lama: pisang, kurma, atau roti tawar dengan madu
-- Sesi latihan sore, misalnya sekitar jam 5-6 sore
-- Sesudah latihan, dalam sekitar 1-2 jam: nasi dengan ayam atau ikan, atau protein shake dicampur pisang kalau butuh opsi yang praktis
-- Makan malam: menu yang ringan tapi tetap seimbang, misalnya sup ayam dengan sayur dan sedikit karbohidrat
+**Latihan sore** (jam 5-6): sarapan dan makan siang seperti biasa (2-3 jam sebelum latihan, dengan sedikit lemak sehat), camilan pra-latihan 30-60 menit sebelum kalau jaraknya sudah jauh dari makan siang (pisang/kurma), lalu sesudah latihan dalam 1-2 jam makan nasi + protein atau protein shake, makan malam ringan tapi seimbang.
 
 ## Nutrisi untuk Latihan Intensitas Tinggi: EMS dan HYROX-Style
 

@@ -86,17 +86,9 @@ Kabar baiknya, memenuhi kebutuhan tiga makronutrien ini tidak memerlukan bahan m
 
 Pola makan yang menggabungkan sumber-sumber ini dalam porsi seimbang, mengikuti prinsip "Isi Piringku" yang dikampanyekan Kementerian Kesehatan RI misalnya, umumnya sudah cukup memenuhi kebutuhan makronutrien harian tanpa perlu suplemen khusus bagi kebanyakan orang sehat.
 
-## Cara Membaca Label Informasi Nilai Gizi
+## Satu Keterampilan Praktis: Baca Label, Bukan Cuma Angka Kalorinya
 
-Salah satu keterampilan paling praktis dari memahami kalori dan makronutrien adalah bisa membaca label Informasi Nilai Gizi (ING) pada kemasan makanan. Berikut komponen utama yang perlu diperhatikan:
-
-1. **Takaran saji** — jumlah makanan yang dianggap satu porsi konsumsi, misalnya "30 gram" atau "1 gelas". Semua angka gizi pada label dihitung berdasarkan takaran saji ini, bukan berdasarkan seluruh isi kemasan.
-2. **Jumlah sajian per kemasan** — menunjukkan berapa banyak porsi yang terkandung dalam satu kemasan. Jika sebuah kemasan camilan tertulis "jumlah sajian per kemasan: 3", maka menghabiskan satu kemasan sekaligus berarti mengalikan seluruh angka pada label dengan tiga, termasuk jumlah kalorinya.
-3. **Energi total** — jumlah kalori dalam kkal per takaran saji. Ini angka yang paling sering dilihat sekilas, tapi perlu dibaca berbarengan dengan takaran saji dan jumlah sajian agar tidak salah menghitung total yang sebenarnya dikonsumsi.
-4. **%AKG atau persen Angka Kecukupan Gizi** — menunjukkan seberapa besar kontribusi satu sajian makanan terhadap kebutuhan gizi harian, dihitung berdasarkan acuan 2.150 kkal yang ditetapkan Kementerian Kesehatan RI. Jika sebuah produk tertulis "energi total 15% AKG", artinya satu sajian menyumbang sekitar 15% dari total kebutuhan energi harian berdasarkan acuan tersebut.
-5. **Kandungan gula, garam, dan lemak (GGL)** — tiga komponen yang secara khusus diminta dicantumkan lebih menonjol pada label pangan Indonesia karena kaitannya dengan risiko penyakit tidak menular seperti diabetes, hipertensi, dan penyakit jantung apabila dikonsumsi berlebihan dalam jangka panjang.
-
-Membiasakan diri membaca kelima komponen ini secara bersamaan, bukan cuma melirik angka kalori sekilas, membantu menilai apakah suatu makanan benar-benar sesuai dengan porsi yang akan dikonsumsi, atau justru mengandung kalori jauh lebih tinggi dari yang terlihat sekilas karena jumlah sajian per kemasannya lebih dari satu.
+Kalori dan makronutrien yang sudah dijelaskan di atas juga muncul di label Informasi Nilai Gizi (ING) tiap kemasan makanan — tapi jebakan paling umum bukan di angka kalorinya, melainkan di takaran saji dan jumlah sajian per kemasan yang sering luput dibaca, sehingga kalori sebenarnya yang dikonsumsi bisa jauh lebih tinggi dari yang terlihat sekilas. *(Bahasan lengkap cara membaca ING — termasuk %AKG dan kandungan gula/garam/lemak — ada di artikel terpisah "Cara Membaca Label Informasi Nilai Gizi Kemasan Makanan Indonesia".)*
 
 ## Yang Bisa Langsung Dipraktikkan
 

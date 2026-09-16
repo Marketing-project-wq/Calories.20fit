@@ -128,34 +128,15 @@ Trik sederhana lain yang biasa dipakai dalam edukasi gizi adalah memakai ukuran 
 
 ## Jajan Pasar dan Gorengan: Berapa Sebenarnya Kalorinya?
 
-Gorengan pinggir jalan sering dianggap "cuma camilan kecil", padahal satu buah bakwan atau tempe mendoan bisa menyumbang kalori setara semangkuk nasi kalau ditotal dalam sehari.
-
-- Bakwan sayur (1 buah): ~130-150 kkal
-- Tempe atau tahu isi goreng (1 buah): ~100-130 kkal
-- Pisang goreng (1 buah ukuran sedang): ~150-190 kkal
-- Risoles atau kroket (1 buah): ~130-160 kkal
-- Combro atau misro (1 buah): ~120-150 kkal
-
-Kalau biasa "cemal-cemil" tiga sampai empat gorengan di sore hari, itu setara tambahan sekitar 400-600 kkal ekstra, di luar makan besar — jumlah yang cukup berarti kalau terjadi setiap hari.
+Gorengan pinggir jalan sering dianggap "cuma camilan kecil", padahal satu buah bakwan atau tempe mendoan (lihat kisaran kalori di bagian "Gorengan dan Camilan Gurih" di atas) bisa menyumbang kalori setara semangkuk nasi kalau ditotal dalam sehari. Pisang goreng (1 buah sedang) sekitar 150-190 kkal, combro atau misro (1 buah) sekitar 120-150 kkal. Kalau biasa "cemal-cemil" tiga sampai empat gorengan di sore hari, itu setara tambahan sekitar 400-600 kkal ekstra di luar makan besar — jumlah yang cukup berarti kalau terjadi setiap hari.
 
 Kue pasar manis seperti klepon, onde-onde, atau kue lapis juga sering diremehkan karena porsinya kecil, padahal kombinasi tepung, gula, dan santan bisa membuat satu potong kue tradisional menyumbang 80-150 kkal. Risikonya bukan cuma soal kalori, tapi juga kombinasi lemak dari minyak goreng yang dipakai berulang kali dan kadar gula yang cukup tinggi dalam porsi yang terlihat kecil.
 
 Bukan berarti gorengan dan jajan pasar harus dihindari sama sekali — ini soal frekuensi dan porsi. Menjadikannya camilan sesekali, bukan camilan harian, adalah pendekatan yang jauh lebih realistis dibanding pantangan mutlak yang sulit dijalani dalam jangka panjang.
 
-## Pilihan Minuman: Kopi Susu Kekinian, Air Putih, dan Jus
+## Kopi Susu Kekinian: Gula Cair yang Sering Tidak Disadari
 
-Minuman sering jadi sumber kalori yang paling tidak disadari, karena tidak memberi efek kenyang seperti makanan padat, padahal jumlah kalorinya bisa signifikan.
-
-- Air putih: 0 kkal
-- Teh atau kopi hitam tanpa gula: mendekati 0 kkal
-- Es teh manis (1 gelas, ~250 ml): ~90-110 kkal
-- Kopi susu gula aren kekinian (1 cup, ~350-500 ml): ~150-250+ kkal, tergantung banyaknya gula aren, susu full cream, dan creamer yang dipakai — ukuran besar dengan topping tambahan seperti boba bisa lebih tinggi lagi
-- Jus buah dengan tambahan gula (1 gelas, ~250 ml): ~150-180 kkal
-- Jus buah tanpa tambahan gula: ~90-120 kkal, meski tetap lebih rendah serat dibanding makan buah utuh karena sebagian besar seratnya hilang saat diproses atau disaring
-
-Kopi susu gula aren kekinian jadi salah satu contoh paling nyata bagaimana **gula cair** menyumbang surplus kalori tanpa disadari. Satu cup besar bisa setara dengan sepiring nasi putih dari sisi kalori, tapi tidak memberi rasa kenyang yang sama, sehingga orang cenderung tetap makan porsi penuh setelahnya. Inilah yang membuat minuman manis jadi salah satu penyumbang kenaikan berat badan yang sering tidak disadari, karena dianggap "cuma minuman".
-
-> **Key takeaway:** Kalori dari minuman manis gampang menumpuk karena tidak bikin kenyang. Mengganti satu gelas kopi susu kekinian dengan air putih atau kopi hitam beberapa kali seminggu adalah salah satu perubahan kecil dengan dampak kalori yang cukup besar.
+Dari daftar minuman di atas, kopi susu gula aren kekinian layak disorot: satu cup besar bisa setara sepiring nasi putih dari sisi kalori, tapi tidak memberi rasa kenyang yang sama, sehingga orang cenderung tetap makan porsi penuh setelahnya. *(Detail lengkap soal gula tambahan dan kalori cair ada di artikel terpisah "Gula Tambahan dan Kalori Tersembunyi".)* Mengganti kopi susu kekinian dengan air putih atau kopi hitam beberapa kali seminggu adalah perubahan kecil dengan dampak kalori yang cukup besar.
 
 ## Menutup: Praktik, Bukan Pantangan
 

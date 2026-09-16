@@ -89,8 +89,15 @@ export function ArticleDetailPage({ lang, slug }: { lang: Lang; slug: string }) 
         </div>
 
         {/* Cover */}
-        <div style={{ height: 180, background: `linear-gradient(135deg, ${art.accent}2e, ${art.accent}08)`, borderRadius: 18, display: "flex", alignItems: "center", justifyContent: "center", color: art.accent, marginBottom: 26 }}>
+        <div style={{ height: 180, position: "relative", overflow: "hidden", background: `linear-gradient(135deg, ${art.accent}2e, ${art.accent}08)`, borderRadius: 18, display: "flex", alignItems: "center", justifyContent: "center", color: art.accent, marginBottom: 26 }}>
           <Icon name={art.coverIcon} size={60} strokeWidth={1.3} />
+          <img
+            src={art.coverPhoto}
+            alt=""
+            loading="lazy"
+            onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+            style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+          />
         </div>
 
         {/* Body */}
@@ -147,7 +154,16 @@ export function ArticleDetailPage({ lang, slug }: { lang: Lang; slug: string }) 
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(210px,1fr))", gap: 14 }}>
               {related.map((r) => (
                 <Link key={r.slug} href={ROUTES.article(r.slug)} className="sc-card" style={{ display: "block", background: "#fff", border: "1px solid #E4E0DB", borderRadius: 14, padding: "14px 16px", textDecoration: "none" }}>
-                  <div style={{ marginBottom: 8, color: r.accent }}><Icon name={r.coverIcon} size={22} /></div>
+                  <div style={{ marginBottom: 8, position: "relative", overflow: "hidden", borderRadius: 8, height: 64, background: `linear-gradient(135deg, ${r.accent}26, ${r.accent}0a)`, display: "flex", alignItems: "center", justifyContent: "center", color: r.accent }}>
+                    <Icon name={r.coverIcon} size={22} />
+                    <img
+                      src={r.coverPhoto}
+                      alt=""
+                      loading="lazy"
+                      onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+                      style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+                    />
+                  </div>
                   <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".04em", color: r.accent }}>{CATEGORY_LABELS[lang][r.category]}</span>
                   <h4 style={{ fontFamily: "Manrope, sans-serif", fontSize: 14.5, fontWeight: 700, color: COLORS.BLACK, lineHeight: 1.3, margin: "6px 0 0" }}>{r.title}</h4>
                 </Link>

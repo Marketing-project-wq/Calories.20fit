@@ -54,8 +54,15 @@ export function ArticlesPage({ lang }: { lang: Lang }) {
               className="sc-card"
               style={{ display: "flex", flexDirection: "column", background: "#fff", border: "1px solid #E4E0DB", borderRadius: 16, overflow: "hidden", textDecoration: "none" }}
             >
-              <div style={{ height: 120, background: `linear-gradient(135deg, ${art.accent}26, ${art.accent}0a)`, display: "flex", alignItems: "center", justifyContent: "center", color: art.accent, position: "relative" }}>
+              <div style={{ height: 120, background: `linear-gradient(135deg, ${art.accent}26, ${art.accent}0a)`, display: "flex", alignItems: "center", justifyContent: "center", color: art.accent, position: "relative", overflow: "hidden" }}>
                 <Icon name={art.coverIcon} size={42} strokeWidth={1.5} />
+                <img
+                  src={art.coverPhoto}
+                  alt=""
+                  loading="lazy"
+                  onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+                  style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+                />
                 {art.isPremium && (
                   <span style={{ position: "absolute", top: 10, right: 10, fontSize: 11, fontWeight: 700, background: "rgba(20,20,20,0.72)", color: "#fff", borderRadius: 999, padding: "3px 9px", display: "flex", alignItems: "center", gap: 4 }}>
                     <Icon name="lock" size={11} /> {a.premium}

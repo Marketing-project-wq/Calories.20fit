@@ -160,8 +160,15 @@ export function LandingPage({ lang }: { lang: Lang }) {
               className="sc-card"
               style={{ display: "block", background: "#fff", border: "1px solid #E4E0DB", borderRadius: 16, overflow: "hidden", textDecoration: "none" }}
             >
-              <div style={{ height: 96, background: `linear-gradient(135deg, ${a.accent}22, ${a.accent}0a)`, display: "flex", alignItems: "center", justifyContent: "center", color: a.accent }}>
+              <div style={{ height: 96, position: "relative", overflow: "hidden", background: `linear-gradient(135deg, ${a.accent}22, ${a.accent}0a)`, display: "flex", alignItems: "center", justifyContent: "center", color: a.accent }}>
                 <Icon name={a.coverIcon} size={34} strokeWidth={1.5} />
+                <img
+                  src={a.coverPhoto}
+                  alt=""
+                  loading="lazy"
+                  onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+                  style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+                />
               </div>
               <div style={{ padding: "14px 16px 16px" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: 8, marginBottom: 8 }}>
