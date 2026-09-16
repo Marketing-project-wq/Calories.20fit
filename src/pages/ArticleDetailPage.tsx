@@ -51,7 +51,8 @@ export function ArticleDetailPage({ lang, slug }: { lang: Lang; slug: string }) 
   }
 
   const showFull = !art.isPremium || isAuthenticated;
-  const body = showFull ? art.content : clipMarkdown(art.content, 0.3);
+  const content = art.content[lang];
+  const body = showFull ? content : clipMarkdown(content, 0.3);
   const related = getRelated(slug, 3);
   const publishedLabel = new Date(art.publishedAt).toLocaleDateString(lang === "id" ? "id-ID" : "en-US", { day: "numeric", month: "long", year: "numeric" });
 
@@ -76,7 +77,7 @@ export function ArticleDetailPage({ lang, slug }: { lang: Lang; slug: string }) 
           )}
         </div>
         <h1 style={{ fontFamily: "Barlow Condensed, sans-serif", fontWeight: 900, fontSize: "clamp(28px,5vw,42px)", lineHeight: 1.05, textTransform: "uppercase", color: COLORS.BLACK, margin: "0 0 14px" }}>
-          {art.title}
+          {art.title[lang]}
         </h1>
         <div style={{ display: "flex", flexWrap: "wrap", gap: "4px 12px", fontSize: 13, color: "#8A8A8A", marginBottom: 20 }}>
           <span>{a.byAuthor(art.author)}</span>
@@ -136,13 +137,13 @@ export function ArticleDetailPage({ lang, slug }: { lang: Lang; slug: string }) 
                 <Icon name="book" size={18} /> {a.sourcesTitle}
               </h3>
               <ul style={{ margin: 0, paddingLeft: 20, display: "flex", flexDirection: "column", gap: 6 }}>
-                {art.sources.map((s) => (
+                {art.sources[lang].map((s) => (
                   <li key={s} style={{ fontSize: 13, color: "#5A5A5A", lineHeight: 1.5 }}>{s}</li>
                 ))}
               </ul>
             </div>
             <p style={{ marginTop: 20, fontSize: 12.5, color: "#8A8A8A", lineHeight: 1.6, borderLeft: `3px solid ${NUTRI.AMBER}`, background: "#FFFBEB", padding: "12px 14px", borderRadius: "0 10px 10px 0", display: "flex", alignItems: "flex-start", gap: 8 }}>
-              <Icon name="medical" size={15} color={NUTRI.AMBER} style={{ marginTop: 1, flexShrink: 0 }} /> {art.disclaimer}
+              <Icon name="medical" size={15} color={NUTRI.AMBER} style={{ marginTop: 1, flexShrink: 0 }} /> {art.disclaimer[lang]}
             </p>
           </>
         )}
@@ -165,7 +166,7 @@ export function ArticleDetailPage({ lang, slug }: { lang: Lang; slug: string }) 
                     />
                   </div>
                   <span style={{ fontSize: 10, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".04em", color: r.accent }}>{CATEGORY_LABELS[lang][r.category]}</span>
-                  <h4 style={{ fontFamily: "Manrope, sans-serif", fontSize: 14.5, fontWeight: 700, color: COLORS.BLACK, lineHeight: 1.3, margin: "6px 0 0" }}>{r.title}</h4>
+                  <h4 style={{ fontFamily: "Manrope, sans-serif", fontSize: 14.5, fontWeight: 700, color: COLORS.BLACK, lineHeight: 1.3, margin: "6px 0 0" }}>{r.title[lang]}</h4>
                 </Link>
               ))}
             </div>
