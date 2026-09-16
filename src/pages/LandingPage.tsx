@@ -209,13 +209,28 @@ export function LandingPage({ lang }: { lang: Lang }) {
                 </li>
               ))}
             </ul>
-            <Link
-              href={ROUTES.SCAN}
-              className="sc-btn-primary"
-              style={{ display: "inline-block", background: COLORS.RED, color: "#fff", borderRadius: 12, padding: "12px 22px", fontSize: 15, fontWeight: 700, textDecoration: "none" }}
-            >
-              {c.landing.previewScanCta} →
-            </Link>
+            {isAuthenticated ? (
+              <Link
+                href={ROUTES.SCAN}
+                className="sc-btn-primary"
+                style={{ display: "inline-block", background: COLORS.RED, color: "#fff", borderRadius: 12, padding: "12px 22px", fontSize: 15, fontWeight: 700, textDecoration: "none" }}
+              >
+                {c.landing.previewScanCta} →
+              </Link>
+            ) : (
+              <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center" }}>
+                <a
+                  href={URLS.SIGN_UP}
+                  className="sc-link-btn"
+                  style={{ display: "inline-block", background: COLORS.RED, color: "#fff", borderRadius: 12, padding: "12px 22px", fontSize: 15, fontWeight: 700, textDecoration: "none" }}
+                >
+                  {c.teaser.ctaPrimary} →
+                </a>
+                <a href={URLS.LOGIN} style={{ color: COLORS.BLACK, fontSize: 13, fontWeight: 600, textDecoration: "underline", opacity: 0.75 }}>
+                  {c.teaser.ctaSecondary}
+                </a>
+              </div>
+            )}
           </div>
           {/* Simple scan mock */}
           <div style={{ display: "flex", justifyContent: "center" }}>
