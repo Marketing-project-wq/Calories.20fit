@@ -5,20 +5,22 @@ import { cc } from "../lib/calorieCopy";
 import { Link } from "../lib/router";
 import { ROUTES } from "../lib/constants";
 import { SiteFooter } from "../components/SiteFooter";
-import { ARTICLES, ArticleCategory, CATEGORY_LABELS } from "../data/articles";
+import { ArticleCategory, CATEGORY_LABELS } from "../data/articles";
+import { useArticles } from "../hooks/useArticles";
 import { Icon } from "../components/Icon";
 
 export function ArticlesPage({ lang }: { lang: Lang }) {
   const a = cc(lang).articles;
+  const { articles } = useArticles();
   const [cat, setCat] = useState<ArticleCategory | "all">("all");
 
   // Only offer filters for categories that actually have articles.
   const cats = useMemo(() => {
-    const present = Array.from(new Set(ARTICLES.map((x) => x.category)));
+    const present = Array.from(new Set(articles.map((x) => x.category)));
     return present as ArticleCategory[];
-  }, []);
+  }, [articles]);
 
-  const shown = cat === "all" ? ARTICLES : ARTICLES.filter((x) => x.category === cat);
+  const shown = cat === "all" ? articles : articles.filter((x) => x.category === cat);
 
   return (
     <div style={{ background: "#EFEDEA", minHeight: "60vh" }}>
