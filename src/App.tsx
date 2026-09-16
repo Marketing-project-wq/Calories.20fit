@@ -6,7 +6,7 @@ import { useAuth } from "./hooks/useAuth";
 import { AuthNav } from "./components/AuthNav";
 import { Link, useLocation, matchRoute } from "./lib/router";
 import { LandingPage } from "./pages/LandingPage";
-import { ScanPage } from "./pages/ScanPage";
+import { ScanRoute } from "./pages/ScanRoute";
 import { HistoryPage } from "./pages/HistoryPage";
 import { InsightPage } from "./pages/InsightPage";
 import { ArticlesPage } from "./pages/ArticlesPage";
@@ -60,7 +60,7 @@ export function App() {
   let page: JSX.Element;
   const articleMatch = matchRoute("/articles/:slug", path);
   if (path === "/") page = <LandingPage lang={lang} />;
-  else if (path === ROUTES.SCAN) page = <ScanPage lang={lang} />;
+  else if (path === ROUTES.SCAN) page = <ScanRoute lang={lang} />;
   else if (path === ROUTES.ARTICLES) page = <ArticlesPage lang={lang} />;
   else if (articleMatch) page = <ArticleDetailPage lang={lang} slug={articleMatch.slug} />;
   else if (path === ROUTES.TRACKER) page = <TrackerPage lang={lang} />;
