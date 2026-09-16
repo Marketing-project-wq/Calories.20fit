@@ -27,7 +27,7 @@ export const copy = {
       previewArticlesSub: "Artikel berbasis fakta — WHO, Kemenkes, jurnal ilmiah. Bukan mitos diet.",
       previewArticlesCta: "Lihat semua artikel",
       previewScanTitle: "Foto makanan, langsung tahu kalorinya",
-      previewScanSub: "Scan makanan pakai AI. Coba gratis tanpa akun — hasil analisis terbuka penuh.",
+      previewScanSub: "Scan makanan pakai AI, langsung tahu kalori & makronya. Buat akun gratis buat mulai scan makananmu.",
       previewScanCta: "Coba Scan Kalori",
       previewScanBullets: [
         "Estimasi kalori & makro dari satu foto",
@@ -219,7 +219,7 @@ export const copy = {
       previewArticlesSub: "Fact-based articles — WHO, Kemenkes, scientific journals. Not diet myths.",
       previewArticlesCta: "See all articles",
       previewScanTitle: "Photo your food, know the calories",
-      previewScanSub: "Scan food with AI. Try it free, no account — the analysis is fully open.",
+      previewScanSub: "Scan food with AI and instantly see the calories & macros. Create a free account to start scanning.",
       previewScanCta: "Try Calorie Scan",
       previewScanBullets: [
         "Calorie & macro estimate from one photo",

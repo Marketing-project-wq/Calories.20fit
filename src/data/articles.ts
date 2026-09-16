@@ -19,6 +19,12 @@ import panduanIndonesia from "./articles/panduan-nutrisi-makanan-indonesia.md?ra
 import mitosDiet from "./articles/mitos-dan-fakta-diet-populer.md?raw";
 import nutrisiOlahraga from "./articles/nutrisi-untuk-olahraga-dan-fitness.md?raw";
 import turunBerat from "./articles/cara-sehat-turun-berat-badan.md?raw";
+import proteinKebutuhan from "./articles/protein-kebutuhan-sumber-dan-waktu-terbaik.md?raw";
+import seratPencernaan from "./articles/serat-pencernaan-dan-kontrol-berat-badan.md?raw";
+import gulaTambahan from "./articles/gula-tambahan-dan-kalori-tersembunyi.md?raw";
+import hidrasiPerforma from "./articles/hidrasi-air-putih-dan-performa-olahraga.md?raw";
+import labelGizi from "./articles/cara-membaca-label-informasi-nilai-gizi.md?raw";
+import mealPrep from "./articles/meal-prep-dasar-untuk-pemula.md?raw";
 
 export type ArticleCategory =
   | "nutrition-basics"
@@ -103,7 +109,7 @@ export const ARTICLES: Article[] = [
     category: "indonesian-food",
     tags: ["makanan indonesia", "TKPI", "nasi padang", "gorengan", "warteg"],
     readTimeMinutes: 11,
-    isPremium: true,
+    isPremium: false,
     sources: [
       "TKPI — Tabel Komposisi Pangan Indonesia, Kemenkes RI",
       "Data Konsumsi Pangan — Susenas, Badan Pusat Statistik (BPS)",
@@ -124,7 +130,7 @@ export const ARTICLES: Article[] = [
     category: "food-myths",
     tags: ["intermittent fasting", "keto", "low-carb", "detox", "mitos diet"],
     readTimeMinutes: 11,
-    isPremium: true,
+    isPremium: false,
     sources: [
       "The New England Journal of Medicine (NEJM) — Intermittent fasting reviews",
       "The Lancet & Cochrane Reviews — Diet comparison meta-analyses",
@@ -145,7 +151,7 @@ export const ARTICLES: Article[] = [
     category: "sports-nutrition",
     tags: ["pre-workout", "post-workout", "protein", "kreatin", "EMS", "HYROX"],
     readTimeMinutes: 11,
-    isPremium: true,
+    isPremium: false,
     sources: [
       "ISSN Position Stand — Nutrient Timing (Kerksick CM et al., 2017, JISSN)",
       "ISSN Position Stand — Protein and Exercise (Jäger R et al., 2017, JISSN)",
@@ -166,7 +172,7 @@ export const ARTICLES: Article[] = [
     category: "weight-management",
     tags: ["turun berat badan", "defisit kalori", "metabolic adaptation", "tidur", "body recomposition"],
     readTimeMinutes: 12,
-    isPremium: true,
+    isPremium: false,
     sources: [
       "Mann T et al. (2007) — Medicare's search for effective obesity treatments, Am Psychol (UCLA)",
       "Hall KD et al. (2011) — Quantification of the effect of energy imbalance, The Lancet",
@@ -177,6 +183,131 @@ export const ARTICLES: Article[] = [
     coverEmoji: "⚖️",
     accent: "#C41101",
     publishedAt: "2026-09-06",
+  },
+  {
+    slug: "protein-kebutuhan-sumber-dan-waktu-terbaik",
+    title: "Protein: Berapa Kebutuhan Harian, Sumber Terbaik, dan Soal Waktu Makan",
+    excerpt:
+      "Rumus kebutuhan protein untuk orang biasa vs yang rutin latihan beban, sumber nabati/hewani yang terjangkau, dan fakta soal 'anabolic window'.",
+    content: proteinKebutuhan,
+    category: "nutrition-basics",
+    tags: ["protein", "asam amino", "tempe", "tahu", "anabolic window", "latihan beban"],
+    readTimeMinutes: 6,
+    isPremium: false,
+    sources: [
+      "Angka Kecukupan Gizi (AKG) — Permenkes RI No. 28 Tahun 2019",
+      "ISSN Position Stand — Protein and Exercise (Jäger R et al., 2017, JISSN)",
+      "Academy of Nutrition and Dietetics — Vegetarian diets position paper",
+    ],
+    author: AUTHOR,
+    disclaimer: DEFAULT_DISCLAIMER,
+    coverEmoji: "🍗",
+    accent: "#2D4E8F",
+    publishedAt: "2026-09-16",
+  },
+  {
+    slug: "serat-pencernaan-dan-kontrol-berat-badan",
+    title: "Serat: Kenapa Penting untuk Pencernaan dan Kontrol Berat Badan",
+    excerpt:
+      "Serat larut vs tidak larut, kenapa makanan tinggi serat bikin kenyang lebih lama, dan cara menambah asupan tanpa bikin kembung.",
+    content: seratPencernaan,
+    category: "nutrition-basics",
+    tags: ["serat", "pencernaan", "kenyang lebih lama", "mikrobiota usus"],
+    readTimeMinutes: 5,
+    isPremium: false,
+    sources: [
+      "Angka Kecukupan Gizi (AKG) — Permenkes RI No. 28 Tahun 2019",
+      "WHO — Healthy diet fact sheet",
+      "Riskesdas & Data Konsumsi Pangan — Susenas, Badan Pusat Statistik (BPS)",
+    ],
+    author: AUTHOR,
+    disclaimer: DEFAULT_DISCLAIMER,
+    coverEmoji: "🥦",
+    accent: "#22C55E",
+    publishedAt: "2026-09-16",
+  },
+  {
+    slug: "gula-tambahan-dan-kalori-tersembunyi",
+    title: "Gula Tambahan dan Kalori Tersembunyi: Kenapa Minuman Manis Paling Sering Jadi Biang Kerok",
+    excerpt:
+      "Bedanya gula alami dan gula tambahan, kenapa kalori cair 'tidak terasa menghitung', dan cara mengenali gula tersembunyi di label.",
+    content: gulaTambahan,
+    category: "weight-management",
+    tags: ["gula tambahan", "kalori cair", "minuman manis", "label gizi"],
+    readTimeMinutes: 5,
+    isPremium: false,
+    sources: [
+      "WHO — Guideline: Sugars intake for adults and children",
+      "Angka Kecukupan Gizi (AKG) — Permenkes RI No. 28 Tahun 2019",
+      "Harvard T.H. Chan School of Public Health — The Nutrition Source",
+    ],
+    author: AUTHOR,
+    disclaimer: DEFAULT_DISCLAIMER,
+    coverEmoji: "🥤",
+    accent: "#F59E0B",
+    publishedAt: "2026-09-16",
+  },
+  {
+    slug: "hidrasi-air-putih-dan-performa-olahraga",
+    title: "Hidrasi: Kebutuhan Cairan Harian dan Dampaknya ke Performa Olahraga",
+    excerpt:
+      "Berapa sebenarnya kebutuhan air putih harian, kenapa dehidrasi ringan bisa menurunkan performa, dan mitos 'minum air bikin gemuk'.",
+    content: hidrasiPerforma,
+    category: "sports-nutrition",
+    tags: ["hidrasi", "air putih", "elektrolit", "performa olahraga"],
+    readTimeMinutes: 5,
+    isPremium: false,
+    sources: [
+      "National Academies of Sciences — Dietary Reference Intakes for Water",
+      "ACSM — Nutrition and Athletic Performance Joint Position Stand",
+      "WHO — Healthy diet fact sheet",
+    ],
+    author: AUTHOR,
+    disclaimer: DEFAULT_DISCLAIMER,
+    coverEmoji: "💧",
+    accent: "#2D4E8F",
+    publishedAt: "2026-09-16",
+  },
+  {
+    slug: "cara-membaca-label-informasi-nilai-gizi",
+    title: "Cara Membaca Label Informasi Nilai Gizi Kemasan Makanan Indonesia",
+    excerpt:
+      "Jebakan takaran saji yang bikin salah hitung kalori, cara membaca %AKG dengan benar, dan arti klaim 'rendah lemak' atau 'tanpa gula tambahan'.",
+    content: labelGizi,
+    category: "indonesian-food",
+    tags: ["label gizi", "ING", "BPOM", "%AKG", "takaran saji"],
+    readTimeMinutes: 6,
+    isPremium: false,
+    sources: [
+      "BPOM — Regulasi Label Pangan Olahan",
+      "Angka Kecukupan Gizi (AKG) — Permenkes RI No. 28 Tahun 2019",
+      "WHO — Healthy diet fact sheet (lemak jenuh & natrium)",
+    ],
+    author: AUTHOR,
+    disclaimer: DEFAULT_DISCLAIMER,
+    coverEmoji: "🏷️",
+    accent: "#C41101",
+    publishedAt: "2026-09-16",
+  },
+  {
+    slug: "meal-prep-dasar-untuk-pemula",
+    title: "Meal Prep untuk Pemula: Cara Mulai dan Keamanan Pangan yang Sering Terlewat",
+    excerpt:
+      "Langkah dasar menyiapkan makanan sehat untuk beberapa hari sekaligus, plus panduan penyimpanan dan pemanasan ulang yang aman.",
+    content: mealPrep,
+    category: "meal-planning",
+    tags: ["meal prep", "keamanan pangan", "penyimpanan makanan", "kontrol porsi"],
+    readTimeMinutes: 5,
+    isPremium: false,
+    sources: [
+      "USDA Food Safety and Inspection Service — Safe food storage guidelines",
+      "Angka Kecukupan Gizi (AKG) — Permenkes RI No. 28 Tahun 2019",
+    ],
+    author: AUTHOR,
+    disclaimer: DEFAULT_DISCLAIMER,
+    coverEmoji: "🍱",
+    accent: "#16A34A",
+    publishedAt: "2026-09-16",
   },
 ];
 
