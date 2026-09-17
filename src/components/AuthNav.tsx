@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { COLORS, URLS } from "../lib/constants";
-import { supabase } from "../lib/supabase";
+import { signOutNative } from "../lib/authApi";
+import { Link } from "../lib/router";
 import { t, Lang } from "../lib/i18n";
 
 interface AuthNavProps {
@@ -24,22 +25,23 @@ export const AuthNav = ({ lang, isLoading, isAuthenticated, user }: AuthNavProps
   if (isLoading) return <div style={{ width: 76, height: 30 }} />;
 
   if (!isAuthenticated) {
+    // Native auth on THIS app — internal routes, no redirect to my.20fit.id.
     return (
       <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-        <a
-          href={URLS.LOGIN}
+        <Link
+          href="/login"
           className="sc-link-btn"
           style={{ fontSize: 12, fontWeight: "bold", color: COLORS.BLACK, textDecoration: "none", padding: "6px 10px" }}
         >
           {tr.signIn}
-        </a>
-        <a
-          href={URLS.SIGN_UP}
+        </Link>
+        <Link
+          href="/register"
           className="sc-btn-primary"
           style={{ background: COLORS.RED, color: "#fff", borderRadius: 8, padding: "7px 14px", fontSize: 12, fontWeight: "bold", textDecoration: "none", whiteSpace: "nowrap" }}
         >
           {tr.signUp}
-        </a>
+        </Link>
       </div>
     );
   }
@@ -48,7 +50,7 @@ export const AuthNav = ({ lang, isLoading, isAuthenticated, user }: AuthNavProps
   const initial = name ? name[0]!.toUpperCase() : "•";
 
   const handleSignOut = async () => {
-    await supabase.auth.signOut();
+    await signOutNative();
     setShowMenu(false);
   };
 

@@ -125,13 +125,13 @@ export function LandingPage({ lang }: { lang: Lang }) {
           ) : (
             <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center" }}>
               <a
-                href={URLS.SIGN_UP}
+                href="/register"
                 className="sc-link-btn"
                 style={{ background: COLORS.RED, color: "#fff", borderRadius: 12, padding: "13px 22px", fontSize: 15, fontWeight: 700, textDecoration: "none" }}
               >
                 {c.teaser.ctaPrimary} →
               </a>
-              <a href={URLS.LOGIN} style={{ color: "#fff", fontSize: 14, fontWeight: 600, textDecoration: "underline", opacity: 0.9 }}>
+              <a href="/login" style={{ color: "#fff", fontSize: 14, fontWeight: 600, textDecoration: "underline", opacity: 0.9 }}>
                 {c.teaser.ctaSecondary}
               </a>
             </div>
@@ -228,13 +228,13 @@ export function LandingPage({ lang }: { lang: Lang }) {
             ) : (
               <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center" }}>
                 <a
-                  href={URLS.SIGN_UP}
+                  href="/register"
                   className="sc-link-btn"
                   style={{ display: "inline-block", background: COLORS.RED, color: "#fff", borderRadius: 12, padding: "12px 22px", fontSize: 15, fontWeight: 700, textDecoration: "none" }}
                 >
                   {c.teaser.ctaPrimary} →
                 </a>
-                <a href={URLS.LOGIN} style={{ color: COLORS.BLACK, fontSize: 13, fontWeight: 600, textDecoration: "underline", opacity: 0.75 }}>
+                <a href="/login" style={{ color: COLORS.BLACK, fontSize: 13, fontWeight: 600, textDecoration: "underline", opacity: 0.75 }}>
                   {c.teaser.ctaSecondary}
                 </a>
               </div>

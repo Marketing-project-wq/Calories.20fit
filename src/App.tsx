@@ -1,39 +1,22 @@
 import { useState, useEffect } from "react";
-import { COLORS, ROUTES, URLS } from "./lib/constants";
-import { t, Lang } from "./lib/i18n";
+import { COLORS, ROUTES } from "./lib/constants";
+import { Lang } from "./lib/i18n";
 import { cc } from "./lib/calorieCopy";
 import { useAuth } from "./hooks/useAuth";
 import { AuthNav } from "./components/AuthNav";
 import { Icon } from "./components/Icon";
-import { Link, useLocation, matchRoute } from "./lib/router";
+import { Link, useLocation, matchRoute, navigate } from "./lib/router";
 import { LandingPage } from "./pages/LandingPage";
 import { HistoryPage } from "./pages/HistoryPage";
 import { ArticlesPage } from "./pages/ArticlesPage";
 import { ArticleDetailPage } from "./pages/ArticleDetailPage";
 import { MealPlanPage } from "./pages/MealPlanPage";
+import { AuthPage } from "./pages/AuthPage";
+import { OnboardingPage } from "./pages/OnboardingPage";
 import { AccountGate } from "./components/AccountGate";
 import { CaloriesTracker } from "./components/tracker/CaloriesTracker";
 import { SiteFooter } from "./components/SiteFooter";
-
-// The brief lists /register + /login. Auth is centralised at my.20fit.id, so
-// these routes hand off to its SSO flow (which returns here via ?next=calories)
-// rather than hosting a parallel form. Rendered as a redirect with a manual
-// fallback link in case the automatic redirect is blocked.
-function SsoRedirect({ url, lang }: { url: string; lang: Lang }) {
-  useEffect(() => {
-    window.location.replace(url);
-  }, [url]);
-  return (
-    <div style={{ maxWidth: 420, margin: "0 auto", padding: "80px 20px", textAlign: "center" }}>
-      <p style={{ fontSize: 15, color: "#6A6A6A", marginBottom: 16 }}>
-        {lang === "id" ? "Mengarahkan ke halaman akun 20FIT…" : "Redirecting to the 20FIT account page…"}
-      </p>
-      <a href={url} className="sc-btn-primary" style={{ display: "inline-block", background: COLORS.RED, color: "#fff", borderRadius: 12, padding: "11px 20px", fontSize: 14, fontWeight: 700 }}>
-        {lang === "id" ? "Lanjut" : "Continue"} →
-      </a>
-    </div>
-  );
-}
+import { MemberProfile, getMemberProfile, needsOnboarding } from "./lib/memberTracker";
 
 function NotFound({ lang }: { lang: Lang }) {
   const c = cc(lang).common;
@@ -63,12 +46,6 @@ function Spinner() {
   );
 }
 
-// Full calorie tracker (scan, targets, macros, health meter, per-item check,
-// nutrient gap, what-to-eat, intermittent fasting, today's food) is gated
-// behind an account. Non-members get the sign-up wall. The real enforcement
-// for personal data/scan lives server-side (Supabase RLS scoping rows to
-// auth.uid(), and my.20fit.id's scan endpoints requiring a Bearer JWT) — this
-// gate is the UI layer on top.
 function GatedTracker({ lang }: { lang: Lang }) {
   const g = cc(lang).tracker;
   return (
@@ -79,14 +56,26 @@ function GatedTracker({ lang }: { lang: Lang }) {
   );
 }
 
+// Signed-in member area: load the profile once, route to onboarding if it isn't
+// complete (fresh account), otherwise the full tracker.
+function MemberArea({ lang }: { lang: Lang }) {
+  const [profile, setProfile] = useState<MemberProfile | null | undefined>(undefined); // undefined = loading
+  const load = () => {
+    setProfile(undefined);
+    getMemberProfile().then((p) => setProfile(p)).catch(() => setProfile(null));
+  };
+  useEffect(() => { load(); }, []);
+  if (profile === undefined) return <Spinner />;
+  if (needsOnboarding(profile)) return <OnboardingPage lang={lang} onDone={load} />;
+  return <CaloriesTracker lang={lang} />;
+}
+
 export function App() {
   const [lang, setLang] = useState<Lang>("id");
   const nav = cc(lang).nav;
   const { user, isAuthenticated, isLoading } = useAuth();
   const path = useLocation();
 
-  // Hard gate: non-account nav is just the marketing surface (Home + Articles).
-  // Members get the full feature nav. Everything else is gated per-route.
   const NAV_ITEMS: { key: string; label: string; href: string }[] = isAuthenticated
     ? [
         { key: "tracker", label: nav.tracker, href: ROUTES.HOME },
@@ -105,22 +94,23 @@ export function App() {
     return path === href;
   };
 
-  // Render a member-only element, or the sign-up wall for guests. Waits for the
-  // auth check so guests never flash the member UI (and vice-versa).
   const gated = (memberEl: JSX.Element) => (isLoading ? <Spinner /> : isAuthenticated ? memberEl : <GatedTracker lang={lang} />);
+  const goHome = () => navigate("/");
 
   // ---- Route table ----
   let page: JSX.Element;
   const articleMatch = matchRoute("/articles/:slug", path);
-  if (path === "/") page = isLoading ? <Spinner /> : isAuthenticated ? <CaloriesTracker lang={lang} /> : <LandingPage lang={lang} />;
-  else if (path === ROUTES.SCAN) page = gated(<CaloriesTracker lang={lang} />);
-  else if (path === ROUTES.TRACKER) page = gated(<CaloriesTracker lang={lang} />);
+  if (path === "/") page = isLoading ? <Spinner /> : isAuthenticated ? <MemberArea lang={lang} /> : <LandingPage lang={lang} />;
+  else if (path === ROUTES.SCAN) page = gated(<MemberArea lang={lang} />);
+  else if (path === ROUTES.TRACKER) page = gated(<MemberArea lang={lang} />);
   else if (path === ROUTES.ARTICLES) page = <ArticlesPage lang={lang} />;
   else if (articleMatch) page = <ArticleDetailPage lang={lang} slug={articleMatch.slug} />;
   else if (path === ROUTES.MEAL_PLAN) page = <MealPlanPage lang={lang} />;
   else if (path === ROUTES.HISTORY) page = <HistoryPage lang={lang} />;
-  else if (path === "/register") page = <SsoRedirect url={URLS.SIGN_UP} lang={lang} />;
-  else if (path === "/login") page = <SsoRedirect url={URLS.LOGIN} lang={lang} />;
+  // Native auth — no redirect to my.20fit.id. A signed-in user hitting these
+  // just goes home (MemberArea then decides onboarding vs tracker).
+  else if (path === "/register") page = isAuthenticated ? <MemberArea lang={lang} /> : <AuthPage lang={lang} initialMode="up" onDone={goHome} />;
+  else if (path === "/login") page = isAuthenticated ? <MemberArea lang={lang} /> : <AuthPage lang={lang} initialMode="in" onDone={goHome} />;
   else page = <NotFound lang={lang} />;
 
   return (

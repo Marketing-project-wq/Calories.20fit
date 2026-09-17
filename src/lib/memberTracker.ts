@@ -51,6 +51,17 @@ export interface MemberProfile {
   activity_level: string | null;
   main_goal: string | null;
   full_name: string | null;
+  onboarding_completed: boolean | null;
+}
+
+// A member still needs onboarding when they have no profile row yet, haven't
+// completed onboarding, or are missing the core inputs the calorie/macro
+// targets need (weight + height). Used to route a freshly-signed-in member to
+// the onboarding form before the tracker.
+export function needsOnboarding(p: MemberProfile | null): boolean {
+  if (!p) return true;
+  if (p.onboarding_completed === true) return false;
+  return !p.weight_kg || !p.height_cm;
 }
 
 // my.20fit.id's own client (js/auth.js `todayStr()`) uses the BROWSER's
@@ -72,7 +83,7 @@ export async function getMemberProfile(): Promise<MemberProfile | null> {
   if (!uid) return null;
   const { data, error } = await supabase
     .from("my20fit_profile")
-    .select("auth_user_id, email, weight_kg, height_cm, age, gender, activity_level, main_goal, full_name")
+    .select("auth_user_id, email, weight_kg, height_cm, age, gender, activity_level, main_goal, full_name, onboarding_completed")
     .eq("auth_user_id", uid)
     .maybeSingle();
   if (error) throw error;

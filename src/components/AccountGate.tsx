@@ -1,6 +1,7 @@
-import { COLORS, NUTRI, URLS } from "../lib/constants";
+import { COLORS, NUTRI } from "../lib/constants";
 import { cc } from "../lib/calorieCopy";
 import { Lang } from "../lib/i18n";
+import { Link } from "../lib/router";
 import { Icon, IconName } from "./Icon";
 
 /**
@@ -85,8 +86,8 @@ export function AccountGate({
           )}
 
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            <a
-              href={URLS.SIGN_UP}
+            <Link
+              href="/register"
               className="sc-btn-primary"
               style={{
                 display: "block",
@@ -101,9 +102,9 @@ export function AccountGate({
               }}
             >
               {g.signUp}
-            </a>
-            <a
-              href={URLS.LOGIN}
+            </Link>
+            <Link
+              href="/login"
               className="sc-link-btn"
               style={{
                 display: "block",
@@ -117,7 +118,7 @@ export function AccountGate({
               }}
             >
               {g.login}
-            </a>
+            </Link>
           </div>
         </div>
       </div>
