@@ -20,6 +20,56 @@ const inputStyle: React.CSSProperties = {
 };
 const labelStyle: React.CSSProperties = { fontSize: 12.5, fontWeight: 700, color: INK, marginBottom: 6, display: "block" };
 
+function EyeIcon({ off }: { off: boolean }) {
+  return (
+    <svg width={19} height={19} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.9} strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+      {off ? (
+        <>
+          <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20C5 20 1 12 1 12a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24" />
+          <line x1="1" y1="1" x2="23" y2="23" />
+        </>
+      ) : (
+        <>
+          <path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z" />
+          <circle cx="12" cy="12" r="3" />
+        </>
+      )}
+    </svg>
+  );
+}
+
+// Password input with a show/hide eye toggle.
+function PasswordField({ lang, value, onChange, placeholder, autoComplete }: {
+  lang: Lang;
+  value: string;
+  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  placeholder: string;
+  autoComplete: string;
+}) {
+  const [show, setShow] = useState(false);
+  return (
+    <div style={{ position: "relative" }}>
+      <input
+        type={show ? "text" : "password"}
+        autoComplete={autoComplete}
+        value={value}
+        onChange={onChange}
+        placeholder={placeholder}
+        style={{ ...inputStyle, paddingRight: 46, boxSizing: "border-box" }}
+      />
+      <button
+        type="button"
+        onClick={() => setShow((s) => !s)}
+        aria-label={show ? tx(lang, "Hide password", "Sembunyikan password") : tx(lang, "Show password", "Lihat password")}
+        title={show ? tx(lang, "Hide password", "Sembunyikan password") : tx(lang, "Show password", "Lihat password")}
+        style={{ position: "absolute", right: 6, top: "50%", transform: "translateY(-50%)", background: "none", border: 0, padding: 8, cursor: "pointer", color: MUTED, display: "grid", placeItems: "center", lineHeight: 0 }}
+      >
+        <EyeIcon off={show} />
+      </button>
+    </div>
+  );
+}
+
 function translateError(m: string, lang: Lang): string {
   const s = (m || "").toLowerCase();
   if (s.includes("invalid login") || s.includes("credential") || (s.includes("password") && !s.includes("8")))
@@ -128,7 +178,7 @@ export function AuthPage({ lang, initialMode, onDone }: { lang: Lang; initialMod
           </div>
           <div>
             <label style={labelStyle}>Password</label>
-            <input type="password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} style={inputStyle} placeholder="••••••••" />
+            <PasswordField lang={lang} autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" />
           </div>
           {error && <div style={{ fontSize: 13, color: COLORS.RED }}>{error}</div>}
           <button type="submit" disabled={busy} style={{ padding: "14px 0", border: 0, borderRadius: 12, background: COLORS.RED, color: "#fff", fontWeight: 800, fontSize: 15, cursor: "pointer" }}>
@@ -198,7 +248,7 @@ export function AuthPage({ lang, initialMode, onDone }: { lang: Lang; initialMod
           </div>
           <div>
             <label style={labelStyle}>Password</label>
-            <input type="password" autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} style={inputStyle} placeholder={tx(lang, "Min. 8 characters", "Min. 8 karakter")} />
+            <PasswordField lang={lang} autoComplete="new-password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder={tx(lang, "Min. 8 characters", "Min. 8 karakter")} />
           </div>
           <label style={{ display: "flex", alignItems: "flex-start", gap: 8, fontSize: 12.5, color: MUTED, lineHeight: 1.5 }}>
             <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} style={{ marginTop: 2 }} />
