@@ -7,6 +7,7 @@ import { AuthNav } from "./components/AuthNav";
 import { Icon } from "./components/Icon";
 import { Link, useLocation, matchRoute } from "./lib/router";
 import { LandingPage } from "./pages/LandingPage";
+import { HomePage } from "./pages/HomePage";
 import { ScanRoute } from "./pages/ScanRoute";
 import { HistoryPage } from "./pages/HistoryPage";
 import { ArticlesPage } from "./pages/ArticlesPage";
@@ -79,7 +80,11 @@ export function App() {
   // ---- Route table ----
   let page: JSX.Element;
   const articleMatch = matchRoute("/articles/:slug", path);
-  if (path === "/") page = <LandingPage lang={lang} />;
+  // Logged-in members land on HomePage (upload CTA + today's summary)
+  // instead of the marketing LandingPage. While auth is still resolving,
+  // render nothing rather than flashing one page then swapping to the
+  // other (auth resolves fast — a single getUser() call, see useAuth).
+  if (path === "/") page = isLoading ? <></> : isAuthenticated ? <HomePage lang={lang} /> : <LandingPage lang={lang} />;
   else if (path === ROUTES.SCAN) page = <ScanRoute lang={lang} />;
   else if (path === ROUTES.ARTICLES) page = <ArticlesPage lang={lang} />;
   else if (articleMatch) page = <ArticleDetailPage lang={lang} slug={articleMatch.slug} />;
