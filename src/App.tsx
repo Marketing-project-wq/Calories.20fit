@@ -7,12 +7,12 @@ import { AuthNav } from "./components/AuthNav";
 import { Icon } from "./components/Icon";
 import { Link, useLocation, matchRoute } from "./lib/router";
 import { LandingPage } from "./pages/LandingPage";
-import { ScanRoute } from "./pages/ScanRoute";
 import { HistoryPage } from "./pages/HistoryPage";
 import { ArticlesPage } from "./pages/ArticlesPage";
 import { ArticleDetailPage } from "./pages/ArticleDetailPage";
-import { InsightPage } from "./pages/InsightPage";
 import { MealPlanPage } from "./pages/MealPlanPage";
+import { AccountGate } from "./components/AccountGate";
+import { CaloriesTracker } from "./components/tracker/CaloriesTracker";
 import { SiteFooter } from "./components/SiteFooter";
 
 // The brief lists /register + /login. Auth is centralised at my.20fit.id, so
@@ -54,21 +54,50 @@ function NotFound({ lang }: { lang: Lang }) {
   );
 }
 
+function Spinner() {
+  return (
+    <div style={{ maxWidth: 920, margin: "0 auto", padding: "80px 20px", textAlign: "center" }}>
+      <span style={{ width: 36, height: 36, borderRadius: "50%", border: `3px solid #E4E0DB`, borderTopColor: COLORS.RED, display: "inline-block", animation: "appSpin .9s linear infinite" }} />
+      <style>{`@keyframes appSpin{to{transform:rotate(360deg)}}`}</style>
+    </div>
+  );
+}
+
+// Full calorie tracker (scan, targets, macros, health meter, per-item check,
+// nutrient gap, what-to-eat, intermittent fasting, today's food) is gated
+// behind an account. Non-members get the sign-up wall. The real enforcement
+// for personal data/scan lives server-side (Supabase RLS scoping rows to
+// auth.uid(), and my.20fit.id's scan endpoints requiring a Bearer JWT) — this
+// gate is the UI layer on top.
+function GatedTracker({ lang }: { lang: Lang }) {
+  const g = cc(lang).tracker;
+  return (
+    <div>
+      <AccountGate lang={lang} icon="lock" title={g.gateTitle} sub={g.gateSub} bullets={g.gateBullets} />
+      <SiteFooter lang={lang} />
+    </div>
+  );
+}
+
 export function App() {
   const [lang, setLang] = useState<Lang>("id");
-  const tr = t[lang];
   const nav = cc(lang).nav;
   const { user, isAuthenticated, isLoading } = useAuth();
   const path = useLocation();
 
-  const NAV_ITEMS: { key: string; label: string; href: string }[] = [
-    { key: "home", label: nav.home, href: ROUTES.HOME },
-    { key: "scan", label: nav.scan, href: ROUTES.SCAN },
-    { key: "articles", label: nav.articles, href: ROUTES.ARTICLES },
-    { key: "tracker", label: nav.tracker, href: ROUTES.TRACKER },
-    { key: "meal-plan", label: nav.mealPlan, href: ROUTES.MEAL_PLAN },
-    { key: "history", label: nav.history, href: ROUTES.HISTORY },
-  ];
+  // Hard gate: non-account nav is just the marketing surface (Home + Articles).
+  // Members get the full feature nav. Everything else is gated per-route.
+  const NAV_ITEMS: { key: string; label: string; href: string }[] = isAuthenticated
+    ? [
+        { key: "tracker", label: nav.tracker, href: ROUTES.HOME },
+        { key: "articles", label: nav.articles, href: ROUTES.ARTICLES },
+        { key: "meal-plan", label: nav.mealPlan, href: ROUTES.MEAL_PLAN },
+        { key: "history", label: nav.history, href: ROUTES.HISTORY },
+      ]
+    : [
+        { key: "home", label: nav.home, href: ROUTES.HOME },
+        { key: "articles", label: nav.articles, href: ROUTES.ARTICLES },
+      ];
 
   const isActive = (href: string) => {
     if (href === ROUTES.HOME) return path === "/";
@@ -76,14 +105,18 @@ export function App() {
     return path === href;
   };
 
+  // Render a member-only element, or the sign-up wall for guests. Waits for the
+  // auth check so guests never flash the member UI (and vice-versa).
+  const gated = (memberEl: JSX.Element) => (isLoading ? <Spinner /> : isAuthenticated ? memberEl : <GatedTracker lang={lang} />);
+
   // ---- Route table ----
   let page: JSX.Element;
   const articleMatch = matchRoute("/articles/:slug", path);
-  if (path === "/") page = <LandingPage lang={lang} />;
-  else if (path === ROUTES.SCAN) page = <ScanRoute lang={lang} />;
+  if (path === "/") page = isLoading ? <Spinner /> : isAuthenticated ? <CaloriesTracker lang={lang} /> : <LandingPage lang={lang} />;
+  else if (path === ROUTES.SCAN) page = gated(<CaloriesTracker lang={lang} />);
+  else if (path === ROUTES.TRACKER) page = gated(<CaloriesTracker lang={lang} />);
   else if (path === ROUTES.ARTICLES) page = <ArticlesPage lang={lang} />;
   else if (articleMatch) page = <ArticleDetailPage lang={lang} slug={articleMatch.slug} />;
-  else if (path === ROUTES.TRACKER) page = <InsightPage lang={lang} />;
   else if (path === ROUTES.MEAL_PLAN) page = <MealPlanPage lang={lang} />;
   else if (path === ROUTES.HISTORY) page = <HistoryPage lang={lang} />;
   else if (path === "/register") page = <SsoRedirect url={URLS.SIGN_UP} lang={lang} />;

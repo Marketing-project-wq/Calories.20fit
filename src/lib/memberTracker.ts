@@ -42,6 +42,8 @@ export function itemMeal(item: DailyFoodItem): MealType {
 }
 
 export interface MemberProfile {
+  auth_user_id: string | null;
+  email: string | null;
   weight_kg: number | null;
   height_cm: number | null;
   age: number | null;
@@ -70,7 +72,7 @@ export async function getMemberProfile(): Promise<MemberProfile | null> {
   if (!uid) return null;
   const { data, error } = await supabase
     .from("my20fit_profile")
-    .select("weight_kg, height_cm, age, gender, activity_level, main_goal, full_name")
+    .select("auth_user_id, email, weight_kg, height_cm, age, gender, activity_level, main_goal, full_name")
     .eq("auth_user_id", uid)
     .maybeSingle();
   if (error) throw error;
@@ -99,6 +101,25 @@ export async function appendTodayFoodItem(item: DailyFoodItem): Promise<DailyFoo
   if (error) throw error;
   if (!data?.ok) throw new Error(data?.code || "save_failed");
   return (data.cal_items as DailyFoodItem[]) || [];
+}
+
+// Overwrite today's whole food-log array. Used for DELETE/edit, where the
+// atomic-append RPC does not apply. Mirrors my.20fit.id's own client behaviour
+// (js/auth.js Auth.saveDaily: read array, mutate locally, upsert whole array).
+// RLS (auth.uid() = auth_user_id) scopes the row to the current user.
+export async function saveTodayFoodItems(items: DailyFoodItem[]): Promise<void> {
+  const uid = await currentUserId();
+  if (!uid) throw new Error("not_authenticated");
+  const { error } = await supabase.from("my20fit_daily_log").upsert(
+    {
+      auth_user_id: uid,
+      log_date: todayStr(),
+      cal_items: items,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "auth_user_id,log_date" }
+  );
+  if (error) throw error;
 }
 
 export function nowHHMM(): string {

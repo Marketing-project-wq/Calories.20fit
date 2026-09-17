@@ -46,6 +46,8 @@ export interface ScanItem {
 export interface QuotaData {
   remaining: number;
   limit: number;
+  credits: number;
+  freeLeft: number;
 }
 
 async function getSession() {
@@ -63,65 +65,84 @@ function fileToBase64(file: File): Promise<string> {
 }
 
 export const apiClient = {
+  // Photo scan is MEMBER-ONLY (hard gate): the full tracker is never rendered
+  // for guests, and this refuses without a session rather than falling back to
+  // any guest path. Uses my.20fit.id's /api/scan/ai with a Bearer token — that
+  // endpoint authenticates by Bearer (not cookie), and my.20fit.id's CORS only
+  // grants Access-Control-Allow-Credentials to /api/pub/* and /api/menu/*
+  // (server.js:220-234), so we must NOT send `credentials: "include"` here or
+  // the browser blocks the cross-origin response.
   async scanPhoto(file: File): Promise<ScanResult> {
     const session = await getSession();
+    if (!session?.access_token) throw new Error("login_required");
     const image = await fileToBase64(file);
-
-    if (session?.access_token) {
-      // Authenticated: use /api/scan/ai with Bearer token + action field
-      const response = await fetch(`${API_BASE}${API.SCAN_AI}`, {
-        method: "POST",
-        headers: {
-          "Authorization": `Bearer ${session.access_token}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ action: "food", image }),
-        credentials: "include",
-      });
-      if (response.status === 429) throw new Error("scan_limit");
-      if (!response.ok) {
-        const err = await response.json().catch(() => ({}));
-        throw new Error(err.error || "Gagal menganalisis foto");
-      }
-      const data = await response.json();
-      return normalizeResult(data);
-    } else {
-      // Guest: use /api/pub/scan — server tracks quota via httpOnly cookie.
-      // Rate limit lives server-side (my.20fit.id, outside this repo) — not
-      // enforceable from here. Confirmed limit: 5 scans/device, LIFETIME (no
-      // periodic reset) — matches the same cap applied to the mobile app's
-      // guest quota (my20fit_guest_consume_scan). Confirm the my.20fit.id
-      // backend enforces the same 5-lifetime rule, not a per-day/per-month one.
-      const response = await fetch(`${API_BASE}/api/pub/scan`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ action: "food", image }),
-        credentials: "include",
-      });
-      if (response.status === 402) throw new Error("scan_limit");
-      if (!response.ok) {
-        const err = await response.json().catch(() => ({}));
-        throw new Error(err.error || "Gagal menganalisis foto");
-      }
-      const data = await response.json();
-      return normalizeResult(data);
+    const response = await fetch(`${API_BASE}${API.SCAN_AI}`, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${session.access_token}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ action: "food", image }),
+    });
+    // /api/scan/ai returns 402 { code:"scan_limit" } when quota is exhausted,
+    // 401 { session_expired } when the token is gone (server.js:7430-7471).
+    if (response.status === 402) throw new Error("scan_limit");
+    if (response.status === 401) throw new Error("login_required");
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.error || "Gagal menganalisis foto");
     }
+    const data = await response.json();
+    return normalizeResult(data);
   },
 
   async getQuota(): Promise<QuotaData> {
     const session = await getSession();
     const headers: Record<string, string> = {};
     if (session?.access_token) headers["Authorization"] = `Bearer ${session.access_token}`;
-    const response = await fetch(`${API_BASE}${API.SCAN_QUOTA}`, {
-      headers,
-      credentials: "include",
-    });
+    // Bearer, not cookie — no `credentials: "include"` (see scanPhoto note).
+    const response = await fetch(`${API_BASE}${API.SCAN_QUOTA}`, { headers });
     if (response.status === 401) throw new Error("login_required");
     if (!response.ok) throw new Error("Gagal memuat kuota");
     const data = await response.json();
-    // Server returns { ok, quota: { remaining, freeLeft, credits, ... } }
+    // Server returns { ok, quota: { used, freeLimit, freeLeft, credits, remaining, period } }
     const q = data.quota ?? data;
-    return { remaining: q.remaining ?? 0, limit: q.freeLimit ?? 10 };
+    return {
+      remaining: q.remaining ?? 0,
+      limit: q.freeLimit ?? 10,
+      credits: q.credits ?? 0,
+      freeLeft: q.freeLeft ?? Math.max(0, (q.freeLimit ?? 10) - (q.used ?? 0)),
+    };
+  },
+
+  // Type food + grams → auto kcal. Calls my.20fit.id's SAME /api/scan/food-text
+  // endpoint (dictionary-first, then AI) — FREE, does NOT consume scan quota.
+  // Reused, not duplicated (server.js:7664-7702 in PROFILE20FIT).
+  async estimateFoodText(name: string, grams: number, lang: string): Promise<{ name: string; kcal: number; p: number; c: number; f: number }> {
+    const session = await getSession();
+    const headers: Record<string, string> = { "Content-Type": "application/json" };
+    if (session?.access_token) headers["Authorization"] = `Bearer ${session.access_token}`;
+    // Bearer, not cookie — no `credentials: "include"` (see scanPhoto note).
+    const response = await fetch(`${API_BASE}${API.SCAN_TEXT}`, {
+      method: "POST",
+      headers,
+      body: JSON.stringify({ name, grams, lang }),
+    });
+    if (response.status === 401) throw new Error("login_required");
+    if (!response.ok) {
+      const err = await response.json().catch(() => ({}));
+      throw new Error(err.error || "Gagal menghitung kalori");
+    }
+    const data = await response.json();
+    const r = data.result ?? data;
+    const it = Array.isArray(r.items) && r.items[0] ? r.items[0] : {};
+    return {
+      name: it.name || name,
+      kcal: Math.round(r.total_kcal ?? it.kcal ?? 0),
+      p: Math.round(r.protein_g ?? it.protein_g ?? 0),
+      c: Math.round(r.carbs_g ?? it.carbs_g ?? 0),
+      f: Math.round(r.fat_g ?? it.fat_g ?? 0),
+    };
   },
 
   // getHistory()/getInsight() removed: they called /api/scan/history and
