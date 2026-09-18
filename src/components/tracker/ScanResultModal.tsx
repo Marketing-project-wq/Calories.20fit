@@ -213,7 +213,10 @@ export function ScanResultModal({ lang, result, goal, eaten, onLogged, onClose, 
         {result.recommendation && (
           <div style={{ borderRadius: 14, padding: "12px 14px", marginTop: 12, background: NUTRI.GREEN_TINT, border: `1px solid ${NUTRI.GREEN}33` }}>
             <div style={{ ...label(""), color: GREEN }}>{tx(lang, "Better intake — what to add", "Asupan lebih baik — perlu ditambah")}</div>
-            <div style={{ fontSize: 13, lineHeight: 1.55 }}>{result.recommendation}</div>
+            {/* Fixed dark colour: this box's background is always light green
+                (NUTRI.GREEN_TINT), so the text must not inherit the themed
+                --text (which is light in dark mode → invisible). */}
+            <div style={{ fontSize: 13, lineHeight: 1.55, color: "#1f4d33" }}>{result.recommendation}</div>
             {result.needs_more && result.needs_more.length > 0 && (
               <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 9 }}>
                 {result.needs_more.map((n, i) => (

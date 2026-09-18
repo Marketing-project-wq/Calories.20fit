@@ -656,13 +656,15 @@ const FOOD_FACTS: { en: string; id: string }[] = [
 function ScanningOverlay({ lang }: { lang: Lang }) {
   const fact = FOOD_FACTS[Math.floor(Math.random() * FOOD_FACTS.length)];
   return (
-    <div style={{ position: "fixed", inset: 0, zIndex: 95, background: "rgba(10,12,16,.5)", backdropFilter: "blur(4px)", display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
-      <div style={{ width: "100%", maxWidth: 440, background: "var(--surface)", borderRadius: "22px 22px 0 0", padding: "26px 20px calc(env(safe-area-inset-bottom) + 26px)", color: INK, textAlign: "center" }}>
+    <div style={{ position: "fixed", inset: 0, zIndex: 95, background: "rgba(10,12,16,.5)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
+      <div style={{ width: "100%", maxWidth: 440, background: "var(--surface)", borderRadius: 22, padding: "30px 22px", color: INK, textAlign: "center", boxShadow: "0 24px 60px rgba(0,0,0,.35)" }}>
         <span style={{ width: 52, height: 52, display: "inline-block", borderRadius: "50%", border: `4px solid ${BORDER}`, borderTopColor: "var(--brand)", animation: "ctSpin .8s linear infinite" }} />
         <div style={{ fontSize: 18, fontWeight: 800, margin: "16px 0 12px" }}>{tx(lang, "Your food is being scanned…", "Makananmu sedang dipindai…")}</div>
         <div style={{ background: NUTRI.GREEN_TINT, borderRadius: 14, padding: "14px 16px", textAlign: "left" }}>
           <div style={{ fontSize: 10.5, textTransform: "uppercase", letterSpacing: 0.7, fontWeight: 800, color: NUTRI.GREEN_DARK, marginBottom: 6 }}>{tx(lang, "Fun fact", "Tahukah kamu")}</div>
-          <div style={{ fontSize: 13.5, lineHeight: 1.55 }}>{tx(lang, fact.en, fact.id)}</div>
+          {/* Fixed dark colour — this tint box stays light green in both themes,
+              so the fact must not inherit the themed (light) --text. */}
+          <div style={{ fontSize: 13.5, lineHeight: 1.55, color: "#1f4d33" }}>{tx(lang, fact.en, fact.id)}</div>
         </div>
         <style>{`@keyframes ctSpin{to{transform:rotate(360deg)}}`}</style>
       </div>
