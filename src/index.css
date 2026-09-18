@@ -43,6 +43,12 @@
   --brand-tint: #FCEBED;    /* lighter tint */
   --on-brand: #FFFFFF;      /* text/icon on brand fill */
 
+  /* Inverse "chrome" surface: a black button in light mode that flips to a
+     light button in dark mode, so high-contrast primary actions stay prominent
+     in both themes. */
+  --inverse-surface: #141414;
+  --inverse-text: #FFFFFF;
+
   /* Chrome */
   --nav-glass: rgba(255, 255, 255, 0.72);
   --nav-border: rgba(20, 20, 20, 0.08);
@@ -87,6 +93,9 @@
   --brand-soft: rgba(231, 71, 58, 0.16);
   --brand-tint: rgba(231, 71, 58, 0.12);
   --on-brand: #FFFFFF;
+
+  --inverse-surface: #F1EFE6;
+  --inverse-text: #16170F;
 
   --nav-glass: rgba(19, 20, 16, 0.72);
   --nav-border: rgba(255, 255, 255, 0.08);

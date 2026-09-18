@@ -36,7 +36,7 @@ export function AccountGate({
         style={{
           borderRadius: 20,
           border: `1px solid ${NUTRI.GREEN_TINT}`,
-          background: "#FFFFFF",
+          background: "var(--surface)",
           boxShadow: "0 14px 40px -18px rgba(20,20,20,0.18)",
           overflow: "hidden",
         }}
@@ -64,20 +64,20 @@ export function AccountGate({
               fontSize: 28,
               lineHeight: 1.05,
               textTransform: "uppercase",
-              color: COLORS.BLACK,
+              color: "var(--text)",
               margin: "0 0 10px",
             }}
           >
             {title || g.defaultTitle}
           </h2>
-          <p style={{ fontSize: 14, lineHeight: 1.6, color: "#5A5A5A", margin: "0 0 18px" }}>
+          <p style={{ fontSize: 14, lineHeight: 1.6, color: "var(--text-muted)", margin: "0 0 18px" }}>
             {sub || g.defaultSub}
           </p>
 
           {bullets.length > 0 && (
             <ul style={{ listStyle: "none", margin: "0 0 22px", padding: 0, display: "flex", flexDirection: "column", gap: 10 }}>
               {bullets.map((b) => (
-                <li key={b} style={{ display: "flex", gap: 10, alignItems: "flex-start", fontSize: 14, color: "#3A3A3A" }}>
+                <li key={b} style={{ display: "flex", gap: 10, alignItems: "flex-start", fontSize: 14, color: "var(--text-muted)" }}>
                   <span style={{ color: NUTRI.GREEN_DARK, fontWeight: 700, flexShrink: 0 }}>✓</span>
                   <span>{b}</span>
                 </li>
@@ -92,8 +92,8 @@ export function AccountGate({
               style={{
                 display: "block",
                 textAlign: "center",
-                background: COLORS.RED,
-                color: "#fff",
+                background: "var(--brand)",
+                color: "var(--on-brand)",
                 borderRadius: 12,
                 padding: "13px 18px",
                 fontSize: 15,
@@ -109,7 +109,7 @@ export function AccountGate({
               style={{
                 display: "block",
                 textAlign: "center",
-                color: COLORS.BLACK,
+                color: "var(--text)",
                 borderRadius: 12,
                 padding: "11px 18px",
                 fontSize: 14,

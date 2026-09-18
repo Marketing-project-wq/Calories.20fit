@@ -3,9 +3,9 @@ import { COLORS, NUTRI } from "../lib/constants";
 import { Lang } from "../lib/i18n";
 import { saveOnboarding } from "../lib/authApi";
 
-const BORDER = "#E4E0DB";
-const INK = "#16170F";
-const MUTED = "#6A6A6A";
+const BORDER = "var(--border)";
+const INK = "var(--text)";
+const MUTED = "var(--text-soft)";
 const tx = (lang: Lang, en: string, id: string) => (lang === "id" ? id : en);
 
 function readStash(k: string): string {
@@ -32,7 +32,7 @@ const GOALS: { key: string; en: string; id: string }[] = [
 const inputStyle: React.CSSProperties = {
   width: "100%",
   padding: "11px 12px",
-  background: "#F7F5F2",
+  background: "var(--surface-2)",
   border: `1px solid ${BORDER}`,
   borderRadius: 10,
   color: INK,
@@ -88,7 +88,7 @@ export function OnboardingPage({ lang, onDone }: { lang: Lang; onDone: () => voi
           <label style={labelStyle}>{tx(lang, "Gender", "Jenis kelamin")}</label>
           <div style={{ display: "flex", gap: 10 }}>
             {[{ k: "male", l: tx(lang, "Male", "Pria") }, { k: "female", l: tx(lang, "Female", "Wanita") }].map((g) => (
-              <button type="button" key={g.k} onClick={() => setGender(g.k)} style={{ flex: 1, padding: "11px 0", borderRadius: 10, border: `1px solid ${gender === g.k ? COLORS.RED : BORDER}`, background: gender === g.k ? "#FDECEC" : "#fff", color: gender === g.k ? COLORS.RED : INK, fontWeight: 700, fontSize: 14, cursor: "pointer" }}>
+              <button type="button" key={g.k} onClick={() => setGender(g.k)} style={{ flex: 1, padding: "11px 0", borderRadius: 10, border: `1px solid ${gender === g.k ? "var(--brand)" : BORDER}`, background: gender === g.k ? "var(--brand-soft)" : "var(--surface)", color: gender === g.k ? "var(--brand)" : INK, fontWeight: 700, fontSize: 14, cursor: "pointer" }}>
                 {g.l}
               </button>
             ))}
@@ -124,16 +124,16 @@ export function OnboardingPage({ lang, onDone }: { lang: Lang; onDone: () => voi
           <label style={labelStyle}>{tx(lang, "Your goal", "Tujuanmu")}</label>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10 }}>
             {GOALS.map((g) => (
-              <button type="button" key={g.key} onClick={() => setGoal(g.key)} style={{ padding: "11px 0", borderRadius: 10, border: `1px solid ${goal === g.key ? COLORS.RED : BORDER}`, background: goal === g.key ? "#FDECEC" : "#fff", color: goal === g.key ? COLORS.RED : INK, fontWeight: 700, fontSize: 14, cursor: "pointer" }}>
+              <button type="button" key={g.key} onClick={() => setGoal(g.key)} style={{ padding: "11px 0", borderRadius: 10, border: `1px solid ${goal === g.key ? "var(--brand)" : BORDER}`, background: goal === g.key ? "var(--brand-soft)" : "var(--surface)", color: goal === g.key ? "var(--brand)" : INK, fontWeight: 700, fontSize: 14, cursor: "pointer" }}>
                 {tx(lang, g.en, g.id)}
               </button>
             ))}
           </div>
         </div>
 
-        {error && <div style={{ fontSize: 13, color: COLORS.RED }}>{error}</div>}
+        {error && <div style={{ fontSize: 13, color: "var(--brand)" }}>{error}</div>}
 
-        <button type="submit" disabled={saving} style={{ marginTop: 4, padding: "14px 0", border: 0, borderRadius: 12, background: COLORS.RED, color: "#fff", fontWeight: 800, fontSize: 15, cursor: "pointer" }}>
+        <button type="submit" disabled={saving} style={{ marginTop: 4, padding: "14px 0", border: 0, borderRadius: 12, background: "var(--brand)", color: "var(--on-brand)", fontWeight: 800, fontSize: 15, cursor: "pointer" }}>
           {saving ? tx(lang, "Saving…", "Menyimpan…") : tx(lang, "Continue to tracker", "Lanjut ke tracker")} →
         </button>
         <p style={{ fontSize: 11.5, color: MUTED, textAlign: "center", margin: 0 }}>

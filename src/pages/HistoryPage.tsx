@@ -27,18 +27,18 @@ function WeeklyChart({ days, target, lang }: { days: HistoryDay[]; target: numbe
   const targetPct = (target / max) * 100;
 
   return (
-    <div className="rounded-2xl border p-4 mb-6" style={{ borderColor: "#E4E0DB", background: "#fff" }}>
+    <div className="rounded-2xl border p-4 mb-6" style={{ borderColor: "var(--border)", background: "var(--surface)" }}>
       <div className="flex justify-between items-baseline mb-3">
         <h3 className="font-semibold text-sm">{lang === "id" ? "Progres Mingguan" : "Weekly Progress"}</h3>
-        <span className="text-xs" style={{ color: "#8A8A8A" }}>
-          {lang === "id" ? "Rata-rata" : "Avg"} <b style={{ color: COLORS.BLACK }}>{avg.toLocaleString("id-ID")}</b> {lang === "id" ? "kkal/hari" : "kcal/day"}
+        <span className="text-xs" style={{ color: "var(--text-subtle)" }}>
+          {lang === "id" ? "Rata-rata" : "Avg"} <b style={{ color: "var(--text)" }}>{avg.toLocaleString("id-ID")}</b> {lang === "id" ? "kkal/hari" : "kcal/day"}
         </span>
       </div>
       <div style={{ position: "relative", height: 120, display: "flex", alignItems: "flex-end", gap: 4 }}>
         {/* target reference line */}
         {target > 0 && (
           <div style={{ position: "absolute", left: 0, right: 0, bottom: `${targetPct}%`, borderTop: `1px dashed ${NUTRI.GREEN_DARK}`, zIndex: 1 }}>
-            <span style={{ position: "absolute", right: 0, top: -14, fontSize: 9, color: NUTRI.GREEN_DARK, background: "#fff", padding: "0 3px" }}>
+            <span style={{ position: "absolute", right: 0, top: -14, fontSize: 9, color: NUTRI.GREEN_DARK, background: "var(--surface)", padding: "0 3px" }}>
               {lang === "id" ? "target" : "target"} {target.toLocaleString("id-ID")}
             </span>
           </div>
@@ -104,8 +104,8 @@ export const HistoryPage = ({ lang = "id" }: { lang?: Lang }) => {
   if (isLoading) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-12 text-center">
-        <div className="w-12 h-12 border-4 rounded-full animate-spin inline-block" style={{ borderColor: COLORS.RED, borderTopColor: "transparent" }}></div>
-        <p className="mt-4 text-gray-600">{lang === "id" ? "Memuat riwayat..." : "Loading history..."}</p>
+        <div className="w-12 h-12 border-4 rounded-full animate-spin inline-block" style={{ borderColor: "var(--brand)", borderTopColor: "transparent" }}></div>
+        <p className="mt-4" style={{ color: "var(--text-soft)" }}>{lang === "id" ? "Memuat riwayat..." : "Loading history..."}</p>
       </div>
     );
   }
@@ -123,9 +123,9 @@ export const HistoryPage = ({ lang = "id" }: { lang?: Lang }) => {
   if (days.length === 0) {
     return (
       <div className="max-w-2xl mx-auto px-4 py-12 text-center">
-        <div className="mb-4" style={{ display: "flex", justifyContent: "center", color: "#B0ABA4" }}><Icon name="inbox" size={44} /></div>
+        <div className="mb-4" style={{ display: "flex", justifyContent: "center", color: "var(--text-faint)" }}><Icon name="inbox" size={44} /></div>
         <h2 className="font-display text-2xl font-bold uppercase mb-2">{lang === "id" ? "Belum Ada Riwayat" : "No History Yet"}</h2>
-        <p className="text-gray-600">{lang === "id" ? "Simpan hasil scan ke log untuk melihat riwayat di sini" : "Save a scan result to your log to see history here"}</p>
+        <p style={{ color: "var(--text-soft)" }}>{lang === "id" ? "Simpan hasil scan ke log untuk melihat riwayat di sini" : "Save a scan result to your log to see history here"}</p>
       </div>
     );
   }
@@ -143,12 +143,12 @@ export const HistoryPage = ({ lang = "id" }: { lang?: Lang }) => {
             <div key={day.log_date}>
               <div className="flex justify-between items-baseline mb-2">
                 <h3 className="font-semibold text-sm">{formatDayLabel(day.log_date, lang)}</h3>
-                <span className="text-xs text-gray-600">{total} {lang === "id" ? "kkal total" : "kcal total"}</span>
+                <span className="text-xs" style={{ color: "var(--text-soft)" }}>{total} {lang === "id" ? "kkal total" : "kcal total"}</span>
               </div>
               <div className="space-y-2">
                 {day.items.map((item, i) => (
-                  <div key={i} className="flex justify-between items-center gap-3 p-3 rounded-lg border text-xs" style={{ borderColor: "#E8E8E8" }}>
-                    <span className="text-gray-500 flex-shrink-0">{item.t}</span>
+                  <div key={i} className="flex justify-between items-center gap-3 p-3 rounded-lg border text-xs" style={{ borderColor: "var(--border)" }}>
+                    <span className="flex-shrink-0" style={{ color: "var(--text-subtle)" }}>{item.t}</span>
                     <span className="flex-1 font-medium">{item.name}</span>
                     <span className="font-semibold flex-shrink-0">{Math.round(item.kcal)} {lang === "id" ? "kkal" : "kcal"}</span>
                   </div>

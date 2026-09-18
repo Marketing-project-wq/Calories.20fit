@@ -7,9 +7,9 @@ import { DailyFoodItem } from "../../lib/memberTracker";
 import { logMeal, MealComponentPayload } from "../../lib/scanMeal";
 import { healthyMealFor, healthyTotalKcal, healthyName } from "../../lib/healthyOptions";
 
-const INK = "#16170F";
-const MUTED = "#8A7C68";
-const BORDER = "#E4E0DB";
+const INK = "var(--text)";
+const MUTED = "var(--text-subtle)";
+const BORDER = "var(--border)";
 const GREEN = NUTRI.GREEN_DARK;
 const tx = (lang: Lang, en: string, id: string) => (lang === "id" ? id : en);
 
@@ -143,7 +143,7 @@ export function ScanResultModal({ lang, result, goal, eaten, onLogged, onClose, 
 
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 95, background: "rgba(10,12,16,.5)", backdropFilter: "blur(4px)", display: "flex", alignItems: "flex-end", justifyContent: "center" }} onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
-      <div style={{ width: "100%", maxWidth: 460, background: "#fff", borderRadius: "22px 22px 0 0", maxHeight: "92vh", overflowY: "auto", padding: "18px 20px calc(env(safe-area-inset-bottom) + 22px)", color: INK }}>
+      <div style={{ width: "100%", maxWidth: 460, background: "var(--surface)", borderRadius: "22px 22px 0 0", maxHeight: "92vh", overflowY: "auto", padding: "18px 20px calc(env(safe-area-inset-bottom) + 22px)", color: INK }}>
         <h3 style={{ margin: "0 0 12px", fontSize: 19, fontWeight: 800 }}>{tx(lang, "Food analysis", "Analisa makanan")}</h3>
 
         {toast && (
@@ -153,7 +153,7 @@ export function ScanResultModal({ lang, result, goal, eaten, onLogged, onClose, 
         {/* headline */}
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10, marginBottom: 2 }}>
           <div style={{ fontWeight: 800, fontSize: 15, lineHeight: 1.3 }}>{title}</div>
-          <div style={{ fontWeight: 800, color: COLORS.RED, whiteSpace: "nowrap" }}>~{Math.round(totals.kcal)} {kc}</div>
+          <div style={{ fontWeight: 800, color: "var(--brand)", whiteSpace: "nowrap" }}>~{Math.round(totals.kcal)} {kc}</div>
         </div>
         <div style={{ fontSize: 11.5, color: MUTED, margin: "2px 0 8px" }}>
           {tx(lang, "Estimate from photo", "Perkiraan dari foto")}{kmin > 0 && kmax > kmin ? ` · ${kmin}–${kmax} ${kc}` : ""}{confLab ? ` · ${confLab}` : ""}
@@ -171,7 +171,7 @@ export function ScanResultModal({ lang, result, goal, eaten, onLogged, onClose, 
         {/* macros */}
         <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 7, marginBottom: 6 }}>
           {[{ l: tx(lang, "Protein", "Protein"), v: totals.p }, { l: tx(lang, "Carbs", "Karbo"), v: totals.c }, { l: tx(lang, "Fat", "Lemak"), v: totals.f }, { l: tx(lang, "Fiber", "Serat"), v: totals.fib }].map((m, i) => (
-            <div key={i} style={{ background: "#F0EDE5", borderRadius: 12, padding: "10px 4px", textAlign: "center" }}>
+            <div key={i} style={{ background: "var(--surface-inset)", borderRadius: 12, padding: "10px 4px", textAlign: "center" }}>
               <div style={{ fontWeight: 800, fontSize: 15 }}>{Math.round(m.v)}g</div>
               <div style={{ fontSize: 10, color: MUTED, textTransform: "uppercase" }}>{m.l}</div>
             </div>
@@ -190,20 +190,20 @@ export function ScanResultModal({ lang, result, goal, eaten, onLogged, onClose, 
         {/* filling rate + health score */}
         {sat > 0 && (
           <div style={{ margin: "12px 0" }}>
-            <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 6 }}>{tx(lang, "Filling Rate", "Tingkat Kekenyangan")} <b style={{ color: COLORS.RED }}>{sat}/10</b></div>
-            <div style={{ fontSize: 13, letterSpacing: 2, wordBreak: "break-word", color: COLORS.RED }}>{"◆".repeat(sat) + "◇".repeat(10 - sat)}</div>
+            <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 6 }}>{tx(lang, "Filling Rate", "Tingkat Kekenyangan")} <b style={{ color: "var(--brand)" }}>{sat}/10</b></div>
+            <div style={{ fontSize: 13, letterSpacing: 2, wordBreak: "break-word", color: "var(--brand)" }}>{"◆".repeat(sat) + "◇".repeat(10 - sat)}</div>
             {result.satiety_note && <div style={{ fontSize: 12.5, color: MUTED, lineHeight: 1.5, marginTop: 6 }}>{result.satiety_note}</div>}
           </div>
         )}
         {health > 0 && (
           <div style={{ margin: "12px 0" }}>
-            <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 6 }}>{tx(lang, "Health Score", "Skor Sehat")} <b style={{ color: COLORS.RED }}>{health}/10</b></div>
-            <div style={{ height: 9, background: "#F0EDE5", borderRadius: 6, overflow: "hidden" }}><div style={{ height: "100%", width: `${health * 10}%`, background: `linear-gradient(90deg,#34c759,${GREEN})` }} /></div>
+            <div style={{ fontSize: 13, fontWeight: 700, marginBottom: 6 }}>{tx(lang, "Health Score", "Skor Sehat")} <b style={{ color: "var(--brand)" }}>{health}/10</b></div>
+            <div style={{ height: 9, background: "var(--surface-inset)", borderRadius: 6, overflow: "hidden" }}><div style={{ height: "100%", width: `${health * 10}%`, background: `linear-gradient(90deg,#34c759,${GREEN})` }} /></div>
           </div>
         )}
 
         {result.overall && (
-          <div style={{ ...secStyle, borderTop: "none", background: "#F0EDE5", borderRadius: 14, padding: "12px 14px", marginTop: 12 }}>
+          <div style={{ ...secStyle, borderTop: "none", background: "var(--surface-inset)", borderRadius: 14, padding: "12px 14px", marginTop: 12 }}>
             <div style={label("")}>{tx(lang, "Overall analysis", "Analisa keseluruhan")}</div>
             <div style={{ fontSize: 13, lineHeight: 1.55 }}>{result.overall}</div>
           </div>
@@ -249,10 +249,10 @@ export function ScanResultModal({ lang, result, goal, eaten, onLogged, onClose, 
         )}
         {result.note && <div style={{ fontSize: 12.5, color: MUTED, lineHeight: 1.5, marginTop: 10 }}>{result.note}</div>}
 
-        {error && <div style={{ fontSize: 13, color: COLORS.RED, marginTop: 10 }}>{error}</div>}
+        {error && <div style={{ fontSize: 13, color: "var(--brand)", marginTop: 10 }}>{error}</div>}
 
         {/* Add to log */}
-        <button onClick={addToLog} disabled={saving} style={{ width: "100%", marginTop: 14, border: 0, borderRadius: 12, background: "#141414", color: "#fff", fontWeight: 800, fontSize: 15, padding: 14, cursor: "pointer" }}>
+        <button onClick={addToLog} disabled={saving} style={{ width: "100%", marginTop: 14, border: 0, borderRadius: 12, background: "var(--inverse-surface)", color: "var(--inverse-text)", fontWeight: 800, fontSize: 15, padding: 14, cursor: "pointer" }}>
           {saving ? tx(lang, "Saving…", "Menyimpan…") : tx(lang, "+ Add to Today's Log", "+ Tambah ke Log Hari Ini")}
         </button>
 
@@ -281,7 +281,7 @@ export function ScanResultModal({ lang, result, goal, eaten, onLogged, onClose, 
           </div>
         )}
 
-        <button onClick={onClose} style={{ width: "100%", marginTop: 12, border: 0, borderRadius: 12, background: "#F0EDE5", color: INK, fontWeight: 750, fontSize: 14, padding: 12, cursor: "pointer" }}>{tx(lang, "Done", "Selesai")}</button>
+        <button onClick={onClose} style={{ width: "100%", marginTop: 12, border: 0, borderRadius: 12, background: "var(--surface-inset)", color: INK, fontWeight: 750, fontSize: 14, padding: 12, cursor: "pointer" }}>{tx(lang, "Done", "Selesai")}</button>
       </div>
     </div>
   );
@@ -298,7 +298,7 @@ function PortionRow({ lang, it, kc, editing, onEdit, onCancel, onSave, onDelete 
   const [unit, setUnit] = useState(au.unit);
   const [kcal, setKcal] = useState(String(Math.round(it.kcal)));
   const [msg, setMsg] = useState("");
-  const inp: React.CSSProperties = { width: "100%", padding: "9px 10px", border: `1px solid ${BORDER}`, borderRadius: 9, fontSize: 14, fontFamily: "inherit", background: "#fff", color: INK, boxSizing: "border-box" };
+  const inp: React.CSSProperties = { width: "100%", padding: "9px 10px", border: `1px solid ${BORDER}`, borderRadius: 9, fontSize: 14, fontFamily: "inherit", background: "var(--surface)", color: INK, boxSizing: "border-box" };
 
   if (editing) {
     const submit = () => {
@@ -326,10 +326,10 @@ function PortionRow({ lang, it, kc, editing, onEdit, onCancel, onSave, onDelete 
           </label>
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-          <button type="button" onClick={submit} style={{ border: 0, borderRadius: 9, background: COLORS.RED, color: "#fff", fontWeight: 800, fontSize: 13, padding: "9px 16px", cursor: "pointer" }}>{tx(lang, "Save correction", "Simpan koreksi")}</button>
+          <button type="button" onClick={submit} style={{ border: 0, borderRadius: 9, background: "var(--brand)", color: "var(--on-brand)", fontWeight: 800, fontSize: 13, padding: "9px 16px", cursor: "pointer" }}>{tx(lang, "Save correction", "Simpan koreksi")}</button>
           <button type="button" onClick={onCancel} style={{ border: `1px solid ${BORDER}`, borderRadius: 9, background: "transparent", color: INK, fontWeight: 700, fontSize: 13, padding: "9px 14px", cursor: "pointer" }}>{tx(lang, "Cancel", "Batal")}</button>
-          {msg && <span style={{ fontSize: 12, color: COLORS.RED }}>{msg}</span>}
-          <button type="button" onClick={onDelete} style={{ marginLeft: "auto", border: "1px solid #e6b3ad", borderRadius: 9, background: "transparent", color: COLORS.RED, fontWeight: 700, fontSize: 13, padding: "9px 14px", cursor: "pointer" }}>{tx(lang, "Delete food", "Hapus makanan")}</button>
+          {msg && <span style={{ fontSize: 12, color: "var(--brand)" }}>{msg}</span>}
+          <button type="button" onClick={onDelete} style={{ marginLeft: "auto", border: "1px solid #e6b3ad", borderRadius: 9, background: "transparent", color: "var(--brand)", fontWeight: 700, fontSize: 13, padding: "9px 14px", cursor: "pointer" }}>{tx(lang, "Delete food", "Hapus makanan")}</button>
         </div>
         <div style={{ fontSize: 11.5, color: MUTED }}>{tx(lang, "Your correction helps 20FIT get more accurate over time (grams & calories).", "Koreksimu bikin 20FIT makin akurat seiring waktu (gram & kalori).")}</div>
       </div>
@@ -347,7 +347,7 @@ function PortionRow({ lang, it, kc, editing, onEdit, onCancel, onSave, onDelete 
         <span style={badgeStyle(v.cls)}>{v.label}</span>
         <span style={{ display: "flex", alignItems: "center", gap: 12, whiteSpace: "nowrap" }}>
           <span style={{ color: MUTED }}>{Math.round(it.kcal)} {kc}</span>
-          <button type="button" onClick={onEdit} style={{ border: 0, background: "transparent", color: COLORS.RED, fontWeight: 700, fontSize: 12, cursor: "pointer", padding: 2 }}>{tx(lang, "Edit", "Edit")}</button>
+          <button type="button" onClick={onEdit} style={{ border: 0, background: "transparent", color: "var(--brand)", fontWeight: 700, fontSize: 12, cursor: "pointer", padding: 2 }}>{tx(lang, "Edit", "Edit")}</button>
         </span>
       </div>
     </div>

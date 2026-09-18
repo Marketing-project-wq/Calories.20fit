@@ -18,9 +18,9 @@ import * as FS from "../../lib/foodSummary";
 import { getMenuRecommend, MenuRecipe } from "../../lib/menuRecommend";
 import { ScanResultModal } from "./ScanResultModal";
 
-const BORDER = "#E4E0DB";
-const INK = "#16170F";
-const MUTED = "#8A7C68";
+const BORDER = "var(--border)";
+const INK = "var(--text)";
+const MUTED = "var(--text-subtle)";
 
 // Bilingual inline helper for tracker-specific copy (component-local, so we
 // don't bloat the shared i18n table).
@@ -31,7 +31,7 @@ function Thermometer({ frac }: { frac: number }) {
   const h = Math.max(0, Math.min(1, frac)) * 108;
   return (
     <div style={{ position: "relative", width: 34, height: 150, flex: "0 0 auto" }}>
-      <div style={{ position: "absolute", top: 0, left: 8, width: 18, height: 128, border: `3px solid ${BORDER}`, borderBottom: 0, borderRadius: "11px 11px 0 0", background: "#F0EDE5" }} />
+      <div style={{ position: "absolute", top: 0, left: 8, width: 18, height: 128, border: `3px solid ${BORDER}`, borderBottom: 0, borderRadius: "11px 11px 0 0", background: "var(--surface-inset)" }} />
       <div style={{ position: "absolute", left: 11, width: 12, bottom: 30, height: h, background: "linear-gradient(180deg,#ff7a45,#C41101)", borderRadius: "6px 6px 0 0", transition: "height .55s cubic-bezier(.2,.8,.2,1)" }} />
       <div style={{ position: "absolute", bottom: 0, left: 2, width: 30, height: 30, borderRadius: "50%", background: "#C41101", border: `3px solid ${BORDER}` }} />
     </div>
@@ -46,7 +46,7 @@ function MacroBar({ label, val, tot, color }: { label: string; val: number; tot:
         <span>{label}</span>
         <span style={{ color: MUTED, fontWeight: 600 }}>{Math.round(val)} / {tot}g</span>
       </div>
-      <div style={{ height: 8, background: "#F0EDE5", borderRadius: 6, overflow: "hidden" }}>
+      <div style={{ height: 8, background: "var(--surface-inset)", borderRadius: 6, overflow: "hidden" }}>
         <div style={{ height: "100%", width: `${pct}%`, background: color, transition: "width .35s" }} />
       </div>
     </div>
@@ -54,7 +54,7 @@ function MacroBar({ label, val, tot, color }: { label: string; val: number; tot:
 }
 
 const cardStyle: React.CSSProperties = {
-  background: "#fff",
+  background: "var(--surface)",
   border: `1px solid ${BORDER}`,
   borderRadius: 16,
   padding: 18,
@@ -199,7 +199,7 @@ export function CaloriesTracker({ lang }: { lang: Lang }) {
   if (loading) {
     return (
       <div style={{ maxWidth: 920, margin: "0 auto", padding: "60px 20px", textAlign: "center" }}>
-        <span style={{ width: 40, height: 40, borderRadius: "50%", border: `3px solid ${BORDER}`, borderTopColor: COLORS.RED, display: "inline-block", animation: "ctSpin .9s linear infinite" }} />
+        <span style={{ width: 40, height: 40, borderRadius: "50%", border: `3px solid ${BORDER}`, borderTopColor: "var(--brand)", display: "inline-block", animation: "ctSpin .9s linear infinite" }} />
         <style>{`@keyframes ctSpin{to{transform:rotate(360deg)}}`}</style>
       </div>
     );
@@ -215,7 +215,7 @@ export function CaloriesTracker({ lang }: { lang: Lang }) {
 
       {loadError && (
         <div style={{ ...cardStyle, borderColor: "#f3c2bd", marginBottom: 14 }}>
-          <span style={{ fontSize: 13, color: COLORS.RED }}>{tx(lang, "Couldn't load your tracker. Refresh to try again.", "Gagal memuat tracker. Muat ulang untuk coba lagi.")}</span>
+          <span style={{ fontSize: 13, color: "var(--brand)" }}>{tx(lang, "Couldn't load your tracker. Refresh to try again.", "Gagal memuat tracker. Muat ulang untuk coba lagi.")}</span>
         </div>
       )}
 
@@ -230,14 +230,14 @@ export function CaloriesTracker({ lang }: { lang: Lang }) {
             <div style={{ display: "flex", alignItems: "center", gap: 20, justifyContent: "center", margin: "8px 0 4px", textAlign: "left" }}>
               <Thermometer frac={goal > 0 ? consumed / goal : 0} />
               <div>
-                <div style={{ fontSize: 46, fontWeight: 900, lineHeight: 1, color: COLORS.RED }}>{goal}</div>
+                <div style={{ fontSize: 46, fontWeight: 900, lineHeight: 1, color: "var(--brand)" }}>{goal}</div>
                 <div style={{ color: MUTED, fontSize: 13 }}>{tx(lang, "kcal / day — from your BMI & profile", "kkal / hari — dari BMI & profilmu")}</div>
                 <div style={{ marginTop: 8, fontSize: 13, color: MUTED }}>
-                  <b style={{ fontSize: 24, color: COLORS.RED, marginRight: 4, fontVariantNumeric: "tabular-nums" }}>{Math.max(0, left)}</b>
+                  <b style={{ fontSize: 24, color: "var(--brand)", marginRight: 4, fontVariantNumeric: "tabular-nums" }}>{Math.max(0, left)}</b>
                   {left >= 0 ? tx(lang, "kcal to go", "kkal lagi") : tx(lang, "kcal over", "kkal lewat")}
                 </div>
                 <div style={{ fontSize: 13, marginTop: 8 }}>
-                  {tx(lang, "Eaten", "Dimakan")} <b style={{ color: COLORS.RED }}>{consumed}</b> · {tx(lang, "Left", "Sisa")} <b style={{ color: COLORS.RED }}>{Math.max(0, left)}</b> {kc}
+                  {tx(lang, "Eaten", "Dimakan")} <b style={{ color: "var(--brand)" }}>{consumed}</b> · {tx(lang, "Left", "Sisa")} <b style={{ color: "var(--brand)" }}>{Math.max(0, left)}</b> {kc}
                 </div>
               </div>
             </div>
@@ -250,10 +250,10 @@ export function CaloriesTracker({ lang }: { lang: Lang }) {
 
             {/* scan buttons */}
             <div style={{ marginTop: 14, display: "flex", gap: 10 }}>
-              <button onClick={() => camRef.current?.click()} style={{ flex: 1, padding: 14, border: 0, borderRadius: 11, background: COLORS.RED, color: "#fff", fontWeight: 800, fontSize: 14, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+              <button onClick={() => camRef.current?.click()} style={{ flex: 1, padding: 14, border: 0, borderRadius: 11, background: "var(--brand)", color: "var(--on-brand)", fontWeight: 800, fontSize: 14, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
                 <Icon name="camera" size={20} color="#fff" /> {tx(lang, "Take photo", "Ambil foto")}
               </button>
-              <button onClick={() => fileRef.current?.click()} style={{ flex: 1, padding: 14, border: `1px solid ${BORDER}`, borderRadius: 11, background: "#F0EDE5", color: INK, fontWeight: 800, fontSize: 14, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+              <button onClick={() => fileRef.current?.click()} style={{ flex: 1, padding: 14, border: `1px solid ${BORDER}`, borderRadius: 11, background: "var(--surface-inset)", color: INK, fontWeight: 800, fontSize: 14, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
                 <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></svg>
                 {tx(lang, "Album", "Album")}
               </button>
@@ -270,26 +270,26 @@ export function CaloriesTracker({ lang }: { lang: Lang }) {
                     {quota.credits > 0 && <> ({tx(lang, `+${quota.credits} from your top-up`, `+${quota.credits} dari top-up`)})</>}
                   </>
                 ) : (
-                  <a href={URLS.TOPUP} style={{ color: COLORS.RED, fontWeight: 700 }}>
+                  <a href={URLS.TOPUP} style={{ color: "var(--brand)", fontWeight: 700 }}>
                     ⚡ {tx(lang, "Out of scans — explore top-up deals", "Kuota habis — lihat paket top-up")}
                   </a>
                 )
               ) : ""}
             </div>
-            {scanError && <div style={{ marginTop: 8, fontSize: 12, color: COLORS.RED }}>{scanError}</div>}
+            {scanError && <div style={{ marginTop: 8, fontSize: 12, color: "var(--brand)" }}>{scanError}</div>}
 
             {/* type food + grams */}
             <div style={{ fontSize: 11, color: MUTED, margin: "14px 0 6px", textTransform: "uppercase", letterSpacing: 1 }}>
               {tx(lang, "or type food + grams (auto kcal)", "atau ketik makanan + gram (auto kkal)")}
             </div>
             <div style={{ display: "flex", gap: 8 }}>
-              <input value={fname} onChange={(e) => setFname(e.target.value)} placeholder={tx(lang, "Food name", "Nama makanan")} style={{ flex: 1, minWidth: 0, padding: 11, background: "#F0EDE5", border: `1px solid ${BORDER}`, borderRadius: 10, color: INK }} />
-              <input value={fgram} onChange={(e) => setFgram(e.target.value)} type="number" placeholder={tx(lang, "grams", "gram")} style={{ flex: "0 0 78px", padding: 11, background: "#F0EDE5", border: `1px solid ${BORDER}`, borderRadius: 10, color: INK }} />
-              <button onClick={estimateFood} disabled={estimating} title="auto kcal" style={{ flex: "0 0 auto", width: 48, border: 0, borderRadius: 10, background: COLORS.RED, color: "#fff", fontWeight: 800, cursor: "pointer", display: "grid", placeItems: "center" }}>
+              <input value={fname} onChange={(e) => setFname(e.target.value)} placeholder={tx(lang, "Food name", "Nama makanan")} style={{ flex: 1, minWidth: 0, padding: 11, background: "var(--surface-inset)", border: `1px solid ${BORDER}`, borderRadius: 10, color: INK }} />
+              <input value={fgram} onChange={(e) => setFgram(e.target.value)} type="number" placeholder={tx(lang, "grams", "gram")} style={{ flex: "0 0 78px", padding: 11, background: "var(--surface-inset)", border: `1px solid ${BORDER}`, borderRadius: 10, color: INK }} />
+              <button onClick={estimateFood} disabled={estimating} title="auto kcal" style={{ flex: "0 0 auto", width: 48, border: 0, borderRadius: 10, background: "var(--brand)", color: "var(--on-brand)", fontWeight: 800, cursor: "pointer", display: "grid", placeItems: "center" }}>
                 {estimating ? "…" : <Icon name="flame" size={18} color="#fff" />}
               </button>
             </div>
-            {estError && <div style={{ marginTop: 8, fontSize: 12, color: COLORS.RED }}>{estError}</div>}
+            {estError && <div style={{ marginTop: 8, fontSize: 12, color: "var(--brand)" }}>{estError}</div>}
           </div>
 
           {/* PANEL 8 — intermittent fasting */}
@@ -303,12 +303,12 @@ export function CaloriesTracker({ lang }: { lang: Lang }) {
             {/* overview */}
             <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 7 }}>
               {[
-                { v: consumed, l: kc, color: COLORS.RED },
+                { v: consumed, l: kc, color: "var(--brand)" },
                 { v: Math.round(totals.p) + "g", l: tx(lang, "Protein", "Protein") },
                 { v: Math.round(totals.c) + "g", l: tx(lang, "Carbs", "Karbo") },
                 { v: Math.round(totals.f) + "g", l: tx(lang, "Fat", "Lemak") },
               ].map((m, i) => (
-                <div key={i} style={{ background: "#F0EDE5", borderRadius: 12, padding: "10px 4px", textAlign: "center", minWidth: 0 }}>
+                <div key={i} style={{ background: "var(--surface-inset)", borderRadius: 12, padding: "10px 4px", textAlign: "center", minWidth: 0 }}>
                   <div style={{ fontWeight: 800, fontSize: 15, color: (m as any).color || INK }}>{m.v}</div>
                   <div style={{ fontSize: 10, color: MUTED, textTransform: "uppercase", letterSpacing: 0.3, marginTop: 2 }}>{m.l}</div>
                 </div>
@@ -356,14 +356,14 @@ export function CaloriesTracker({ lang }: { lang: Lang }) {
               <div style={{ marginTop: 14, borderTop: `1px solid ${BORDER}`, paddingTop: 12 }}>
                 <div style={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: 1, color: MUTED, marginBottom: 8 }}>{tx(lang, "What to eat next", "Enaknya makan apa lagi")}</div>
                 <div style={{ display: "flex", alignItems: "flex-start", gap: 11 }}>
-                  <div style={{ width: 32, height: 32, borderRadius: 10, background: "#FCEBED", color: COLORS.RED, display: "grid", placeItems: "center", flex: "0 0 auto" }}>
+                  <div style={{ width: 32, height: 32, borderRadius: 10, background: "var(--brand-soft)", color: "var(--brand)", display: "grid", placeItems: "center", flex: "0 0 auto" }}>
                     <svg width={17} height={17} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M5 12h14M13 6l6 6-6 6" /></svg>
                   </div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: 13, fontWeight: 650, lineHeight: 1.45 }}>{guidance.msg}</div>
                     <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginTop: 8 }}>
                       {guidance.picks.map((p, i) => (
-                        <span key={i} style={{ fontSize: 12, fontWeight: 700, padding: "5px 11px", borderRadius: 999, background: "#F0EDE5", color: INK }}>{p}</span>
+                        <span key={i} style={{ fontSize: 12, fontWeight: 700, padding: "5px 11px", borderRadius: 999, background: "var(--surface-inset)", color: INK }}>{p}</span>
                       ))}
                     </div>
                   </div>
@@ -466,7 +466,7 @@ function HealthMeter({ lang, health }: { lang: Lang; health: FS.HealthResult }) 
         <span style={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: 1, color: MUTED }}>{tx(lang, "Health meter", "Meter sehat")}</span>
         <VerdictBadge cls={bandCls} label={`${FS.bandLabel(health.band, lang)} · ${health.score}/100`} />
       </div>
-      <div style={{ height: 10, background: "#F0EDE5", borderRadius: 6, overflow: "hidden" }}>
+      <div style={{ height: 10, background: "var(--surface-inset)", borderRadius: 6, overflow: "hidden" }}>
         <div style={{ height: "100%", width: `${health.score}%`, background: barCol, borderRadius: 6, transition: "width .45s" }} />
       </div>
       <div style={{ fontSize: 12, color: MUTED, lineHeight: 1.5, marginTop: 7 }}>{FS.healthNote(health.band, lang)}</div>
@@ -487,7 +487,7 @@ function NutrientGapView({ lang, gap, foods, kc }: { lang: Lang; gap: FS.Nutrien
         <>
           <div style={{ display: "flex", flexWrap: "wrap", gap: 6, marginBottom: 10 }}>
             {(["p", "c", "f"] as const).map((k) => (gap.rem[k] > 0 ? (
-              <span key={k} style={{ fontSize: 11.5, fontWeight: 800, padding: "4px 10px", borderRadius: 999, background: k === gap.big ? "#FDECEC" : "#F0EDE5", color: k === gap.big ? COLORS.RED : INK }}>
+              <span key={k} style={{ fontSize: 11.5, fontWeight: 800, padding: "4px 10px", borderRadius: 999, background: k === gap.big ? "var(--brand-soft)" : "var(--surface-inset)", color: k === gap.big ? "var(--brand)" : INK }}>
                 {gap.labels[k]} {gap.rem[k]}g
               </span>
             ) : null))}
@@ -501,7 +501,7 @@ function NutrientGapView({ lang, gap, foods, kc }: { lang: Lang; gap: FS.Nutrien
               : gap.staticFoods.map((s) => ({ e: s.e, name: s.name, meta: "", tint: undefined }))
             ).map((f, i) => (
               <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "7px 0" }}>
-                <div style={{ width: 30, height: 30, borderRadius: 9, display: "grid", placeItems: "center", fontSize: 17, flex: "0 0 auto", background: f.tint ? `linear-gradient(160deg, ${f.tint}33, ${f.tint}11)` : "#F0EDE5" }}>{f.e}</div>
+                <div style={{ width: 30, height: 30, borderRadius: 9, display: "grid", placeItems: "center", fontSize: 17, flex: "0 0 auto", background: f.tint ? `linear-gradient(160deg, ${f.tint}33, ${f.tint}11)` : "var(--surface-inset)" }}>{f.e}</div>
                 <div style={{ flex: 1, minWidth: 0, fontSize: 13, fontWeight: 650 }}>{f.name}</div>
                 {f.meta && <div style={{ fontSize: 11, color: MUTED, fontWeight: 700, whiteSpace: "nowrap" }}>{f.meta}</div>}
               </div>
@@ -529,17 +529,17 @@ function FastingSection({ lang, choice, goal, baseGoal, onChoose, onChange, onSt
         <div style={cardStyle}>
           <div style={{ fontSize: 16, fontWeight: 800 }}>{tx(lang, "Adopt a fasting style", "Adopsi gaya puasa")}</div>
           <div style={{ fontSize: 13, color: MUTED, margin: "4px 0 12px" }}>{tx(lang, "Fasting can sharpen your calorie deficit. Start with the most popular, or explore by level.", "Puasa bisa mempertajam defisit kalorimu. Mulai dari yang paling populer, atau jelajahi per level.")}</div>
-          <div style={{ border: `1px solid ${BORDER}`, borderRadius: 12, padding: 12, background: "#F0EDE5" }}>
+          <div style={{ border: `1px solid ${BORDER}`, borderRadius: 12, padding: 12, background: "var(--surface-inset)" }}>
             <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
               <div style={{ flex: 1 }}>
                 <div style={{ fontWeight: 800, fontSize: 14 }}>16:8 · {tx(lang, "Most popular", "Paling populer")}</div>
                 <div style={{ fontSize: 12, color: MUTED, lineHeight: 1.4 }}>{pop ? L(pop.desc) : ""}</div>
               </div>
-              <button onClick={() => onChoose("16:8")} style={{ flex: "0 0 auto", background: COLORS.RED, color: "#fff", borderRadius: 9, padding: "8px 12px", fontWeight: 800, fontSize: 12, border: 0, cursor: "pointer" }}>{tx(lang, "Choose", "Pilih")}</button>
+              <button onClick={() => onChoose("16:8")} style={{ flex: "0 0 auto", background: "var(--brand)", color: "var(--on-brand)", borderRadius: 9, padding: "8px 12px", fontWeight: 800, fontSize: 12, border: 0, cursor: "pointer" }}>{tx(lang, "Choose", "Pilih")}</button>
             </div>
           </div>
-          <button onClick={() => setExploreOpen((o) => !o)} style={{ width: "100%", marginTop: 12, background: "#F0EDE5", border: `1px solid ${BORDER}`, borderRadius: 11, padding: 13, fontWeight: 800, fontSize: 13, color: INK, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
-            {exploreOpen ? tx(lang, "Hide styles", "Sembunyikan gaya") : tx(lang, "Explore all styles", "Jelajahi semua gaya")} <span style={{ color: COLORS.RED, fontSize: 11 }}>{exploreOpen ? "▲" : "▼"}</span>
+          <button onClick={() => setExploreOpen((o) => !o)} style={{ width: "100%", marginTop: 12, background: "var(--surface-inset)", border: `1px solid ${BORDER}`, borderRadius: 11, padding: 13, fontWeight: 800, fontSize: 13, color: INK, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+            {exploreOpen ? tx(lang, "Hide styles", "Sembunyikan gaya") : tx(lang, "Explore all styles", "Jelajahi semua gaya")} <span style={{ color: "var(--brand)", fontSize: 11 }}>{exploreOpen ? "▲" : "▼"}</span>
           </button>
           {exploreOpen && (
             <div style={{ marginTop: 4 }}>
@@ -548,14 +548,14 @@ function FastingSection({ lang, choice, goal, baseGoal, onChoose, onChange, onSt
                 if (!styles.length) return null;
                 return (
                   <div key={L(g.t)}>
-                    <div style={{ fontFamily: "Barlow Condensed, sans-serif", fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.5, fontSize: 12, color: COLORS.RED, margin: "16px 0 0" }}>{L(g.t)}</div>
+                    <div style={{ fontFamily: "Barlow Condensed, sans-serif", fontWeight: 700, textTransform: "uppercase", letterSpacing: 1.5, fontSize: 12, color: "var(--brand)", margin: "16px 0 0" }}>{L(g.t)}</div>
                     {styles.map((s) => (
                       <div key={s.id} style={{ display: "flex", alignItems: "center", gap: 12, padding: "12px 0", borderBottom: `1px solid ${BORDER}` }}>
                         <div style={{ flex: 1 }}>
                           <div style={{ fontWeight: 800, fontSize: 14 }}>{L(s.name)}</div>
                           <div style={{ fontSize: 12, color: MUTED, lineHeight: 1.4 }}>{L(s.desc)}</div>
                         </div>
-                        <button onClick={() => onChoose(s.id)} style={{ flex: "0 0 auto", background: COLORS.RED, color: "#fff", borderRadius: 9, padding: "8px 12px", fontWeight: 800, fontSize: 12, border: 0, cursor: "pointer" }}>{tx(lang, "Choose", "Pilih")}</button>
+                        <button onClick={() => onChoose(s.id)} style={{ flex: "0 0 auto", background: "var(--brand)", color: "var(--on-brand)", borderRadius: 9, padding: "8px 12px", fontWeight: 800, fontSize: 12, border: 0, cursor: "pointer" }}>{tx(lang, "Choose", "Pilih")}</button>
                       </div>
                     ))}
                   </div>
@@ -579,7 +579,7 @@ function FastingSection({ lang, choice, goal, baseGoal, onChoose, onChange, onSt
   const planBlock = s.weekly ? (
     <div style={{ marginTop: 12, borderTop: `1px dashed ${BORDER}`, paddingTop: 10 }}>
       <PlanRow label={tx(lang, "Normal days (5/wk)", "Hari normal (5/mgg)")} value={`${goal} ${kc}`} />
-      <PlanRow label={tx(lang, "Fast days (2/wk)", "Hari puasa (2/mgg)")} value={`~500–600 ${kc}`} valueColor={COLORS.RED} />
+      <PlanRow label={tx(lang, "Fast days (2/wk)", "Hari puasa (2/mgg)")} value={`~500–600 ${kc}`} valueColor="var(--brand)" />
     </div>
   ) : (
     <div style={{ marginTop: 12, borderTop: `1px dashed ${BORDER}`, paddingTop: 10 }}>
@@ -589,7 +589,7 @@ function FastingSection({ lang, choice, goal, baseGoal, onChoose, onChange, onSt
       </div>
       {adj && <div style={{ fontSize: 11, color: MUTED, margin: "-2px 0 4px" }}>{tx(lang, `Adjusted for ${s.id} fasting`, `Disesuaikan untuk puasa ${s.id}`)}</div>}
       <PlanRow label={tx(lang, "Meals in your window", "Makan dalam jendelamu")} value={`${meals}×`} />
-      <PlanRow label={tx(lang, "≈ per meal", "≈ per makan")} value={`${perMeal} ${kc}`} valueColor={COLORS.RED} />
+      <PlanRow label={tx(lang, "≈ per meal", "≈ per makan")} value={`${perMeal} ${kc}`} valueColor="var(--brand)" />
     </div>
   );
 
@@ -599,7 +599,7 @@ function FastingSection({ lang, choice, goal, baseGoal, onChoose, onChange, onSt
       <div style={cardStyle}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: 8 }}>
           <div style={{ fontSize: 16, fontWeight: 800 }}>{L(s.name)}</div>
-          <button onClick={onChange} style={{ background: "none", border: 0, color: COLORS.RED, fontWeight: 800, fontSize: 12, cursor: "pointer" }}>{tx(lang, "Change style", "Ganti gaya")}</button>
+          <button onClick={onChange} style={{ background: "none", border: 0, color: "var(--brand)", fontWeight: 800, fontSize: 12, cursor: "pointer" }}>{tx(lang, "Change style", "Ganti gaya")}</button>
         </div>
         {st.weekly ? (
           <>
@@ -616,15 +616,15 @@ function FastingSection({ lang, choice, goal, baseGoal, onChoose, onChange, onSt
             <div style={{ color: MUTED, marginTop: 8, fontSize: 13 }}>{tx(lang, "Eating window", "Jendela makan")}: <b>{st.window?.start} – {st.window?.end}</b></div>
             <div style={{ marginTop: 10 }}>
               <span style={{ color: MUTED, fontSize: 12 }}>{tx(lang, "Start eating at", "Mulai makan jam")}</span>{" "}
-              <input type="time" value={st.chosen.start} onChange={(e) => onStart(e.target.value)} style={{ padding: 8, border: `1px solid ${BORDER}`, borderRadius: 8, background: "#F0EDE5", color: INK, fontFamily: "inherit" }} />
+              <input type="time" value={st.chosen.start} onChange={(e) => onStart(e.target.value)} style={{ padding: 8, border: `1px solid ${BORDER}`, borderRadius: 8, background: "var(--surface-inset)", color: INK, fontFamily: "inherit" }} />
             </div>
             {planBlock}
-            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginTop: 12, background: "#F0EDE5", borderRadius: 10, padding: "10px 12px" }}>
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 10, marginTop: 12, background: "var(--surface-inset)", borderRadius: 10, padding: "10px 12px" }}>
               <div style={{ minWidth: 0 }}>
                 <div style={{ fontWeight: 800, fontSize: 13 }}>{tx(lang, "Meal reminders", "Pengingat makan")}</div>
                 <div style={{ color: MUTED, fontSize: 11 }}>{tx(lang, "Notify me when the window opens / closes", "Ingatkan saat jendela buka / tutup")}</div>
               </div>
-              <button onClick={onToggleReminders} style={{ border: 0, borderRadius: 9, padding: "9px 13px", fontWeight: 800, fontSize: 12, cursor: "pointer", flex: "0 0 auto", whiteSpace: "nowrap", background: on ? "#dfe9e0" : COLORS.RED, color: on ? NUTRI.GREEN_DARK : "#fff" }}>
+              <button onClick={onToggleReminders} style={{ border: 0, borderRadius: 9, padding: "9px 13px", fontWeight: 800, fontSize: 12, cursor: "pointer", flex: "0 0 auto", whiteSpace: "nowrap", background: on ? "#dfe9e0" : "var(--brand)", color: on ? NUTRI.GREEN_DARK : "var(--on-brand)" }}>
                 {on ? tx(lang, "On ✓", "Aktif ✓") : tx(lang, "Enable", "Aktifkan")}
               </button>
             </div>
@@ -657,8 +657,8 @@ function ScanningOverlay({ lang }: { lang: Lang }) {
   const fact = FOOD_FACTS[Math.floor(Math.random() * FOOD_FACTS.length)];
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 95, background: "rgba(10,12,16,.5)", backdropFilter: "blur(4px)", display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
-      <div style={{ width: "100%", maxWidth: 440, background: "#fff", borderRadius: "22px 22px 0 0", padding: "26px 20px calc(env(safe-area-inset-bottom) + 26px)", color: INK, textAlign: "center" }}>
-        <span style={{ width: 52, height: 52, display: "inline-block", borderRadius: "50%", border: `4px solid ${BORDER}`, borderTopColor: COLORS.RED, animation: "ctSpin .8s linear infinite" }} />
+      <div style={{ width: "100%", maxWidth: 440, background: "var(--surface)", borderRadius: "22px 22px 0 0", padding: "26px 20px calc(env(safe-area-inset-bottom) + 26px)", color: INK, textAlign: "center" }}>
+        <span style={{ width: 52, height: 52, display: "inline-block", borderRadius: "50%", border: `4px solid ${BORDER}`, borderTopColor: "var(--brand)", animation: "ctSpin .8s linear infinite" }} />
         <div style={{ fontSize: 18, fontWeight: 800, margin: "16px 0 12px" }}>{tx(lang, "Your food is being scanned…", "Makananmu sedang dipindai…")}</div>
         <div style={{ background: NUTRI.GREEN_TINT, borderRadius: 14, padding: "14px 16px", textAlign: "left" }}>
           <div style={{ fontSize: 10.5, textTransform: "uppercase", letterSpacing: 0.7, fontWeight: 800, color: NUTRI.GREEN_DARK, marginBottom: 6 }}>{tx(lang, "Fun fact", "Tahukah kamu")}</div>

@@ -4,15 +4,15 @@ import { Lang } from "../lib/i18n";
 import { Link } from "../lib/router";
 import { registerNative, loginPassword, sendLoginCode, verifyLoginCode } from "../lib/authApi";
 
-const BORDER = "#E4E0DB";
-const INK = "#16170F";
-const MUTED = "#6A6A6A";
+const BORDER = "var(--border)";
+const INK = "var(--text)";
+const MUTED = "var(--text-soft)";
 const tx = (lang: Lang, en: string, id: string) => (lang === "id" ? id : en);
 
 const inputStyle: React.CSSProperties = {
   width: "100%",
   padding: "11px 12px",
-  background: "#F7F5F2",
+  background: "var(--surface)",
   border: `1px solid ${BORDER}`,
   borderRadius: 10,
   color: INK,
@@ -180,11 +180,11 @@ export function AuthPage({ lang, initialMode, onDone }: { lang: Lang; initialMod
             <label style={labelStyle}>Password</label>
             <PasswordField lang={lang} autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} placeholder="••••••••" />
           </div>
-          {error && <div style={{ fontSize: 13, color: COLORS.RED }}>{error}</div>}
-          <button type="submit" disabled={busy} style={{ padding: "14px 0", border: 0, borderRadius: 12, background: COLORS.RED, color: "#fff", fontWeight: 800, fontSize: 15, cursor: "pointer" }}>
+          {error && <div style={{ fontSize: 13, color: "var(--brand)" }}>{error}</div>}
+          <button type="submit" disabled={busy} style={{ padding: "14px 0", border: 0, borderRadius: 12, background: "var(--brand)", color: "var(--on-brand)", fontWeight: 800, fontSize: 15, cursor: "pointer" }}>
             {busy ? tx(lang, "Signing in…", "Masuk…") : tx(lang, "Sign in", "Masuk")}
           </button>
-          <button type="button" onClick={() => { setMode("code"); setError(null); setCodeSent(false); }} style={{ background: "none", border: 0, color: COLORS.BLACK, fontSize: 13, fontWeight: 600, cursor: "pointer", textDecoration: "underline" }}>
+          <button type="button" onClick={() => { setMode("code"); setError(null); setCodeSent(false); }} style={{ background: "none", border: 0, color: "var(--text)", fontSize: 13, fontWeight: 600, cursor: "pointer", textDecoration: "underline" }}>
             {tx(lang, "Sign in with an email code instead", "Masuk pakai kode email")}
           </button>
         </form>
@@ -197,7 +197,7 @@ export function AuthPage({ lang, initialMode, onDone }: { lang: Lang; initialMod
             <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} style={inputStyle} placeholder="kamu@email.com" disabled={codeSent} />
           </div>
           {!codeSent ? (
-            <button type="button" onClick={sendCode} disabled={busy} style={{ padding: "14px 0", border: 0, borderRadius: 12, background: COLORS.RED, color: "#fff", fontWeight: 800, fontSize: 15, cursor: "pointer" }}>
+            <button type="button" onClick={sendCode} disabled={busy} style={{ padding: "14px 0", border: 0, borderRadius: 12, background: "var(--brand)", color: "var(--on-brand)", fontWeight: 800, fontSize: 15, cursor: "pointer" }}>
               {busy ? tx(lang, "Sending…", "Mengirim…") : tx(lang, "Send code", "Kirim kode")}
             </button>
           ) : (
@@ -206,13 +206,13 @@ export function AuthPage({ lang, initialMode, onDone }: { lang: Lang; initialMod
                 <label style={labelStyle}>{tx(lang, "Code from your email", "Kode dari email")}</label>
                 <input inputMode="numeric" value={code} onChange={(e) => setCode(e.target.value)} style={inputStyle} placeholder="123456" />
               </div>
-              <button type="submit" disabled={busy} style={{ padding: "14px 0", border: 0, borderRadius: 12, background: COLORS.RED, color: "#fff", fontWeight: 800, fontSize: 15, cursor: "pointer" }}>
+              <button type="submit" disabled={busy} style={{ padding: "14px 0", border: 0, borderRadius: 12, background: "var(--brand)", color: "var(--on-brand)", fontWeight: 800, fontSize: 15, cursor: "pointer" }}>
                 {busy ? tx(lang, "Verifying…", "Memverifikasi…") : tx(lang, "Verify & sign in", "Verifikasi & masuk")}
               </button>
             </>
           )}
-          {error && <div style={{ fontSize: 13, color: COLORS.RED }}>{error}</div>}
-          <button type="button" onClick={() => { setMode("in"); setError(null); }} style={{ background: "none", border: 0, color: COLORS.BLACK, fontSize: 13, fontWeight: 600, cursor: "pointer", textDecoration: "underline" }}>
+          {error && <div style={{ fontSize: 13, color: "var(--brand)" }}>{error}</div>}
+          <button type="button" onClick={() => { setMode("in"); setError(null); }} style={{ background: "none", border: 0, color: "var(--text)", fontSize: 13, fontWeight: 600, cursor: "pointer", textDecoration: "underline" }}>
             {tx(lang, "Back to password sign-in", "Kembali ke masuk pakai password")}
           </button>
         </form>
@@ -254,8 +254,8 @@ export function AuthPage({ lang, initialMode, onDone }: { lang: Lang; initialMod
             <input type="checkbox" checked={consent} onChange={(e) => setConsent(e.target.checked)} style={{ marginTop: 2 }} />
             <span>{tx(lang, "I agree to 20FIT's terms and privacy policy.", "Saya setuju dengan ketentuan & kebijakan privasi 20FIT.")}</span>
           </label>
-          {error && <div style={{ fontSize: 13, color: COLORS.RED }}>{error}</div>}
-          <button type="submit" disabled={busy} style={{ padding: "14px 0", border: 0, borderRadius: 12, background: COLORS.RED, color: "#fff", fontWeight: 800, fontSize: 15, cursor: "pointer" }}>
+          {error && <div style={{ fontSize: 13, color: "var(--brand)" }}>{error}</div>}
+          <button type="submit" disabled={busy} style={{ padding: "14px 0", border: 0, borderRadius: 12, background: "var(--brand)", color: "var(--on-brand)", fontWeight: 800, fontSize: 15, cursor: "pointer" }}>
             {busy ? tx(lang, "Creating account…", "Membuat akun…") : tx(lang, "Create free account", "Buat akun gratis")}
           </button>
         </form>
@@ -265,14 +265,14 @@ export function AuthPage({ lang, initialMode, onDone }: { lang: Lang; initialMod
         {mode === "up" ? (
           <>
             {tx(lang, "Already have an account?", "Sudah punya akun?")}{" "}
-            <button onClick={() => { setMode("in"); setError(null); }} style={{ background: "none", border: 0, color: COLORS.RED, fontWeight: 700, cursor: "pointer" }}>
+            <button onClick={() => { setMode("in"); setError(null); }} style={{ background: "none", border: 0, color: "var(--brand)", fontWeight: 700, cursor: "pointer" }}>
               {tx(lang, "Sign in", "Masuk")}
             </button>
           </>
         ) : (
           <>
             {tx(lang, "New to 20FIT?", "Belum punya akun?")}{" "}
-            <button onClick={() => { setMode("up"); setError(null); }} style={{ background: "none", border: 0, color: COLORS.RED, fontWeight: 700, cursor: "pointer" }}>
+            <button onClick={() => { setMode("up"); setError(null); }} style={{ background: "none", border: 0, color: "var(--brand)", fontWeight: 700, cursor: "pointer" }}>
               {tx(lang, "Create a free account", "Buat akun gratis")}
             </button>
           </>

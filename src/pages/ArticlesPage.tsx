@@ -21,12 +21,12 @@ export function ArticlesPage({ lang }: { lang: Lang }) {
   const shown = cat === "all" ? ARTICLES : ARTICLES.filter((x) => x.category === cat);
 
   return (
-    <div style={{ background: "#EFEDEA", minHeight: "60vh" }}>
+    <div style={{ background: "var(--bg)", minHeight: "60vh" }}>
       <div style={{ maxWidth: 1000, margin: "0 auto", padding: "36px 20px 8px" }}>
-        <h1 style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: "clamp(30px,5vw,44px)", textTransform: "uppercase", color: COLORS.BLACK, margin: "0 0 6px" }}>
+        <h1 style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: "clamp(30px,5vw,44px)", textTransform: "uppercase", color: "var(--text)", margin: "0 0 6px" }}>
           {a.listTitle}
         </h1>
-        <p style={{ fontSize: 15, color: "#5A5A5A", maxWidth: 620, margin: "0 0 20px", lineHeight: 1.6 }}>{a.listSub}</p>
+        <p style={{ fontSize: 15, color: "var(--text-muted)", maxWidth: 620, margin: "0 0 20px", lineHeight: 1.6 }}>{a.listSub}</p>
 
         {/* Category filter */}
         <div style={{ display: "flex", flexWrap: "wrap", gap: 7, marginBottom: 22 }}>
@@ -37,7 +37,7 @@ export function ArticlesPage({ lang }: { lang: Lang }) {
               <button
                 key={cKey}
                 onClick={() => setCat(cKey)}
-                style={{ fontSize: 12.5, fontWeight: 600, borderRadius: 999, padding: "7px 14px", border: `1px solid ${on ? COLORS.RED : "#DAD6D1"}`, background: on ? COLORS.RED : "#fff", color: on ? "#fff" : "#6A6A6A", cursor: "pointer" }}
+                style={{ fontSize: 12.5, fontWeight: 600, borderRadius: 999, padding: "7px 14px", border: `1px solid ${on ? "var(--brand)" : "var(--border-strong)"}`, background: on ? "var(--brand)" : "var(--surface)", color: on ? "var(--on-brand)" : "var(--text-soft)", cursor: "pointer" }}
               >
                 {label}
               </button>
@@ -52,7 +52,7 @@ export function ArticlesPage({ lang }: { lang: Lang }) {
               key={art.slug}
               href={ROUTES.article(art.slug)}
               className="sc-card"
-              style={{ display: "flex", flexDirection: "column", background: "#fff", border: "1px solid #E4E0DB", borderRadius: 16, overflow: "hidden", textDecoration: "none" }}
+              style={{ display: "flex", flexDirection: "column", background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 16, overflow: "hidden", textDecoration: "none" }}
             >
               <div style={{ height: 120, background: `linear-gradient(135deg, ${art.accent}26, ${art.accent}0a)`, display: "flex", alignItems: "center", justifyContent: "center", color: art.accent, position: "relative", overflow: "hidden" }}>
                 <Icon name={art.coverIcon} size={42} strokeWidth={1.5} />
@@ -73,11 +73,11 @@ export function ArticlesPage({ lang }: { lang: Lang }) {
                 <span style={{ fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: ".04em", color: art.accent, marginBottom: 8 }}>
                   {CATEGORY_LABELS[lang][art.category]}
                 </span>
-                <h2 style={{ fontFamily: "Manrope, sans-serif", fontSize: 17, fontWeight: 700, color: COLORS.BLACK, lineHeight: 1.28, margin: "0 0 8px" }}>
+                <h2 style={{ fontFamily: "Manrope, sans-serif", fontSize: 17, fontWeight: 700, color: "var(--text)", lineHeight: 1.28, margin: "0 0 8px" }}>
                   {art.title[lang]}
                 </h2>
-                <p style={{ fontSize: 13.5, color: "#6A6A6A", lineHeight: 1.55, margin: "0 0 12px", flex: 1 }}>{art.excerpt[lang]}</p>
-                <span style={{ fontSize: 12, color: "#9A9A9A", display: "inline-flex", alignItems: "center", gap: 5 }}>
+                <p style={{ fontSize: 13.5, color: "var(--text-soft)", lineHeight: 1.55, margin: "0 0 12px", flex: 1 }}>{art.excerpt[lang]}</p>
+                <span style={{ fontSize: 12, color: "var(--text-faint)", display: "inline-flex", alignItems: "center", gap: 5 }}>
                   <Icon name="clock" size={12} /> {a.minRead(art.readTimeMinutes)}
                 </span>
               </div>
