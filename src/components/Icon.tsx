@@ -35,7 +35,9 @@ export type IconName =
   | "lightbulb"
   | "user"
   | "drumstick"
-  | "clock";
+  | "clock"
+  | "sun"
+  | "moon";
 
 const PATHS: Record<IconName, JSX.Element> = {
   lock: (
@@ -220,6 +222,20 @@ const PATHS: Record<IconName, JSX.Element> = {
       <path d="M12 7v5l3.5 2" />
     </>
   ),
+  sun: (
+    <>
+      <circle cx="12" cy="12" r="4" />
+      <line x1="12" y1="2.5" x2="12" y2="5" />
+      <line x1="12" y1="19" x2="12" y2="21.5" />
+      <line x1="2.5" y1="12" x2="5" y2="12" />
+      <line x1="19" y1="12" x2="21.5" y2="12" />
+      <line x1="5.2" y1="5.2" x2="6.9" y2="6.9" />
+      <line x1="17.1" y1="17.1" x2="18.8" y2="18.8" />
+      <line x1="5.2" y1="18.8" x2="6.9" y2="17.1" />
+      <line x1="17.1" y1="6.9" x2="18.8" y2="5.2" />
+    </>
+  ),
+  moon: <path d="M20 13.5A8 8 0 1 1 10.5 4a6.5 6.5 0 0 0 9.5 9.5z" />,
 };
 
 export function Icon({

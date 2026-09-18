@@ -6,6 +6,21 @@
     <meta name="description" content="Scan foto makanan untuk estimasi kalori dan nutrisi. Bagian dari ekosistem kesehatan 20FIT." />
     <meta name="theme-color" content="#C41101" />
     <title>Scan Kalori • 20FIT</title>
+    <script>
+      // Set the theme BEFORE first paint so there is no flash of the wrong
+      // palette. Mirrors src/lib/theme.tsx (localStorage["theme"] → OS pref →
+      // light). Kept inline + synchronous on purpose.
+      (function () {
+        try {
+          var t = localStorage.getItem("theme");
+          if (t !== "light" && t !== "dark") {
+            t = window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+          }
+          document.documentElement.setAttribute("data-theme", t);
+          document.documentElement.style.colorScheme = t;
+        } catch (e) {}
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

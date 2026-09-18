@@ -4,6 +4,106 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ============================================================
+   Theme tokens — semantic colours. Light values on :root, dark
+   values under :root[data-theme="dark"]. Every surface reads
+   these via var(--token) so flipping data-theme on <html>
+   (see src/lib/theme.tsx) recolours the whole app at once.
+   Brand red is intentionally shared (identity), only nudged
+   brighter in dark for contrast on dark surfaces.
+   ============================================================ */
+:root {
+  /* Backgrounds & surfaces */
+  --bg: #EFEDEA;            /* page */
+  --bg-2: #F5F3F0;          /* alt page sections */
+  --surface: #FFFFFF;       /* cards / panels */
+  --surface-2: #F7F5F2;     /* subtle raised */
+  --surface-inset: #F0EDE5; /* inset wells / chips */
+  --surface-hover: #FAFAF9; /* row/button hover */
+
+  /* Lines */
+  --border: #E4E0DB;
+  --border-strong: #DAD6D1;
+  --divider: rgba(20, 20, 20, 0.15);
+  --track: rgba(20, 20, 20, 0.05);
+
+  /* Text */
+  --text: #16170F;          /* primary / headings */
+  --text-body: #2A2A2A;     /* long-form body */
+  --text-muted: #5A5A5A;    /* strong secondary */
+  --text-soft: #6A6A6A;     /* secondary */
+  --text-subtle: #8A8A8A;   /* tertiary / labels */
+  --text-faint: #9A9A9A;    /* placeholder / hints */
+
+  /* Brand */
+  --brand: #C41101;
+  --brand-strong: #A01001;  /* hover */
+  --brand-bright: #D62828;  /* accent hover ring */
+  --brand-soft: #FDECEC;    /* tinted background */
+  --brand-tint: #FCEBED;    /* lighter tint */
+  --on-brand: #FFFFFF;      /* text/icon on brand fill */
+
+  /* Chrome */
+  --nav-glass: rgba(255, 255, 255, 0.72);
+  --nav-border: rgba(20, 20, 20, 0.08);
+  --shadow-sm: rgba(20, 20, 20, 0.04);
+  --shadow-md: rgba(20, 20, 20, 0.08);
+  --shadow-lg: rgba(20, 20, 20, 0.18);
+  --overlay: rgba(20, 20, 20, 0.5);
+  --scrollbar-track: #f1f1f1;
+
+  /* Long-form article accents */
+  --quote-bg: #F0FBF3;
+  --quote-border: #22C55E;
+  --quote-text: #1f4d33;
+  --quote-strong: #16A34A;
+  --code-bg: rgba(20, 20, 20, 0.06);
+  --article-link: #C41101;
+}
+
+:root[data-theme="dark"] {
+  --bg: #131410;
+  --bg-2: #17180F;
+  --surface: #1E1F18;
+  --surface-2: #24261D;
+  --surface-inset: #24261D;
+  --surface-hover: #2A2C22;
+
+  --border: #34362B;
+  --border-strong: #40422F;
+  --divider: rgba(255, 255, 255, 0.14);
+  --track: rgba(255, 255, 255, 0.08);
+
+  --text: #F1EFE6;
+  --text-body: #DAD7CC;
+  --text-muted: #CFCCC0;
+  --text-soft: #BDBAAE;
+  --text-subtle: #A5A296;
+  --text-faint: #8C897E;
+
+  --brand: #E7473A;
+  --brand-strong: #C4291B;
+  --brand-bright: #F0574A;
+  --brand-soft: rgba(231, 71, 58, 0.16);
+  --brand-tint: rgba(231, 71, 58, 0.12);
+  --on-brand: #FFFFFF;
+
+  --nav-glass: rgba(19, 20, 16, 0.72);
+  --nav-border: rgba(255, 255, 255, 0.08);
+  --shadow-sm: rgba(0, 0, 0, 0.4);
+  --shadow-md: rgba(0, 0, 0, 0.5);
+  --shadow-lg: rgba(0, 0, 0, 0.6);
+  --overlay: rgba(0, 0, 0, 0.66);
+  --scrollbar-track: #24261D;
+
+  --quote-bg: rgba(34, 197, 94, 0.10);
+  --quote-border: #22C55E;
+  --quote-text: #A7E3BE;
+  --quote-strong: #4ADE80;
+  --code-bg: rgba(255, 255, 255, 0.08);
+  --article-link: #F0574A;
+}
+
 * {
   margin: 0;
   padding: 0;
@@ -17,10 +117,11 @@ html {
 body {
   font-family: "Manrope", sans-serif;
   font-weight: 200;
-  background: #EFEDEA;
-  color: #141414;
+  background: var(--bg);
+  color: var(--text);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 h1, h2, h3, h4, h5, h6 {
@@ -34,16 +135,16 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f1f1;
+  background: var(--scrollbar-track);
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #c41101;
+  background: var(--brand);
   border-radius: 4px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #a01001;
+  background: var(--brand-strong);
 }
 
 /* Utility: Blur shimmer animation */
@@ -112,15 +213,15 @@ textarea:focus {
 }
 .sc-card:hover {
   transform: translateY(-3px);
-  box-shadow: 0 10px 24px rgba(20, 20, 20, 0.08);
-  border-color: #D62828;
+  box-shadow: 0 10px 24px var(--shadow-md);
+  border-color: var(--brand-bright);
 }
 
 .sc-btn-primary {
   transition: background-color 0.2s ease, transform 0.15s ease, box-shadow 0.2s ease;
 }
 .sc-btn-primary:hover:not(:disabled) {
-  background-color: #B01F1F !important;
+  background-color: var(--brand-strong) !important;
   transform: translateY(-1px);
   box-shadow: 0 6px 16px rgba(214, 40, 40, 0.28);
 }
@@ -133,9 +234,9 @@ textarea:focus {
   transition: border-color 0.2s ease, color 0.2s ease, background-color 0.2s ease;
 }
 .sc-btn-ghost:hover {
-  border-color: #D62828 !important;
-  color: #D62828 !important;
-  background-color: #FDECEC !important;
+  border-color: var(--brand-bright) !important;
+  color: var(--brand-bright) !important;
+  background-color: var(--brand-soft) !important;
 }
 
 .sc-link-btn {
@@ -144,7 +245,7 @@ textarea:focus {
 .sc-link-btn:hover {
   opacity: 0.9;
   transform: translateY(-1px);
-  box-shadow: 0 6px 16px rgba(20, 20, 20, 0.18);
+  box-shadow: 0 6px 16px var(--shadow-lg);
 }
 
 .sc-bar-fill {
@@ -155,7 +256,7 @@ textarea:focus {
   transition: background-color 0.15s ease;
 }
 .sc-faq-btn:hover {
-  background-color: #FAFAF9;
+  background-color: var(--surface-hover);
 }
 .sc-faq-icon {
   transition: transform 0.2s ease, color 0.2s ease;
@@ -172,15 +273,15 @@ textarea:focus {
   transition: color 0.2s ease, border-color 0.2s ease;
 }
 .sc-tab:hover {
-  color: #141414;
+  color: var(--text);
 }
 
 .sc-dropzone {
   transition: border-color 0.2s ease, background-color 0.2s ease;
 }
 .sc-dropzone:hover {
-  border-color: #D62828;
-  background-color: #FDECEC;
+  border-color: var(--brand-bright);
+  background-color: var(--brand-soft);
 }
 
 .sc-eco-icon,
@@ -247,9 +348,12 @@ textarea:focus {
     animation: none;
   }
 }
+:root[data-theme="dark"] .sc-orb {
+  opacity: 0.32;
+}
 
 .sc-nav-glass {
-  background: rgba(255, 255, 255, 0.72);
+  background: var(--nav-glass);
   backdrop-filter: blur(18px) saturate(180%);
   -webkit-backdrop-filter: blur(18px) saturate(180%);
 }
@@ -260,14 +364,14 @@ textarea:focus {
   font-weight: 400;
   font-size: 17px;
   line-height: 1.78;
-  color: #2A2A2A;
+  color: var(--text-body);
 }
 .ct-article h2 {
   font-family: "Barlow Condensed", sans-serif;
   font-weight: 800;
   font-size: 27px;
   line-height: 1.1;
-  color: #16170F;
+  color: var(--text);
   margin: 34px 0 12px;
 }
 .ct-article h3 {
@@ -275,7 +379,7 @@ textarea:focus {
   font-weight: 700;
   font-size: 21px;
   line-height: 1.15;
-  color: #16170F;
+  color: var(--text);
   margin: 24px 0 8px;
 }
 .ct-article p {
@@ -291,34 +395,34 @@ textarea:focus {
 }
 .ct-article strong {
   font-weight: 700;
-  color: #16170F;
+  color: var(--text);
 }
 .ct-article blockquote {
   margin: 20px 0;
   padding: 14px 18px;
-  border-left: 4px solid #22C55E;
-  background: #F0FBF3;
+  border-left: 4px solid var(--quote-border);
+  background: var(--quote-bg);
   border-radius: 0 10px 10px 0;
   font-size: 16px;
-  color: #1f4d33;
+  color: var(--quote-text);
 }
 .ct-article blockquote strong {
-  color: #16A34A;
+  color: var(--quote-strong);
 }
 .ct-article code {
   font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
   font-size: 0.9em;
-  background: rgba(20, 20, 20, 0.06);
+  background: var(--code-bg);
   padding: 1px 5px;
   border-radius: 4px;
 }
 .ct-article hr {
   border: none;
-  border-top: 1px solid #E4E0DB;
+  border-top: 1px solid var(--border);
   margin: 28px 0;
 }
 .ct-article a {
-  color: #C41101;
+  color: var(--article-link);
 }
 @media (max-width: 640px) {
   .ct-article { font-size: 16px; line-height: 1.75; }
@@ -332,7 +436,7 @@ textarea:focus {
   top: 0;
   left: 0;
   height: 3px;
-  background: linear-gradient(90deg, #C41101, #22C55E);
+  background: linear-gradient(90deg, var(--brand), #22C55E);
   z-index: 60;
   transition: width 0.1s linear;
 }

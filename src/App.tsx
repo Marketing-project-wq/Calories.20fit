@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { COLORS, ROUTES } from "./lib/constants";
+import { ROUTES } from "./lib/constants";
 import { Lang } from "./lib/i18n";
 import { cc } from "./lib/calorieCopy";
 import { useAuth } from "./hooks/useAuth";
+import { useTheme, LOGO } from "./lib/theme";
 import { AuthNav } from "./components/AuthNav";
 import { Icon } from "./components/Icon";
 import { Link, useLocation, matchRoute, navigate } from "./lib/router";
@@ -23,12 +24,12 @@ function NotFound({ lang }: { lang: Lang }) {
   return (
     <div>
       <div style={{ maxWidth: 560, margin: "0 auto", padding: "72px 20px", textAlign: "center" }}>
-        <div style={{ marginBottom: 12, color: "#B0ABA4" }}><Icon name="utensils" size={48} /></div>
-        <h1 style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 34, textTransform: "uppercase", color: COLORS.BLACK, margin: "0 0 8px" }}>
+        <div style={{ marginBottom: 12, color: "var(--text-faint)" }}><Icon name="utensils" size={48} /></div>
+        <h1 style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 34, textTransform: "uppercase", color: "var(--text)", margin: "0 0 8px" }}>
           {c.notFoundTitle}
         </h1>
-        <p style={{ fontSize: 15, color: "#6A6A6A", margin: "0 0 20px" }}>{c.notFoundSub}</p>
-        <Link href={ROUTES.HOME} className="sc-btn-primary" style={{ display: "inline-block", background: COLORS.RED, color: "#fff", borderRadius: 12, padding: "12px 22px", fontSize: 15, fontWeight: 700 }}>
+        <p style={{ fontSize: 15, color: "var(--text-soft)", margin: "0 0 20px" }}>{c.notFoundSub}</p>
+        <Link href={ROUTES.HOME} className="sc-btn-primary" style={{ display: "inline-block", background: "var(--brand)", color: "var(--on-brand)", borderRadius: 12, padding: "12px 22px", fontSize: 15, fontWeight: 700 }}>
           {c.backHome}
         </Link>
       </div>
@@ -40,7 +41,7 @@ function NotFound({ lang }: { lang: Lang }) {
 function Spinner() {
   return (
     <div style={{ maxWidth: 920, margin: "0 auto", padding: "80px 20px", textAlign: "center" }}>
-      <span style={{ width: 36, height: 36, borderRadius: "50%", border: `3px solid #E4E0DB`, borderTopColor: COLORS.RED, display: "inline-block", animation: "appSpin .9s linear infinite" }} />
+      <span style={{ width: 36, height: 36, borderRadius: "50%", border: `3px solid var(--border)`, borderTopColor: "var(--brand)", display: "inline-block", animation: "appSpin .9s linear infinite" }} />
       <style>{`@keyframes appSpin{to{transform:rotate(360deg)}}`}</style>
     </div>
   );
@@ -74,6 +75,7 @@ export function App() {
   const [lang, setLang] = useState<Lang>("id");
   const nav = cc(lang).nav;
   const { user, isAuthenticated, isLoading } = useAuth();
+  const { theme, toggleTheme } = useTheme();
   const path = useLocation();
 
   const NAV_ITEMS: { key: string; label: string; href: string }[] = isAuthenticated
@@ -114,15 +116,18 @@ export function App() {
   else page = <NotFound lang={lang} />;
 
   return (
-    <div className="min-h-screen" style={{ background: "#FFFFFF" }}>
-      <div className="sc-nav-glass" style={{ borderBottom: "1px solid rgba(20,20,20,0.08)", position: "sticky", top: 0, zIndex: 50, boxShadow: "0 4px 24px rgba(20,20,20,0.04)" }}>
+    <div className="min-h-screen" style={{ background: "var(--bg)" }}>
+      <div className="sc-nav-glass" style={{ borderBottom: "1px solid var(--nav-border)", position: "sticky", top: 0, zIndex: 50, boxShadow: "0 4px 24px var(--shadow-sm)" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto", padding: "8px 16px", display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "8px 12px" }}>
           {/* Brand + nav */}
           <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0, flex: "1 1 auto" }}>
-            <Link href={ROUTES.HOME} style={{ display: "flex", alignItems: "center", gap: 6, flexShrink: 0 }} aria-label="20FIT Calorie Tracker">
-              <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 20, color: COLORS.RED, letterSpacing: ".02em" }}>20FIT</span>
-              <span style={{ width: 1, height: 16, background: "rgba(20,20,20,0.15)" }} />
-              <Icon name="leaf" size={14} color={COLORS.BLACK} />
+            <Link href={ROUTES.HOME} style={{ display: "flex", alignItems: "center", flexShrink: 0 }} aria-label="20FIT Calorie Tracker">
+              <img
+                src={LOGO[theme]}
+                alt="20FIT"
+                height={28}
+                style={{ height: 28, width: "auto", display: "block", objectFit: "contain" }}
+              />
             </Link>
             <nav
               style={{ display: "flex", gap: 2, overflowX: "auto", scrollbarWidth: "none", minWidth: 0 }}
@@ -142,8 +147,8 @@ export function App() {
                       letterSpacing: ".07em",
                       textTransform: "uppercase",
                       whiteSpace: "nowrap",
-                      borderBottom: active ? `2px solid ${COLORS.RED}` : "2px solid transparent",
-                      color: active ? COLORS.RED : "#6A6A6A",
+                      borderBottom: active ? `2px solid var(--brand)` : "2px solid transparent",
+                      color: active ? "var(--brand)" : "var(--text-soft)",
                       marginBottom: -2,
                       textDecoration: "none",
                     }}
@@ -155,9 +160,28 @@ export function App() {
             </nav>
           </div>
 
-          {/* Language + auth */}
+          {/* Theme + language + auth */}
           <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
-            <div style={{ display: "flex", background: "rgba(20,20,20,0.05)", borderRadius: 10, padding: 3, gap: 2 }}>
+            <button
+              onClick={toggleTheme}
+              aria-label={theme === "dark" ? nav.themeLight : nav.themeDark}
+              title={theme === "dark" ? nav.themeLight : nav.themeDark}
+              style={{
+                display: "inline-flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: 32,
+                height: 32,
+                borderRadius: 8,
+                background: "var(--track)",
+                color: "var(--text-soft)",
+                cursor: "pointer",
+                flexShrink: 0,
+              }}
+            >
+              <Icon name={theme === "dark" ? "sun" : "moon"} size={16} />
+            </button>
+            <div style={{ display: "flex", background: "var(--track)", borderRadius: 10, padding: 3, gap: 2 }}>
               {(["id", "en"] as Lang[]).map((l) => (
                 <button
                   key={l}
@@ -170,8 +194,8 @@ export function App() {
                     textTransform: "uppercase",
                     borderRadius: 6,
                     border: "none",
-                    background: l === lang ? "#141414" : "transparent",
-                    color: l === lang ? "#FFFFFF" : "#8A8A8A",
+                    background: l === lang ? "var(--text)" : "transparent",
+                    color: l === lang ? "var(--surface)" : "var(--text-subtle)",
                     cursor: "pointer",
                   }}
                 >
