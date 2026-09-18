@@ -11,7 +11,6 @@ import { LandingPage } from "./pages/LandingPage";
 import { HistoryPage } from "./pages/HistoryPage";
 import { ArticlesPage } from "./pages/ArticlesPage";
 import { ArticleDetailPage } from "./pages/ArticleDetailPage";
-import { MealPlanPage } from "./pages/MealPlanPage";
 import { AuthPage } from "./pages/AuthPage";
 import { OnboardingPage } from "./pages/OnboardingPage";
 import { AccountGate } from "./components/AccountGate";
@@ -45,6 +44,13 @@ function Spinner() {
       <style>{`@keyframes appSpin{to{transform:rotate(360deg)}}`}</style>
     </div>
   );
+}
+
+// Meal Plan is no longer a page of its own — it lives inside the tracker now.
+// Keep the old /meal-plan URL working by sending it home (the tracker).
+function Redirect({ to }: { to: string }) {
+  useEffect(() => { navigate(to); }, [to]);
+  return <Spinner />;
 }
 
 function GatedTracker({ lang }: { lang: Lang }) {
@@ -82,7 +88,6 @@ export function App() {
     ? [
         { key: "tracker", label: nav.tracker, href: ROUTES.HOME },
         { key: "articles", label: nav.articles, href: ROUTES.ARTICLES },
-        { key: "meal-plan", label: nav.mealPlan, href: ROUTES.MEAL_PLAN },
         { key: "history", label: nav.history, href: ROUTES.HISTORY },
       ]
     : [
@@ -107,7 +112,7 @@ export function App() {
   else if (path === ROUTES.TRACKER) page = gated(<MemberArea lang={lang} />);
   else if (path === ROUTES.ARTICLES) page = <ArticlesPage lang={lang} />;
   else if (articleMatch) page = <ArticleDetailPage lang={lang} slug={articleMatch.slug} />;
-  else if (path === ROUTES.MEAL_PLAN) page = <MealPlanPage lang={lang} />;
+  else if (path === ROUTES.MEAL_PLAN) page = <Redirect to={ROUTES.HOME} />;
   else if (path === ROUTES.HISTORY) page = <HistoryPage lang={lang} />;
   // Native auth — no redirect to my.20fit.id. A signed-in user hitting these
   // just goes home (MemberArea then decides onboarding vs tracker).

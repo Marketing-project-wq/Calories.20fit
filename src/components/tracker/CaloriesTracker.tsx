@@ -17,6 +17,7 @@ import * as Fasting from "../../lib/fasting";
 import * as FS from "../../lib/foodSummary";
 import { getMenuRecommend, MenuRecipe } from "../../lib/menuRecommend";
 import { ScanResultModal } from "./ScanResultModal";
+import { MealPlanSection } from "./MealPlanSection";
 
 const BORDER = "var(--border)";
 const INK = "var(--text)";
@@ -404,6 +405,9 @@ export function CaloriesTracker({ lang }: { lang: Lang }) {
           </div>
         </div>
       </div>
+
+      {/* Daily meal plan — folded in from the former standalone /meal-plan page */}
+      <MealPlanSection lang={lang} target={baseGoal} profile={profile} />
 
       {/* bottom — menu recommendations */}
       {menuRecs.length > 0 && (
