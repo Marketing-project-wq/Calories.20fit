@@ -31,6 +31,9 @@ export interface ScanResult {
   recommendation?: string;
   needs_more?: string[];
   insights?: string[];
+  assumptions?: string[];
+  note?: string;
+  satiety_note?: string;
 }
 
 export interface ScanItem {
@@ -145,6 +148,20 @@ export const apiClient = {
     };
   },
 
+  // Per-component correction → my.20fit.id's SAME /api/scan/food-correction
+  // (feeds the anonymous per-gram food dictionary my20fit_food_ref). Sent only
+  // when the unit is grams (per-gram dict; pcs/ml would corrupt it). Bearer.
+  async foodCorrection(payload: { name: string; grams: number; kcal: number; protein_g?: number; carbs_g?: number; fat_g?: number; fiber_g?: number; lang: string }): Promise<void> {
+    const session = await getSession();
+    if (!session?.access_token) return; // best-effort; local correction still applies
+    const response = await fetch(`${API_BASE}${API.SCAN_CORRECTION}`, {
+      method: "POST",
+      headers: { "Authorization": `Bearer ${session.access_token}`, "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (!response.ok) throw new Error("correction_failed");
+  },
+
   // getHistory()/getInsight() removed: they called /api/scan/history and
   // /api/scan/insight, neither of which exists on my.20fit.id's backend
   // (verified against its server.js source) — they never worked for a real
@@ -207,6 +224,9 @@ function normalizeResult(data: any): ScanResult {
     recommendation: result.recommendation ?? undefined,
     needs_more: Array.isArray(result.needs_more) ? result.needs_more.map((s: any) => String(s)) : undefined,
     insights: Array.isArray(result.insights) ? result.insights.map((s: any) => String(s)) : undefined,
+    assumptions: Array.isArray(result.assumptions) ? result.assumptions.map((s: any) => String(s)) : undefined,
+    note: typeof result.note === "string" ? result.note : undefined,
+    satiety_note: typeof result.satiety_note === "string" ? result.satiety_note : undefined,
   };
 }
 

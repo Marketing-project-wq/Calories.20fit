@@ -16,6 +16,7 @@ import { dailyCalorieGoal, dailyMacroTargets } from "../../lib/nutrition";
 import * as Fasting from "../../lib/fasting";
 import * as FS from "../../lib/foodSummary";
 import { getMenuRecommend, MenuRecipe } from "../../lib/menuRecommend";
+import { ScanResultModal } from "./ScanResultModal";
 
 const BORDER = "#E4E0DB";
 const INK = "#16170F";
@@ -138,7 +139,6 @@ export function CaloriesTracker({ lang }: { lang: Lang }) {
   const [scanning, setScanning] = useState(false);
   const [scanResult, setScanResult] = useState<ScanResult | null>(null);
   const [scanError, setScanError] = useState<string | null>(null);
-  const [scanSaving, setScanSaving] = useState(false);
 
   const onScanFile = async (file: File) => {
     if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) { setScanError(tx(lang, "Use JPG, PNG, or WebP.", "Gunakan JPG, PNG, atau WebP.")); return; }
@@ -153,21 +153,6 @@ export function CaloriesTracker({ lang }: { lang: Lang }) {
       setScanError(msg === "scan_limit" ? tx(lang, "Scan quota exhausted. Top up to continue.", "Kuota scan habis. Top-up untuk lanjut.") : tx(lang, "Failed to analyze photo.", "Gagal menganalisis foto."));
     } finally {
       setScanning(false);
-    }
-  };
-
-  const addScannedToLog = async () => {
-    if (!scanResult || scanSaving) return;
-    setScanSaving(true);
-    try {
-      const it: DailyFoodItem = { name: scanResult.food_name, kcal: scanResult.calories, p: scanResult.protein, c: scanResult.carbs, f: scanResult.fat, t: nowHHMM() };
-      const list = await appendTodayFoodItem(it);
-      setItems(list);
-      setScanResult(null);
-    } catch {
-      setScanError(tx(lang, "Failed to save to log.", "Gagal menyimpan ke log."));
-    } finally {
-      setScanSaving(false);
     }
   };
 
@@ -443,14 +428,15 @@ export function CaloriesTracker({ lang }: { lang: Lang }) {
         </div>
       )}
 
-      {/* scan overlay */}
-      {(scanning || scanResult) && (
-        <ScanOverlay
+      {/* scan: loading, then rich result modal */}
+      {scanning && <ScanningOverlay lang={lang} />}
+      {scanResult && (
+        <ScanResultModal
           lang={lang}
-          scanning={scanning}
           result={scanResult}
-          saving={scanSaving}
-          onAdd={addScannedToLog}
+          goal={goal}
+          eaten={consumed}
+          onLogged={(list) => { setItems(list); setScanResult(null); setScanError(null); apiClient.getQuota().then(setQuota).catch(() => {}); }}
           onClose={() => { setScanResult(null); setScanError(null); }}
           kc={kc}
         />
@@ -658,39 +644,26 @@ function PlanRow({ label, value, valueColor }: { label: string; value: string; v
   );
 }
 
-function ScanOverlay({ lang, scanning, result, saving, onAdd, onClose, kc }: {
-  lang: Lang; scanning: boolean; result: ScanResult | null; saving: boolean; onAdd: () => void; onClose: () => void; kc: string;
-}) {
+// Loading state while the photo is analysed (with a rotating fun fact).
+const FOOD_FACTS: { en: string; id: string }[] = [
+  { en: "Broccoli contains more vitamin C than an orange, gram for gram.", id: "Brokoli punya vitamin C lebih banyak dari jeruk, per gramnya." },
+  { en: "Eating protein helps you feel full longer and supports muscle.", id: "Makan protein bikin kenyang lebih lama & bantu jaga otot." },
+  { en: "Chewing slowly helps your brain notice you're full — and eat less.", id: "Mengunyah pelan bantu otak sadar kamu kenyang — jadi makan lebih sedikit." },
+  { en: "Colorful plates usually mean more vitamins — eat the rainbow!", id: "Piring warna-warni biasanya lebih kaya vitamin — makan aneka warna!" },
+  { en: "A glass of water before a meal can help with portion control.", id: "Segelas air sebelum makan bantu kontrol porsi." },
+  { en: "Fiber from veggies & whole grains keeps your gut happy.", id: "Serat dari sayur & biji utuh bikin pencernaan sehat." },
+];
+function ScanningOverlay({ lang }: { lang: Lang }) {
+  const fact = FOOD_FACTS[Math.floor(Math.random() * FOOD_FACTS.length)];
   return (
-    <div style={{ position: "fixed", inset: 0, zIndex: 95, background: "rgba(10,12,16,.5)", backdropFilter: "blur(4px)", display: "flex", alignItems: "flex-end", justifyContent: "center" }} onClick={(e) => { if (e.target === e.currentTarget && !scanning) onClose(); }}>
-      <div style={{ width: "100%", maxWidth: 440, background: "#fff", borderRadius: "22px 22px 0 0", maxHeight: "90vh", overflowY: "auto", padding: "18px 20px calc(env(safe-area-inset-bottom) + 22px)", color: INK }}>
-        {scanning ? (
-          <div style={{ textAlign: "center", padding: "20px 0" }}>
-            <span style={{ width: 52, height: 52, display: "inline-block", borderRadius: "50%", border: `4px solid ${BORDER}`, borderTopColor: COLORS.RED, animation: "ctSpin .8s linear infinite" }} />
-            <div style={{ fontSize: 18, fontWeight: 800, marginTop: 16 }}>{tx(lang, "Your food is being scanned…", "Foto sedang dianalisis…")}</div>
-          </div>
-        ) : result ? (
-          <>
-            <h3 style={{ margin: "0 0 12px", fontSize: 19, fontWeight: 800 }}>{tx(lang, "Food analysis", "Hasil analisis")}</h3>
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: 10, marginBottom: 12 }}>
-              <div style={{ fontWeight: 800, fontSize: 15, lineHeight: 1.3 }}>{result.food_name}</div>
-              <div style={{ fontWeight: 800, color: COLORS.RED, whiteSpace: "nowrap" }}>{result.calories} {kc}</div>
-            </div>
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(3,1fr)", gap: 7, marginBottom: 12 }}>
-              {[{ l: tx(lang, "Protein", "Protein"), v: result.protein }, { l: tx(lang, "Carbs", "Karbo"), v: result.carbs }, { l: tx(lang, "Fat", "Lemak"), v: result.fat }].map((m, i) => (
-                <div key={i} style={{ background: "#F0EDE5", borderRadius: 12, padding: "10px 4px", textAlign: "center" }}>
-                  <div style={{ fontWeight: 800, fontSize: 15 }}>{m.v}g</div>
-                  <div style={{ fontSize: 10, color: MUTED, textTransform: "uppercase" }}>{m.l}</div>
-                </div>
-              ))}
-            </div>
-            {(result.overall || result.description) && <div style={{ fontSize: 13, color: MUTED, lineHeight: 1.55, marginBottom: 12 }}>{result.overall || result.description}</div>}
-            <button onClick={onAdd} disabled={saving} style={{ width: "100%", border: 0, borderRadius: 12, background: COLORS.RED, color: "#fff", fontWeight: 800, fontSize: 15, padding: 14, cursor: "pointer" }}>
-              {saving ? tx(lang, "Saving…", "Menyimpan…") : tx(lang, "Add scanned to my log", "Tambah ke log saya")}
-            </button>
-            <button onClick={onClose} style={{ width: "100%", marginTop: 9, border: 0, borderRadius: 12, background: "#F0EDE5", color: INK, fontWeight: 750, fontSize: 14, padding: 12, cursor: "pointer" }}>{tx(lang, "Not now", "Nanti saja")}</button>
-          </>
-        ) : null}
+    <div style={{ position: "fixed", inset: 0, zIndex: 95, background: "rgba(10,12,16,.5)", backdropFilter: "blur(4px)", display: "flex", alignItems: "flex-end", justifyContent: "center" }}>
+      <div style={{ width: "100%", maxWidth: 440, background: "#fff", borderRadius: "22px 22px 0 0", padding: "26px 20px calc(env(safe-area-inset-bottom) + 26px)", color: INK, textAlign: "center" }}>
+        <span style={{ width: 52, height: 52, display: "inline-block", borderRadius: "50%", border: `4px solid ${BORDER}`, borderTopColor: COLORS.RED, animation: "ctSpin .8s linear infinite" }} />
+        <div style={{ fontSize: 18, fontWeight: 800, margin: "16px 0 12px" }}>{tx(lang, "Your food is being scanned…", "Makananmu sedang dipindai…")}</div>
+        <div style={{ background: NUTRI.GREEN_TINT, borderRadius: 14, padding: "14px 16px", textAlign: "left" }}>
+          <div style={{ fontSize: 10.5, textTransform: "uppercase", letterSpacing: 0.7, fontWeight: 800, color: NUTRI.GREEN_DARK, marginBottom: 6 }}>{tx(lang, "Fun fact", "Tahukah kamu")}</div>
+          <div style={{ fontSize: 13.5, lineHeight: 1.55 }}>{tx(lang, fact.en, fact.id)}</div>
+        </div>
         <style>{`@keyframes ctSpin{to{transform:rotate(360deg)}}`}</style>
       </div>
     </div>
