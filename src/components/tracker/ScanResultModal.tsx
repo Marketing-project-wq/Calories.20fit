@@ -143,7 +143,7 @@ export function ScanResultModal({ lang, result, goal, eaten, onLogged, onClose, 
 
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 95, background: "rgba(10,12,16,.5)", backdropFilter: "blur(4px)", display: "flex", alignItems: "flex-end", justifyContent: "center" }} onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}>
-      <div style={{ width: "100%", maxWidth: 460, background: "var(--surface)", borderRadius: "22px 22px 0 0", maxHeight: "92vh", overflowY: "auto", padding: "18px 20px calc(env(safe-area-inset-bottom) + 22px)", color: INK }}>
+      <div style={{ width: "100%", maxWidth: 460, background: "var(--surface)", backdropFilter: "var(--glass-blur)", WebkitBackdropFilter: "var(--glass-blur)", borderTop: "1px solid var(--glass-hi)", borderRadius: "24px 24px 0 0", maxHeight: "92vh", overflowY: "auto", padding: "18px 20px calc(env(safe-area-inset-bottom) + 22px)", color: INK }}>
         <h3 style={{ margin: "0 0 12px", fontSize: 19, fontWeight: 800 }}>{tx(lang, "Food analysis", "Analisa makanan")}</h3>
 
         {toast && (

@@ -73,7 +73,7 @@ export const AuthNav = ({ lang, isLoading, isAuthenticated, user }: AuthNavProps
         <>
           <div style={{ position: "fixed", inset: 0, zIndex: 60 }} onClick={() => setShowMenu(false)} />
           <div
-            style={{ position: "absolute", right: 0, top: "calc(100% + 8px)", zIndex: 61, minWidth: 160, background: "var(--surface)", borderRadius: 12, border: "1px solid var(--border)", boxShadow: "0 12px 30px -8px rgba(0,0,0,0.2)", overflow: "hidden" }}
+            style={{ position: "absolute", right: 0, top: "calc(100% + 8px)", zIndex: 61, minWidth: 160, background: "var(--surface)", backdropFilter: "var(--glass-blur)", WebkitBackdropFilter: "var(--glass-blur)", borderRadius: 14, border: "1px solid var(--glass-hi)", boxShadow: "var(--glass-shadow)", overflow: "hidden" }}
           >
             <a href={URLS.MY_20FIT} style={{ display: "block", padding: "10px 14px", fontSize: 12, fontWeight: 600, color: "var(--text)", textDecoration: "none", borderBottom: "1px solid var(--border)" }}>
               {tr.openMy20fit}

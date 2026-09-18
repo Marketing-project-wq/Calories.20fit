@@ -27,7 +27,7 @@ export function MealPlanSection({ lang, target, profile }: { lang: Lang; target:
       <div style={{ fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: "var(--text-subtle)", fontWeight: 700, margin: "18px 2px 8px" }}>
         {mp.pageTitle}
       </div>
-      <div style={{ background: "var(--surface)", border: `1px solid ${BORDER}`, borderRadius: 16, padding: 18, boxShadow: "0 8px 30px -20px rgba(20,20,20,0.25)", color: "var(--text)" }}>
+      <div style={{ background: "var(--surface)", border: `1px solid var(--glass-hi)`, borderRadius: 20, padding: 18, boxShadow: "var(--glass-shadow)", color: "var(--text)", backdropFilter: "var(--glass-blur)", WebkitBackdropFilter: "var(--glass-blur)" }}>
         <p style={{ fontSize: 13, color: "var(--text-soft)", margin: "0 0 14px", lineHeight: 1.5 }}>{mp.sub}</p>
 
         {/* Summary bar */}

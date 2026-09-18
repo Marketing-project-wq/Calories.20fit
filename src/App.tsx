@@ -121,7 +121,14 @@ export function App() {
   else page = <NotFound lang={lang} />;
 
   return (
-    <div className="min-h-screen" style={{ background: "var(--bg)" }}>
+    <div className="min-h-screen" style={{ background: "transparent" }}>
+      {/* Colored, blurred orbs behind everything — the depth the frosted-glass
+          surfaces frost over (glassmorphism needs something to reveal). */}
+      <div className="app-orbs" aria-hidden="true">
+        <span className="app-orb app-orb-1" />
+        <span className="app-orb app-orb-2" />
+        <span className="app-orb app-orb-3" />
+      </div>
       <div className="sc-nav-glass" style={{ borderBottom: "1px solid var(--nav-border)", position: "sticky", top: 0, zIndex: 50, boxShadow: "0 4px 24px var(--shadow-sm)" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto", padding: "8px 16px", display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "8px 12px" }}>
           {/* Brand + nav */}

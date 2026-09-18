@@ -56,11 +56,13 @@ function MacroBar({ label, val, tot, color }: { label: string; val: number; tot:
 
 const cardStyle: React.CSSProperties = {
   background: "var(--surface)",
-  border: `1px solid ${BORDER}`,
-  borderRadius: 16,
+  border: `1px solid var(--glass-hi)`,
+  borderRadius: 20,
   padding: 18,
-  boxShadow: "0 8px 30px -20px rgba(20,20,20,0.25)",
+  boxShadow: "var(--glass-shadow)",
   color: INK,
+  backdropFilter: "var(--glass-blur)",
+  WebkitBackdropFilter: "var(--glass-blur)",
 };
 const secLabel: React.CSSProperties = { fontSize: 10, letterSpacing: 3, textTransform: "uppercase", color: MUTED, fontWeight: 700, margin: "18px 2px 8px" };
 
@@ -661,7 +663,7 @@ function ScanningOverlay({ lang }: { lang: Lang }) {
   const fact = FOOD_FACTS[Math.floor(Math.random() * FOOD_FACTS.length)];
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 95, background: "rgba(10,12,16,.5)", backdropFilter: "blur(4px)", display: "flex", alignItems: "center", justifyContent: "center", padding: 16 }}>
-      <div style={{ width: "100%", maxWidth: 440, background: "var(--surface)", borderRadius: 22, padding: "30px 22px", color: INK, textAlign: "center", boxShadow: "0 24px 60px rgba(0,0,0,.35)" }}>
+      <div style={{ width: "100%", maxWidth: 440, background: "var(--surface)", backdropFilter: "var(--glass-blur)", WebkitBackdropFilter: "var(--glass-blur)", border: "1px solid var(--glass-hi)", borderRadius: 24, padding: "30px 22px", color: INK, textAlign: "center", boxShadow: "0 24px 60px rgba(0,0,0,.35)" }}>
         <span style={{ width: 52, height: 52, display: "inline-block", borderRadius: "50%", border: `4px solid ${BORDER}`, borderTopColor: "var(--brand)", animation: "ctSpin .8s linear infinite" }} />
         <div style={{ fontSize: 18, fontWeight: 800, margin: "16px 0 12px" }}>{tx(lang, "Your food is being scanned…", "Makananmu sedang dipindai…")}</div>
         <div style={{ background: NUTRI.GREEN_TINT, borderRadius: 14, padding: "14px 16px", textAlign: "left" }}>

@@ -27,7 +27,7 @@ function WeeklyChart({ days, target, lang }: { days: HistoryDay[]; target: numbe
   const targetPct = (target / max) * 100;
 
   return (
-    <div className="rounded-2xl border p-4 mb-6" style={{ borderColor: "var(--border)", background: "var(--surface)" }}>
+    <div className="rounded-2xl border p-4 mb-6" style={{ borderColor: "var(--glass-hi)", background: "var(--surface)", boxShadow: "var(--glass-shadow)", backdropFilter: "var(--glass-blur)", WebkitBackdropFilter: "var(--glass-blur)" }}>
       <div className="flex justify-between items-baseline mb-3">
         <h3 className="font-semibold text-sm">{lang === "id" ? "Progres Mingguan" : "Weekly Progress"}</h3>
         <span className="text-xs" style={{ color: "var(--text-subtle)" }}>

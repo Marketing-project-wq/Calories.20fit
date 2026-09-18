@@ -148,7 +148,7 @@ export function TdeeCalculator({ lang }: { lang: Lang }) {
       {/* ---- Form ---- */}
       <form
         onSubmit={handleSubmit}
-        style={{ background: "var(--surface)", border: `1px solid ${BORDER}`, borderRadius: 18, padding: "20px 18px", boxShadow: "0 10px 34px -20px rgba(20,20,20,0.25)" }}
+        style={{ background: "var(--surface)", border: `1px solid var(--glass-hi)`, borderRadius: 20, padding: "20px 18px", boxShadow: "var(--glass-shadow)", backdropFilter: "var(--glass-blur)", WebkitBackdropFilter: "var(--glass-blur)" }}
       >
         <h3 style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 20, textTransform: "uppercase", color: "var(--text)", margin: "0 0 16px" }}>
           {c.title}
@@ -243,7 +243,7 @@ export function TdeeCalculator({ lang }: { lang: Lang }) {
 
       {/* ---- Result ---- */}
       {result && (
-        <div id="tdee-result" style={{ background: "var(--surface)", border: `1px solid ${BORDER}`, borderRadius: 18, padding: "22px 18px", scrollMarginTop: 80 }}>
+        <div id="tdee-result" style={{ background: "var(--surface)", border: `1px solid var(--glass-hi)`, borderRadius: 20, padding: "22px 18px", scrollMarginTop: 80, boxShadow: "var(--glass-shadow)", backdropFilter: "var(--glass-blur)", WebkitBackdropFilter: "var(--glass-blur)" }}>
           <h3 style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 22, textTransform: "uppercase", color: "var(--text)", margin: "0 0 18px" }}>
             {c.resultTitle}
           </h3>

@@ -34,10 +34,12 @@ export function AccountGate({
     <div style={{ maxWidth: 560, margin: "0 auto", padding: "48px 20px" }}>
       <div
         style={{
-          borderRadius: 20,
+          borderRadius: 22,
           border: `1px solid ${NUTRI.GREEN_TINT}`,
           background: "var(--surface)",
-          boxShadow: "0 14px 40px -18px rgba(20,20,20,0.18)",
+          boxShadow: "var(--glass-shadow)",
+          backdropFilter: "var(--glass-blur)",
+          WebkitBackdropFilter: "var(--glass-blur)",
           overflow: "hidden",
         }}
       >

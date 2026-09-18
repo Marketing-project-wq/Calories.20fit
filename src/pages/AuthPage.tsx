@@ -14,9 +14,11 @@ const inputStyle: React.CSSProperties = {
   padding: "11px 12px",
   background: "var(--surface)",
   border: `1px solid ${BORDER}`,
-  borderRadius: 10,
+  borderRadius: 12,
   color: INK,
   fontSize: 15,
+  backdropFilter: "var(--glass-blur)",
+  WebkitBackdropFilter: "var(--glass-blur)",
 };
 const labelStyle: React.CSSProperties = { fontSize: 12.5, fontWeight: 700, color: INK, marginBottom: 6, display: "block" };
 
