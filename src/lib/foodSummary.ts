@@ -109,6 +109,38 @@ export interface ItemVerdict {
   swapTo?: string;
 }
 
+export interface DerivedTag {
+  label: string;
+  positive: boolean;
+}
+
+// Macro-composition tags for items with no AI scan record (manually typed
+// food, or anything logged before ct_meal existed — see mealHistory.ts) so
+// History doesn't look sparse next to scanned items that DO have the AI's
+// own tags. Deliberately plain composition facts (protein/carb/fat share,
+// calorie density) rather than anything the AI would have had to judge —
+// no fiber tag here since fiber isn't tracked for non-scanned items.
+export function deriveTags(it: DailyFoodItem, lang: Lang): DerivedTag[] {
+  const kcal = Number(it.kcal) || 0;
+  const p = Number(it.p) || 0;
+  const c = Number(it.c) || 0;
+  const f = Number(it.f) || 0;
+  const energy = p * 4 + c * 4 + f * 9;
+  if (energy <= 0) return [];
+  const pFrac = (p * 4) / energy;
+  const cFrac = (c * 4) / energy;
+  const fFrac = (f * 9) / energy;
+
+  const tags: DerivedTag[] = [];
+  if (pFrac >= 0.28) tags.push({ label: L({ en: "High protein", id: "Tinggi protein" }, lang), positive: true });
+  if (fFrac > 0.4) tags.push({ label: L({ en: "High fat", id: "Tinggi lemak" }, lang), positive: false });
+  else if (fFrac > 0.25) tags.push({ label: L({ en: "Moderate fat", id: "Lemak sedang" }, lang), positive: false });
+  if (cFrac > 0.55) tags.push({ label: L({ en: "High carb", id: "Tinggi karbo" }, lang), positive: false });
+  if (kcal >= 350) tags.push({ label: L({ en: "Energy-dense", id: "Sumber energi" }, lang), positive: true });
+  else if (kcal > 0 && kcal < 150) tags.push({ label: L({ en: "Low calorie", id: "Rendah kalori" }, lang), positive: true });
+  return tags;
+}
+
 export function itemVerdict(it: DailyFoodItem, lang: Lang): ItemVerdict {
   const low = String(it.name || "").toLowerCase();
   const kcal = Number(it.kcal) || 0;

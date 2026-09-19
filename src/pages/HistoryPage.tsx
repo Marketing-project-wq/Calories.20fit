@@ -61,6 +61,11 @@ function HistoryItemRow({ item, meal, component, lang, open, onToggle }: {
   const fiber = component?.fiber_g;
   const sat = meal ? Math.round(meal.satiety_score || 0) : 0;
   const health10 = meal ? Math.round(meal.health_score || 0) : 0;
+  // Scanned items carry the AI's own tags; anything else (manual entries,
+  // pre-ct_meal history) gets a macro-derived set so it doesn't look bare
+  // next to a scanned item's card.
+  const tags = meal?.tags && meal.tags.length > 0 ? meal.tags : FS.deriveTags(item, lang);
+  const [reasonOpen, setReasonOpen] = useState(false);
 
   return (
     <div className="rounded-lg border overflow-hidden" style={{ borderColor: "var(--border)" }}>
@@ -109,25 +114,40 @@ function HistoryItemRow({ item, meal, component, lang, open, onToggle }: {
             </div>
           )}
 
-          <div className="mt-2" style={{ fontSize: 11.5, color: "var(--text-soft)", lineHeight: 1.5 }}>
-            <span style={{ fontWeight: 700, color: "var(--text)" }}>{tx(lang, "What could be improved: ", "Yang bisa diperbaiki: ")}</span>
-            {v.reason}
-            {v.swapTo && (
-              <>
-                {" "}· {tx(lang, "try", "coba")} <b style={{ color: NUTRI.GREEN_DARK }}>{v.swapTo}</b>
-              </>
+          <div className="mt-2 rounded-md overflow-hidden" style={{ border: "1px solid var(--border)" }}>
+            <button
+              type="button"
+              onClick={() => setReasonOpen((o) => !o)}
+              className="w-full flex items-center justify-between gap-2 text-left"
+              style={{ padding: "7px 9px", background: "var(--surface)", border: "none", cursor: "pointer", fontSize: 11.5, fontWeight: 700, color: "var(--text)" }}
+            >
+              {tx(lang, "What could be improved", "Yang bisa diperbaiki")}
+              <span aria-hidden="true" style={{ color: "var(--text-faint)", fontSize: 12, flexShrink: 0, transform: reasonOpen ? "rotate(180deg)" : "none", transition: "transform .15s" }}>⌄</span>
+            </button>
+            {reasonOpen && (
+              <div style={{ padding: "0 9px 8px", fontSize: 11.5, color: "var(--text-soft)", lineHeight: 1.5 }}>
+                {v.reason}
+                {v.swapTo && (
+                  <>
+                    {" "}· {tx(lang, "try", "coba")} <b style={{ color: NUTRI.GREEN_DARK }}>{v.swapTo}</b>
+                  </>
+                )}
+              </div>
             )}
           </div>
 
-          {/* From here down: only present when this item came from an AI scan
-              (meal is set) — the same fields ScanResultModal shows right after scanning. */}
-          {meal?.tags && meal.tags.length > 0 && (
+          {/* Tags: the AI's own (scanned items) or a macro-derived fallback
+              (see FS.deriveTags) so every entry gets at least a few. */}
+          {tags.length > 0 && (
             <div className="flex flex-wrap gap-1.5 mt-2.5">
-              {meal.tags.map((t, i) => (
+              {tags.map((t, i) => (
                 <span key={i} style={{ fontSize: 10.5, fontWeight: 800, padding: "3px 9px", borderRadius: 999, color: t.positive ? NUTRI.GREEN_DARK : "#B4690E", background: t.positive ? NUTRI.GREEN_TINT : "#FDF3E7" }}>{t.label}</span>
               ))}
             </div>
           )}
+
+          {/* From here down: only present when this item came from an AI scan
+              (meal is set) — the same fields ScanResultModal shows right after scanning. */}
 
           {sat > 0 && (
             <div className="mt-2.5">
