@@ -4,10 +4,11 @@ import { CTAFull } from "../components/CTA";
 import { useAuth } from "../hooks/useAuth";
 import { Lang } from "../lib/i18n";
 import { getRecentHistory, HistoryDay } from "../lib/memberHistory";
-import { DailyFoodItem, MemberProfile, getMemberProfile } from "../lib/memberTracker";
+import { DailyFoodItem, MemberProfile, getMemberProfile, updateProfileGoals } from "../lib/memberTracker";
 import { dailyCalorieGoal, dailyMacroTargets } from "../lib/nutrition";
 import * as FS from "../lib/foodSummary";
 import { getRecentMeals, Meal, MealComponent } from "../lib/mealHistory";
+import { ACTIVITIES, GOALS } from "./OnboardingPage";
 import { Icon } from "../components/Icon";
 
 const tx = (lang: Lang, en: string, id: string) => (lang === "id" ? id : en);
@@ -224,6 +225,122 @@ function DayHealthBadge({ items, goal, macroT, lang }: { items: DailyFoodItem[];
   return <RateBadge cls={cls} label={`${FS.bandLabel(h.band, lang)} · ${h.score}/100`} />;
 }
 
+// Inline "edit goals" panel — lets a member adjust the inputs that feed
+// dailyCalorieGoal/dailyMacroTargets (weight, height, activity, main goal)
+// straight from History, instead of only via /onboarding. Deliberately a
+// partial update (updateProfileGoals in memberTracker.ts) so it never
+// touches gender/birthdate — those aren't shown here.
+function GoalsEditPanel({ profile, lang, onSaved }: { profile: MemberProfile | null; lang: Lang; onSaved: (p: MemberProfile) => void }) {
+  const [weight, setWeight] = useState(profile?.weight_kg ? String(profile.weight_kg) : "");
+  const [height, setHeight] = useState(profile?.height_cm ? String(profile.height_cm) : "");
+  const [activity, setActivity] = useState(profile?.activity_level || "light");
+  const [goal, setGoal] = useState(profile?.main_goal || "maintain");
+  const [saving, setSaving] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [saved, setSaved] = useState(false);
+
+  const fieldStyle: React.CSSProperties = { width: "100%", padding: "9px 10px", background: "var(--surface-2)", border: "1px solid var(--border)", borderRadius: 9, color: "var(--text)", fontSize: 13.5 };
+
+  const submit = async () => {
+    const w = weight ? parseFloat(weight) : undefined;
+    const h = height ? parseFloat(height) : undefined;
+    if (weight && !(w! > 0)) { setError(tx(lang, "Enter a valid weight.", "Isi berat yang valid.")); return; }
+    if (height && !(h! > 0)) { setError(tx(lang, "Enter a valid height.", "Isi tinggi yang valid.")); return; }
+    setSaving(true);
+    setError(null);
+    setSaved(false);
+    try {
+      await updateProfileGoals({ weight_kg: w, height_cm: h, activity_level: activity, main_goal: goal });
+      onSaved({
+        auth_user_id: profile?.auth_user_id ?? null,
+        email: profile?.email ?? null,
+        weight_kg: w ?? profile?.weight_kg ?? null,
+        height_cm: h ?? profile?.height_cm ?? null,
+        age: profile?.age ?? null,
+        gender: profile?.gender ?? null,
+        activity_level: activity,
+        main_goal: goal,
+        full_name: profile?.full_name ?? null,
+        onboarding_completed: profile?.onboarding_completed ?? null,
+      });
+      setSaved(true);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : tx(lang, "Failed to save.", "Gagal menyimpan."));
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  return (
+    <div className="rounded-xl mb-4" style={{ padding: 14, background: "var(--surface)", border: "1px solid var(--border)" }}>
+      <div style={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: 1, color: "var(--text-subtle)", marginBottom: 10 }}>
+        {tx(lang, "Edit your goals", "Ubah goals kamu")}
+      </div>
+      <div className="grid grid-cols-2 gap-3 mb-3">
+        <div>
+          <label style={{ fontSize: 11, fontWeight: 700, color: "var(--text-soft)", marginBottom: 4, display: "block" }}>{tx(lang, "Weight (kg)", "Berat (kg)")}</label>
+          <input type="number" inputMode="decimal" value={weight} onChange={(e) => setWeight(e.target.value)} placeholder="65" style={fieldStyle} />
+        </div>
+        <div>
+          <label style={{ fontSize: 11, fontWeight: 700, color: "var(--text-soft)", marginBottom: 4, display: "block" }}>{tx(lang, "Height (cm)", "Tinggi (cm)")}</label>
+          <input type="number" inputMode="numeric" value={height} onChange={(e) => setHeight(e.target.value)} placeholder="170" style={fieldStyle} />
+        </div>
+      </div>
+      <div className="mb-3">
+        <label style={{ fontSize: 11, fontWeight: 700, color: "var(--text-soft)", marginBottom: 4, display: "block" }}>{tx(lang, "Activity level", "Level aktivitas")}</label>
+        <select value={activity} onChange={(e) => setActivity(e.target.value)} style={fieldStyle}>
+          {ACTIVITIES.map((a) => (
+            <option key={a.key} value={a.key}>{tx(lang, a.en, a.id)}</option>
+          ))}
+        </select>
+      </div>
+      <div className="mb-3">
+        <label style={{ fontSize: 11, fontWeight: 700, color: "var(--text-soft)", marginBottom: 4, display: "block" }}>{tx(lang, "Your goal", "Tujuanmu")}</label>
+        <div className="grid grid-cols-2 gap-2">
+          {GOALS.map((g) => (
+            <button
+              key={g.key}
+              type="button"
+              onClick={() => setGoal(g.key)}
+              style={{ padding: "9px 0", borderRadius: 9, border: `1px solid ${goal === g.key ? "var(--brand)" : "var(--border)"}`, background: goal === g.key ? "var(--brand-soft)" : "var(--surface-2)", color: goal === g.key ? "var(--brand)" : "var(--text)", fontWeight: 700, fontSize: 13, cursor: "pointer" }}
+            >
+              {tx(lang, g.en, g.id)}
+            </button>
+          ))}
+        </div>
+      </div>
+      {error && <div style={{ fontSize: 12, color: "var(--brand)", marginBottom: 8 }}>{error}</div>}
+      <div className="flex items-center gap-3">
+        <button
+          type="button"
+          onClick={submit}
+          disabled={saving}
+          style={{ padding: "9px 18px", border: 0, borderRadius: 9, background: "var(--brand)", color: "var(--on-brand)", fontWeight: 800, fontSize: 13, cursor: "pointer" }}
+        >
+          {saving ? tx(lang, "Saving…", "Menyimpan…") : tx(lang, "Save", "Simpan")}
+        </button>
+        {saved && <span style={{ fontSize: 12, color: NUTRI.GREEN_DARK, fontWeight: 700 }}>{tx(lang, "Saved — targets updated", "Tersimpan — target diperbarui")}</span>}
+      </div>
+    </div>
+  );
+}
+
+// Toggle button that opens/closes GoalsEditPanel — sits to the left of the
+// page title so it's the first thing on the row.
+function GoalsToggle({ open, onToggle, lang }: { open: boolean; onToggle: () => void; lang: Lang }) {
+  return (
+    <button
+      type="button"
+      onClick={onToggle}
+      className="flex items-center gap-1.5 flex-shrink-0"
+      style={{ padding: "6px 11px", borderRadius: 999, border: `1px solid ${open ? "var(--brand)" : "var(--border)"}`, background: open ? "var(--brand-soft)" : "var(--surface)", color: open ? "var(--brand)" : "var(--text-soft)", fontSize: 12, fontWeight: 700, cursor: "pointer" }}
+    >
+      <Icon name="target" size={14} />
+      {tx(lang, "Edit goals", "Ubah goals")}
+    </button>
+  );
+}
+
 function formatDayLabel(dateStr: string, lang: Lang): string {
   const d = new Date(dateStr + "T00:00:00");
   const todayStr = new Date().toISOString().slice(0, 10);
@@ -233,37 +350,41 @@ function formatDayLabel(dateStr: string, lang: Lang): string {
   return d.toLocaleDateString(lang === "id" ? "id-ID" : "en-US", { weekday: "short", day: "numeric", month: "short" });
 }
 
-// Weekly-progress bar chart: daily calorie totals vs target, oldest→newest.
+// Weekly-progress bar chart: each day as % of the calorie GOAL reached
+// (not raw kcal) — oldest→newest, with a 100% reference line so it reads at
+// a glance whether a day landed under/at/over target, whatever the target is.
 function WeeklyChart({ days, target, lang }: { days: HistoryDay[]; target: number; lang: Lang }) {
   const recent = days.slice(0, 14).reverse(); // chronological
-  if (recent.length < 2) return null;
-  const totals = recent.map((d) => ({ date: d.log_date, total: d.items.reduce((s, it) => s + (Number(it.kcal) || 0), 0) }));
-  const max = Math.max(target, ...totals.map((x) => x.total)) * 1.12 || 1;
-  const avg = Math.round(totals.reduce((s, x) => s + x.total, 0) / totals.length);
-  const targetPct = (target / max) * 100;
+  if (recent.length < 2 || target <= 0) return null;
+  const pts = recent.map((d) => {
+    const total = d.items.reduce((s, it) => s + (Number(it.kcal) || 0), 0);
+    return { date: d.log_date, total, pct: Math.round((total / target) * 100) };
+  });
+  const maxPct = Math.max(120, ...pts.map((x) => x.pct)) * 1.08;
+  const avgPct = Math.round(pts.reduce((s, x) => s + x.pct, 0) / pts.length);
+  const targetLinePct = (100 / maxPct) * 100;
 
   return (
     <div className="rounded-2xl border p-4 mb-6" style={{ borderColor: "var(--glass-hi)", background: "var(--surface)", boxShadow: "var(--glass-shadow)", backdropFilter: "var(--glass-blur)", WebkitBackdropFilter: "var(--glass-blur)" }}>
       <div className="flex justify-between items-baseline mb-3">
         <h3 className="font-semibold text-sm">{lang === "id" ? "Progres Mingguan" : "Weekly Progress"}</h3>
         <span className="text-xs" style={{ color: "var(--text-subtle)" }}>
-          {lang === "id" ? "Rata-rata" : "Avg"} <b style={{ color: "var(--text)" }}>{avg.toLocaleString("id-ID")}</b> {lang === "id" ? "kkal/hari" : "kcal/day"}
+          {lang === "id" ? "Rata-rata" : "Avg"} <b style={{ color: "var(--text)" }}>{avgPct}%</b> {lang === "id" ? "dari target" : "of target"}
         </span>
       </div>
-      <div style={{ position: "relative", height: 120, display: "flex", alignItems: "flex-end", gap: 4 }}>
-        {/* target reference line */}
-        {target > 0 && (
-          <div style={{ position: "absolute", left: 0, right: 0, bottom: `${targetPct}%`, borderTop: `1px dashed ${NUTRI.GREEN_DARK}`, zIndex: 1 }}>
-            <span style={{ position: "absolute", right: 0, top: -14, fontSize: 9, color: NUTRI.GREEN_DARK, background: "var(--surface)", padding: "0 3px" }}>
-              {lang === "id" ? "target" : "target"} {target.toLocaleString("id-ID")}
-            </span>
-          </div>
-        )}
-        {totals.map((x) => {
-          const h = Math.max(2, (x.total / max) * 100);
-          const over = target > 0 && x.total > target;
+      <div style={{ position: "relative", height: 130, display: "flex", alignItems: "flex-end", gap: 4 }}>
+        {/* 100%-of-target reference line */}
+        <div style={{ position: "absolute", left: 0, right: 0, bottom: `${targetLinePct}%`, borderTop: `1px dashed ${NUTRI.GREEN_DARK}`, zIndex: 1 }}>
+          <span style={{ position: "absolute", right: 0, top: -14, fontSize: 9, color: NUTRI.GREEN_DARK, background: "var(--surface)", padding: "0 3px" }}>
+            100% {lang === "id" ? "target" : "target"}
+          </span>
+        </div>
+        {pts.map((x) => {
+          const h = Math.max(2, (x.pct / maxPct) * 100);
+          const over = x.pct > 100;
           return (
-            <div key={x.date} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", height: "100%" }} title={`${x.date}: ${x.total} kkal`}>
+            <div key={x.date} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", height: "100%" }} title={`${x.date}: ${x.pct}% (${x.total} kkal)`}>
+              <span style={{ fontSize: 8.5, fontWeight: 700, color: over ? COLORS.RED : NUTRI.GREEN_DARK, marginBottom: 2 }}>{x.pct}%</span>
               <div className="sc-bar-fill" style={{ width: "100%", maxWidth: 22, height: `${h}%`, background: over ? COLORS.RED : NUTRI.GREEN, borderRadius: "4px 4px 0 0" }} />
               <span style={{ fontSize: 8.5, color: "#B0B0B0", marginTop: 3 }}>{x.date.slice(8, 10)}</span>
             </div>
@@ -286,6 +407,7 @@ export const HistoryPage = ({ lang = "id" }: { lang?: Lang }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [openKey, setOpenKey] = useState<string | null>(null);
+  const [goalsOpen, setGoalsOpen] = useState(false);
 
   useEffect(() => {
     if (!isAuthenticated) return;
@@ -356,7 +478,11 @@ export const HistoryPage = ({ lang = "id" }: { lang?: Lang }) => {
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
-      <h2 className="font-display text-2xl font-bold uppercase mb-6">{lang === "id" ? "Riwayat Log Kamu" : "Your Log History"}</h2>
+      <div className="flex items-center gap-3 mb-6 flex-wrap">
+        <GoalsToggle open={goalsOpen} onToggle={() => setGoalsOpen((o) => !o)} lang={lang} />
+        <h2 className="font-display text-2xl font-bold uppercase">{lang === "id" ? "Riwayat Log Kamu" : "Your Log History"}</h2>
+      </div>
+      {goalsOpen && <GoalsEditPanel profile={profile} lang={lang} onSaved={(p) => setProfile(p)} />}
 
       <WeeklyChart days={days} target={goal} lang={lang} />
 

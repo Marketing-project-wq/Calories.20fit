@@ -16,13 +16,15 @@ function readStash(k: string): string {
   }
 }
 
-const ACTIVITIES: { key: string; en: string; id: string }[] = [
+// Exported so HistoryPage's "edit goals" panel offers the exact same options
+// (same key strings written to my20fit_profile.activity_level/main_goal).
+export const ACTIVITIES: { key: string; en: string; id: string }[] = [
   { key: "sedentary", en: "Sedentary — little/no exercise", id: "Jarang gerak — jarang/tak olahraga" },
   { key: "light", en: "Light — 1-3x/week", id: "Ringan — 1-3x/minggu" },
   { key: "moderate", en: "Moderate — 3-5x/week", id: "Sedang — 3-5x/minggu" },
   { key: "active", en: "Active — 6-7x/week", id: "Aktif — 6-7x/minggu" },
 ];
-const GOALS: { key: string; en: string; id: string }[] = [
+export const GOALS: { key: string; en: string; id: string }[] = [
   { key: "lose", en: "Lose weight", id: "Turun berat" },
   { key: "maintain", en: "Maintain", id: "Jaga berat" },
   { key: "muscle", en: "Build muscle", id: "Naik massa otot" },
