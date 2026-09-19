@@ -63,6 +63,20 @@ export async function getContentRecipes(opts: { lang?: Lang; source?: "all" | "o
   }
 }
 
+// recipe.20fit.id's own recipe-catalog SPA reads a detail page at
+// /resep/:source/:id (source = "official" | "member", id = the bare id —
+// NOT the "source:id" composite `key` this API returns; that composite only
+// makes sense to my.20fit.id's own /recipes/:key endpoint). Route confirmed
+// from that app's own router (src/router.tsx: `resep/${source}/${id}` — a
+// two-segment path, not the joined key). Used to deep-link a recipe card
+// straight to its full page on recipe.20fit.id.
+export function recipeDetailUrl(key: string): string {
+  const i = key.indexOf(":");
+  const source = i > 0 ? key.slice(0, i) : "official";
+  const id = i > 0 ? key.slice(i + 1) : key;
+  return `https://recipe.20fit.id/resep/${encodeURIComponent(source)}/${encodeURIComponent(id)}`;
+}
+
 export async function getContentRecipe(key: string, lang?: Lang): Promise<ContentRecipe | null> {
   try {
     const res = await callFn(`/${encodeURIComponent(key)}`, { lang });

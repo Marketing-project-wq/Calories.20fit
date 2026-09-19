@@ -16,6 +16,7 @@ import { dailyCalorieGoal, dailyMacroTargets } from "../../lib/nutrition";
 import * as Fasting from "../../lib/fasting";
 import * as FS from "../../lib/foodSummary";
 import { getMenuRecommend, MenuRecipe } from "../../lib/menuRecommend";
+import { recipeDetailUrl } from "../../lib/contentRecipes";
 import { GoalRing } from "../GoalRing";
 import { ScanResultModal } from "./ScanResultModal";
 import { MealPlanSection } from "./MealPlanSection";
@@ -422,14 +423,21 @@ export function CaloriesTracker({ lang }: { lang: Lang }) {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(150px,1fr))", gap: 12, marginTop: 12 }}>
             {menuRecs.map((r, i) => {
               const nm = (r.nm && (lang === "id" ? r.nm.id || r.nm.en : r.nm.en || r.nm.id)) || "";
+              const href = typeof r.id === "string" ? recipeDetailUrl(r.id) : undefined;
               return (
-                <div key={i} style={{ border: `1px solid ${BORDER}`, borderRadius: 14, overflow: "hidden" }}>
+                <a
+                  key={i}
+                  href={href}
+                  target={href ? "_blank" : undefined}
+                  rel={href ? "noopener noreferrer" : undefined}
+                  style={{ border: `1px solid ${BORDER}`, borderRadius: 14, overflow: "hidden", display: "block", textDecoration: "none", color: "inherit", cursor: href ? "pointer" : "default" }}
+                >
                   <div style={{ height: 82, display: "grid", placeItems: "center", fontSize: 38, background: `linear-gradient(160deg, ${r.tint || "#eee"}33, ${r.tint || "#eee"}11)` }}>{r.emoji || "🍲"}</div>
                   <div style={{ padding: "9px 11px" }}>
                     <div style={{ fontWeight: 700, fontSize: 13, lineHeight: 1.25 }}>{nm}</div>
                     <div style={{ fontSize: 10.5, color: MUTED, marginTop: 4, fontWeight: 700 }}>~{r.kcal} {kc} · P{r.p} C{r.c} F{r.f}</div>
                   </div>
-                </div>
+                </a>
               );
             })}
           </div>
@@ -506,14 +514,20 @@ function NutrientGapView({ lang, gap, foods, kc }: { lang: Lang; gap: FS.Nutrien
           </div>
           <div>
             {(foods.length > 0
-              ? foods.map((r) => ({ e: r.emoji || "🍲", name: (r.nm && (lang === "id" ? r.nm.id || r.nm.en : r.nm.en || r.nm.id)) || "", meta: `~${r.kcal} ${kc} · P${r.p} C${r.c} F${r.f}`, tint: r.tint }))
-              : gap.staticFoods.map((s) => ({ e: s.e, name: s.name, meta: "", tint: undefined }))
+              ? foods.map((r) => ({ e: r.emoji || "🍲", name: (r.nm && (lang === "id" ? r.nm.id || r.nm.en : r.nm.en || r.nm.id)) || "", meta: `~${r.kcal} ${kc} · P${r.p} C${r.c} F${r.f}`, tint: r.tint, href: typeof r.id === "string" ? recipeDetailUrl(r.id) : undefined }))
+              : gap.staticFoods.map((s) => ({ e: s.e, name: s.name, meta: "", tint: undefined, href: undefined }))
             ).map((f, i) => (
-              <div key={i} style={{ display: "flex", alignItems: "center", gap: 10, padding: "7px 0" }}>
+              <a
+                key={i}
+                href={f.href}
+                target={f.href ? "_blank" : undefined}
+                rel={f.href ? "noopener noreferrer" : undefined}
+                style={{ display: "flex", alignItems: "center", gap: 10, padding: "7px 0", textDecoration: "none", color: "inherit", cursor: f.href ? "pointer" : "default" }}
+              >
                 <div style={{ width: 30, height: 30, borderRadius: 9, display: "grid", placeItems: "center", fontSize: 17, flex: "0 0 auto", background: f.tint ? `linear-gradient(160deg, ${f.tint}33, ${f.tint}11)` : "var(--surface-inset)" }}>{f.e}</div>
                 <div style={{ flex: 1, minWidth: 0, fontSize: 13, fontWeight: 650 }}>{f.name}</div>
                 {f.meta && <div style={{ fontSize: 11, color: MUTED, fontWeight: 700, whiteSpace: "nowrap" }}>{f.meta}</div>}
-              </div>
+              </a>
             ))}
           </div>
         </>
