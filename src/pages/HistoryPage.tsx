@@ -2,11 +2,89 @@ import { useEffect, useState } from "react";
 import { COLORS, NUTRI } from "../lib/constants";
 import { CTAFull } from "../components/CTA";
 import { useAuth } from "../hooks/useAuth";
-import { t, Lang } from "../lib/i18n";
+import { Lang } from "../lib/i18n";
 import { getRecentHistory, HistoryDay } from "../lib/memberHistory";
-import { MemberProfile, getMemberProfile } from "../lib/memberTracker";
-import { dailyCalorieGoal } from "../lib/nutrition";
+import { DailyFoodItem, MemberProfile, getMemberProfile } from "../lib/memberTracker";
+import { dailyCalorieGoal, dailyMacroTargets } from "../lib/nutrition";
+import * as FS from "../lib/foodSummary";
 import { Icon } from "../components/Icon";
+
+const tx = (lang: Lang, en: string, id: string) => (lang === "id" ? id : en);
+
+// Rating badge — same good/ok/bad classes & colours as the tracker's
+// VerdictBadge (CaloriesTracker.tsx), duplicated here (tiny + presentational,
+// not worth sharing a component for) so History reads consistently with
+// today's per-item check on "/".
+function RateBadge({ cls, label }: { cls: "hh" | "hm" | "hu"; label: string }) {
+  const map = { hh: { bg: NUTRI.GREEN_TINT, fg: NUTRI.GREEN_DARK }, hm: { bg: "#FDF3E7", fg: "#B4690E" }, hu: { bg: "#FDECEC", fg: COLORS.RED } } as const;
+  const c = map[cls];
+  return <span style={{ fontSize: 10.5, fontWeight: 800, padding: "3px 9px", borderRadius: 999, whiteSpace: "nowrap", color: c.fg, background: c.bg }}>{label}</span>;
+}
+
+// Per-item row: rating badge always visible, tap/click to expand and see
+// what's driving the rating (reason + healthier swap, from the SAME verbatim
+// port of my.20fit.id's verdict logic the live tracker uses — see
+// src/lib/foodSummary.ts) plus the full nutrient breakdown for that item.
+function HistoryItemRow({ item, lang, open, onToggle }: { item: DailyFoodItem; lang: Lang; open: boolean; onToggle: () => void }) {
+  const v = FS.itemVerdict(item, lang);
+  return (
+    <div className="rounded-lg border overflow-hidden" style={{ borderColor: "var(--border)" }}>
+      <button
+        onClick={onToggle}
+        className="w-full flex items-center gap-3 text-left"
+        style={{ padding: "10px 12px", background: "var(--surface)", border: "none", cursor: "pointer" }}
+      >
+        <span className="flex-shrink-0 text-xs" style={{ color: "var(--text-subtle)" }}>{item.t}</span>
+        <span className="flex-1 font-medium text-xs truncate">{item.name}</span>
+        <span className="flex-shrink-0 font-semibold text-xs">{Math.round(item.kcal)} {lang === "id" ? "kkal" : "kcal"}</span>
+        <RateBadge cls={v.cls} label={v.label} />
+        <span className="flex-shrink-0 text-xs" style={{ color: "var(--text-faint)" }}>{open ? "−" : "+"}</span>
+      </button>
+      {open && (
+        <div style={{ padding: "10px 12px", background: "var(--surface-inset)", borderTop: "1px solid var(--border)" }}>
+          <div className="grid grid-cols-4 gap-2" style={{ fontSize: 11 }}>
+            <div>
+              <div style={{ color: "var(--text-subtle)" }}>{tx(lang, "Calories", "Kalori")}</div>
+              <div style={{ fontWeight: 700 }}>{Math.round(item.kcal)} kkal</div>
+            </div>
+            <div>
+              <div style={{ color: "var(--text-subtle)" }}>{tx(lang, "Protein", "Protein")}</div>
+              <div style={{ fontWeight: 700 }}>{Math.round(item.p)} g</div>
+            </div>
+            <div>
+              <div style={{ color: "var(--text-subtle)" }}>{tx(lang, "Carbs", "Karbo")}</div>
+              <div style={{ fontWeight: 700 }}>{Math.round(item.c)} g</div>
+            </div>
+            <div>
+              <div style={{ color: "var(--text-subtle)" }}>{tx(lang, "Fat", "Lemak")}</div>
+              <div style={{ fontWeight: 700 }}>{Math.round(item.f)} g</div>
+            </div>
+          </div>
+          <div className="mt-2" style={{ fontSize: 11.5, color: "var(--text-soft)", lineHeight: 1.5 }}>
+            <span style={{ fontWeight: 700, color: "var(--text)" }}>{tx(lang, "What could be improved: ", "Yang bisa diperbaiki: ")}</span>
+            {v.reason}
+            {v.swapTo && (
+              <>
+                {" "}· {tx(lang, "try", "coba")} <b style={{ color: NUTRI.GREEN_DARK }}>{v.swapTo}</b>
+              </>
+            )}
+          </div>
+        </div>
+      )}
+    </div>
+  );
+}
+
+// Per-day health meter — same 0-100 score/band formula as the live tracker
+// (FS.health), computed from that day's logged items against the member's
+// current profile targets (there's no historical per-day target snapshot,
+// same simplification the "/" tracker itself uses).
+function DayHealthBadge({ items, goal, macroT, lang }: { items: DailyFoodItem[]; goal: number; macroT: ReturnType<typeof dailyMacroTargets>; lang: Lang }) {
+  const t = FS.totals(items);
+  const h = FS.health(items, t, goal, macroT);
+  const cls = h.band === "h" ? "hh" : h.band === "m" ? "hm" : "hu";
+  return <RateBadge cls={cls} label={`${FS.bandLabel(h.band, lang)} · ${h.score}/100`} />;
+}
 
 function formatDayLabel(dateStr: string, lang: Lang): string {
   const d = new Date(dateStr + "T00:00:00");
@@ -68,6 +146,7 @@ export const HistoryPage = ({ lang = "id" }: { lang?: Lang }) => {
   const [profile, setProfile] = useState<MemberProfile | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [openKey, setOpenKey] = useState<string | null>(null);
 
   useEffect(() => {
     if (!isAuthenticated) return;
@@ -130,29 +209,40 @@ export const HistoryPage = ({ lang = "id" }: { lang?: Lang }) => {
     );
   }
 
+  const goal = dailyCalorieGoal(profile);
+  const macroT = dailyMacroTargets(profile, goal);
+
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
       <h2 className="font-display text-2xl font-bold uppercase mb-6">{lang === "id" ? "Riwayat Log Kamu" : "Your Log History"}</h2>
 
-      <WeeklyChart days={days} target={dailyCalorieGoal(profile)} lang={lang} />
+      <WeeklyChart days={days} target={goal} lang={lang} />
 
       <div className="space-y-6">
         {days.map((day) => {
           const total = day.items.reduce((s, it) => s + (Number(it.kcal) || 0), 0);
           return (
             <div key={day.log_date}>
-              <div className="flex justify-between items-baseline mb-2">
+              <div className="flex justify-between items-baseline mb-2 gap-2 flex-wrap">
                 <h3 className="font-semibold text-sm">{formatDayLabel(day.log_date, lang)}</h3>
-                <span className="text-xs" style={{ color: "var(--text-soft)" }}>{total} {lang === "id" ? "kkal total" : "kcal total"}</span>
+                <div className="flex items-center gap-2">
+                  <span className="text-xs" style={{ color: "var(--text-soft)" }}>{total} {lang === "id" ? "kkal total" : "kcal total"}</span>
+                  <DayHealthBadge items={day.items} goal={goal} macroT={macroT} lang={lang} />
+                </div>
               </div>
               <div className="space-y-2">
-                {day.items.map((item, i) => (
-                  <div key={i} className="flex justify-between items-center gap-3 p-3 rounded-lg border text-xs" style={{ borderColor: "var(--border)" }}>
-                    <span className="flex-shrink-0" style={{ color: "var(--text-subtle)" }}>{item.t}</span>
-                    <span className="flex-1 font-medium">{item.name}</span>
-                    <span className="font-semibold flex-shrink-0">{Math.round(item.kcal)} {lang === "id" ? "kkal" : "kcal"}</span>
-                  </div>
-                ))}
+                {day.items.map((item, i) => {
+                  const key = `${day.log_date}_${i}`;
+                  return (
+                    <HistoryItemRow
+                      key={key}
+                      item={item}
+                      lang={lang}
+                      open={openKey === key}
+                      onToggle={() => setOpenKey(openKey === key ? null : key)}
+                    />
+                  );
+                })}
               </div>
             </div>
           );
