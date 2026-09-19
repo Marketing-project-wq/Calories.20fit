@@ -11,7 +11,7 @@ import { t, Lang } from "../../lib/i18n";
 import { cc } from "../../lib/calorieCopy";
 import { MemberProfile, MealType } from "../../lib/memberTracker";
 import { generateMealPlanFromRecipes, dayOfYearSeed } from "../../lib/mealPlan";
-import { getContentRecipes, ContentRecipe } from "../../lib/contentRecipes";
+import { getContentRecipes, ContentRecipe, recipeDetailUrl } from "../../lib/contentRecipes";
 import { Icon, IconName } from "../Icon";
 
 const BORDER = "var(--border)";
@@ -85,12 +85,18 @@ export function MealPlanSection({ lang, target, profile }: { lang: Lang; target:
                   </div>
                   <div style={{ display: "flex", flexDirection: "column" }}>
                     {meal.items.map((it, i) => (
-                      <div key={it.key} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, fontSize: 13.5, padding: "7px 0", borderBottom: i < meal.items.length - 1 ? `1px solid ${BORDER}` : "none" }}>
+                      <a
+                        key={it.key}
+                        href={recipeDetailUrl(it.key)}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, fontSize: 13.5, padding: "7px 0", borderBottom: i < meal.items.length - 1 ? `1px solid ${BORDER}` : "none", textDecoration: "none", color: "inherit", cursor: "pointer" }}
+                      >
                         <span style={{ flex: 1, color: "var(--text-muted)", minWidth: 0 }}>
                           {it.emoji ? `${it.emoji} ` : ""}{it.name}
                         </span>
                         <span style={{ color: "var(--text)", fontWeight: 600, flexShrink: 0, fontVariantNumeric: "tabular-nums" }}>{it.kcal} {tr.kcal}</span>
-                      </div>
+                      </a>
                     ))}
                   </div>
                 </div>
