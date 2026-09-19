@@ -350,9 +350,11 @@ function formatDayLabel(dateStr: string, lang: Lang): string {
   return d.toLocaleDateString(lang === "id" ? "id-ID" : "en-US", { weekday: "short", day: "numeric", month: "short" });
 }
 
-// Weekly-progress bar chart: each day as % of the calorie GOAL reached
-// (not raw kcal) — oldest→newest, with a 100% reference line so it reads at
-// a glance whether a day landed under/at/over target, whatever the target is.
+// Weekly-progress LINE chart: each day plotted as % of the calorie GOAL
+// reached (not raw kcal) — oldest→newest, with a 100% reference line so it
+// reads at a glance whether a day landed under/at/over target, whatever the
+// target is. A single SVG (not a bar-per-day div grid) so the trend reads as
+// one continuous line, area-filled underneath.
 function WeeklyChart({ days, target, lang }: { days: HistoryDay[]; target: number; lang: Lang }) {
   const recent = days.slice(0, 14).reverse(); // chronological
   if (recent.length < 2 || target <= 0) return null;
@@ -362,7 +364,18 @@ function WeeklyChart({ days, target, lang }: { days: HistoryDay[]; target: numbe
   });
   const maxPct = Math.max(120, ...pts.map((x) => x.pct)) * 1.08;
   const avgPct = Math.round(pts.reduce((s, x) => s + x.pct, 0) / pts.length);
-  const targetLinePct = (100 / maxPct) * 100;
+
+  const W = 1000, H = 170, padX = 26, padTop = 28, padBottom = 26;
+  const plotW = W - padX * 2;
+  const plotH = H - padTop - padBottom;
+  const n = pts.length;
+  const xAt = (i: number) => (n === 1 ? padX + plotW / 2 : padX + (plotW * i) / (n - 1));
+  const yAt = (pct: number) => padTop + plotH - (Math.min(pct, maxPct) / maxPct) * plotH;
+  const targetY = padTop + plotH - (100 / maxPct) * plotH;
+
+  const linePath = pts.map((p, i) => `${i === 0 ? "M" : "L"} ${xAt(i).toFixed(1)} ${yAt(p.pct).toFixed(1)}`).join(" ");
+  const areaPath = `${linePath} L ${xAt(n - 1).toFixed(1)} ${(padTop + plotH).toFixed(1)} L ${xAt(0).toFixed(1)} ${(padTop + plotH).toFixed(1)} Z`;
+  const gradId = "wcFillGrad";
 
   return (
     <div className="rounded-2xl border p-4 mb-6" style={{ borderColor: "var(--glass-hi)", background: "var(--surface)", boxShadow: "var(--glass-shadow)", backdropFilter: "var(--glass-blur)", WebkitBackdropFilter: "var(--glass-blur)" }}>
@@ -372,25 +385,36 @@ function WeeklyChart({ days, target, lang }: { days: HistoryDay[]; target: numbe
           {lang === "id" ? "Rata-rata" : "Avg"} <b style={{ color: "var(--text)" }}>{avgPct}%</b> {lang === "id" ? "dari target" : "of target"}
         </span>
       </div>
-      <div style={{ position: "relative", height: 130, display: "flex", alignItems: "flex-end", gap: 4 }}>
+      <svg viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none" style={{ width: "100%", height: 150, display: "block", overflow: "visible" }} role="img" aria-label={tx(lang, "Weekly progress, percent of calorie target per day", "Progres mingguan, persen dari target kalori per hari")}>
+        <defs>
+          <linearGradient id={gradId} x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0%" stopColor={NUTRI.GREEN} stopOpacity="0.32" />
+            <stop offset="100%" stopColor={NUTRI.GREEN} stopOpacity="0" />
+          </linearGradient>
+        </defs>
         {/* 100%-of-target reference line */}
-        <div style={{ position: "absolute", left: 0, right: 0, bottom: `${targetLinePct}%`, borderTop: `1px dashed ${NUTRI.GREEN_DARK}`, zIndex: 1 }}>
-          <span style={{ position: "absolute", right: 0, top: -14, fontSize: 9, color: NUTRI.GREEN_DARK, background: "var(--surface)", padding: "0 3px" }}>
-            100% {lang === "id" ? "target" : "target"}
-          </span>
-        </div>
-        {pts.map((x) => {
-          const h = Math.max(2, (x.pct / maxPct) * 100);
-          const over = x.pct > 100;
+        <line x1={padX} y1={targetY} x2={W - padX} y2={targetY} stroke={NUTRI.GREEN_DARK} strokeWidth={1.5} strokeDasharray="6 6" vectorEffect="non-scaling-stroke" />
+        <text x={W - padX} y={targetY - 8} textAnchor="end" fontSize={15} fill={NUTRI.GREEN_DARK}>100% {lang === "id" ? "target" : "target"}</text>
+        {/* area under the line */}
+        <path d={areaPath} fill={`url(#${gradId})`} stroke="none" />
+        {/* the trend line itself */}
+        <path d={linePath} fill="none" stroke={NUTRI.GREEN_DARK} strokeWidth={2.5} strokeLinejoin="round" strokeLinecap="round" vectorEffect="non-scaling-stroke" />
+        {/* per-day point, % label, date label */}
+        {pts.map((p, i) => {
+          const x = xAt(i);
+          const y = yAt(p.pct);
+          const over = p.pct > 100;
+          const dotColor = over ? COLORS.RED : NUTRI.GREEN_DARK;
           return (
-            <div key={x.date} style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "flex-end", height: "100%" }} title={`${x.date}: ${x.pct}% (${x.total} kkal)`}>
-              <span style={{ fontSize: 8.5, fontWeight: 700, color: over ? COLORS.RED : NUTRI.GREEN_DARK, marginBottom: 2 }}>{x.pct}%</span>
-              <div className="sc-bar-fill" style={{ width: "100%", maxWidth: 22, height: `${h}%`, background: over ? COLORS.RED : NUTRI.GREEN, borderRadius: "4px 4px 0 0" }} />
-              <span style={{ fontSize: 8.5, color: "#B0B0B0", marginTop: 3 }}>{x.date.slice(8, 10)}</span>
-            </div>
+            <g key={p.date}>
+              <title>{`${p.date}: ${p.pct}% (${p.total} kkal)`}</title>
+              <circle cx={x} cy={y} r={5} fill={dotColor} stroke="var(--surface-solid)" strokeWidth={2} vectorEffect="non-scaling-stroke" />
+              <text x={x} y={Math.max(12, y - 12)} textAnchor="middle" fontSize={15} fontWeight={700} fill={dotColor}>{p.pct}%</text>
+              <text x={x} y={H - 6} textAnchor="middle" fontSize={13} fill="#B0B0B0">{p.date.slice(8, 10)}</text>
+            </g>
           );
         })}
-      </div>
+      </svg>
     </div>
   );
 }
