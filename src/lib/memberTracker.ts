@@ -8,6 +8,7 @@
 // logged-in session from either app can read/write its own rows straight
 // away — no bridge API needed for this data.
 import { supabase } from "./supabase";
+import { ensureProfile } from "./authApi";
 
 export interface DailyFoodItem {
   name: string;
@@ -98,6 +99,35 @@ export async function getMemberProfile(): Promise<MemberProfile | null> {
     .maybeSingle();
   if (error) throw error;
   return data as MemberProfile | null;
+}
+
+export interface ProfileGoalsInput {
+  weight_kg?: number;
+  height_cm?: number;
+  activity_level?: string;
+  main_goal?: string;
+}
+
+// Partial profile update for the "edit goals" panel on /history — only the
+// inputs dailyCalorieGoal/dailyMacroTargets actually use. Deliberately NOT
+// authApi.ts's saveOnboarding(): that always writes gender + derives age
+// from a birthdate, so reusing it here for a partial edit would clobber
+// gender to null whenever it's called without one.
+export async function updateProfileGoals(input: ProfileGoalsInput): Promise<void> {
+  const uid = await currentUserId();
+  if (!uid) throw new Error("not_authenticated");
+  // Guarantee the row exists first — an UPDATE against a missing row affects
+  // 0 rows without erroring, which would otherwise silently no-op (and still
+  // report success) for a member who reached /history without ever finishing
+  // onboarding.
+  await ensureProfile();
+  const upd: Record<string, unknown> = { updated_at: new Date().toISOString() };
+  if (input.weight_kg != null) upd.weight_kg = input.weight_kg;
+  if (input.height_cm != null) upd.height_cm = input.height_cm;
+  if (input.activity_level) upd.activity_level = input.activity_level;
+  if (input.main_goal) upd.main_goal = input.main_goal;
+  const { error } = await supabase.from("my20fit_profile").update(upd).eq("auth_user_id", uid);
+  if (error) throw error;
 }
 
 export async function getTodayFoodItems(): Promise<DailyFoodItem[]> {
