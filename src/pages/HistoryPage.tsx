@@ -195,10 +195,28 @@ function HistoryItemRow({ item, meal, component, lang, open, onToggle }: {
   );
 }
 
-// Per-day health meter — same 0-100 score/band formula as the live tracker
-// (FS.health), computed from that day's logged items against the member's
-// current profile targets (there's no historical per-day target snapshot,
-// same simplification the "/" tracker itself uses).
+// Per-day health meter — same 0-100 score/band formula, score bar and note
+// copy as the "Health meter" panel on the live tracker's "/" Today's Food
+// Summary (FS.health/FS.healthNote), computed from that day's logged items
+// against the member's current profile targets (there's no historical
+// per-day target snapshot, same simplification the tracker itself uses).
+// The badge alone (score/100) sits in the day header for a quick glance; this
+// panel is the "how was today, overall" read the tracker gives for "today".
+function DayHealthPanel({ items, goal, macroT, lang }: { items: DailyFoodItem[]; goal: number; macroT: ReturnType<typeof dailyMacroTargets>; lang: Lang }) {
+  const t = FS.totals(items);
+  const h = FS.health(items, t, goal, macroT);
+  const barCol = h.band === "h" ? NUTRI.GREEN : h.band === "m" ? NUTRI.AMBER : COLORS.RED;
+  return (
+    <div className="rounded-lg mb-2" style={{ padding: "10px 12px", background: "var(--surface)", border: "1px solid var(--border)" }}>
+      <div style={{ fontSize: 10.5, fontWeight: 800, textTransform: "uppercase", letterSpacing: 1, color: "var(--text-subtle)", marginBottom: 6 }}>{tx(lang, "Overall analysis", "Analisa keseluruhan")}</div>
+      <div style={{ height: 8, background: "var(--surface-inset)", borderRadius: 5, overflow: "hidden" }}>
+        <div style={{ height: "100%", width: `${h.score}%`, background: barCol, borderRadius: 5, transition: "width .45s" }} />
+      </div>
+      <div style={{ fontSize: 12, color: "var(--text-soft)", lineHeight: 1.5, marginTop: 7 }}>{FS.healthNote(h.band, lang)}</div>
+    </div>
+  );
+}
+
 function DayHealthBadge({ items, goal, macroT, lang }: { items: DailyFoodItem[]; goal: number; macroT: ReturnType<typeof dailyMacroTargets>; lang: Lang }) {
   const t = FS.totals(items);
   const h = FS.health(items, t, goal, macroT);
@@ -354,6 +372,7 @@ export const HistoryPage = ({ lang = "id" }: { lang?: Lang }) => {
                   <DayHealthBadge items={day.items} goal={goal} macroT={macroT} lang={lang} />
                 </div>
               </div>
+              <DayHealthPanel items={day.items} goal={goal} macroT={macroT} lang={lang} />
               <div className="space-y-2">
                 {day.items.map((item, i) => {
                   const key = `${day.log_date}_${i}`;
