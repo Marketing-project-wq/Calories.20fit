@@ -7,6 +7,7 @@ import { getRecentHistory, HistoryDay } from "../lib/memberHistory";
 import { DailyFoodItem, MemberProfile, getMemberProfile } from "../lib/memberTracker";
 import { dailyCalorieGoal, dailyMacroTargets } from "../lib/nutrition";
 import * as FS from "../lib/foodSummary";
+import { getRecentMeals, Meal, MealComponent } from "../lib/mealHistory";
 import { Icon } from "../components/Icon";
 
 const tx = (lang: Lang, en: string, id: string) => (lang === "id" ? id : en);
@@ -21,12 +22,46 @@ function RateBadge({ cls, label }: { cls: "hh" | "hm" | "hu"; label: string }) {
   return <span style={{ fontSize: 10.5, fontWeight: 800, padding: "3px 9px", borderRadius: 999, whiteSpace: "nowrap", color: c.fg, background: c.bg }}>{label}</span>;
 }
 
-// Per-item row: rating badge always visible, tap/click to expand and see
-// what's driving the rating (reason + healthier swap, from the SAME verbatim
-// port of my.20fit.id's verdict logic the live tracker uses — see
-// src/lib/foodSummary.ts) plus the full nutrient breakdown for that item.
-function HistoryItemRow({ item, lang, open, onToggle }: { item: DailyFoodItem; lang: Lang; open: boolean; onToggle: () => void }) {
-  const v = FS.itemVerdict(item, lang);
+// Verdict shown on the row badge + "what could be improved" line. When this
+// item was logged via the AI scan (has a matching ct_meal_component — see
+// mealHistory.ts), use the EXACT verdict saved at scan time instead of
+// re-deriving one, so History never disagrees with what the scan itself said.
+// Falls back to the live re-derivation (foodSummary.itemVerdict) for manually
+// typed food, or anything logged before ct_meal existed.
+function verdictOf(item: DailyFoodItem, component: MealComponent | undefined, lang: Lang): FS.ItemVerdict {
+  if (component?.verdict_band && component.verdict_label && component.verdict_reason) {
+    return {
+      band: component.verdict_band,
+      cls: component.verdict_band === "good" ? "hh" : component.verdict_band === "ok" ? "hm" : "hu",
+      label: component.verdict_label,
+      reason: component.verdict_reason,
+      swapTo: component.swap_to || undefined,
+    };
+  }
+  return FS.itemVerdict(item, lang);
+}
+
+// Per-item row: rating badge always visible, tap/click to expand. Items
+// logged via the AI scan (matched by mid/cid to a ct_meal + ct_meal_component
+// row — see src/lib/mealHistory.ts) expand into the SAME rich breakdown the
+// "Analisa makanan" sheet showed right after the scan: tags, filling rate,
+// health score, overall analysis and the "better intake" suggestion — all
+// persisted at scan time, not re-derived. Everything else (manually typed
+// food, or items logged before ct_meal existed) falls back to the simpler
+// nutrient grid + foodSummary.itemVerdict() re-derivation.
+function HistoryItemRow({ item, meal, component, lang, open, onToggle }: {
+  item: DailyFoodItem;
+  meal: Meal | undefined;
+  component: MealComponent | undefined;
+  lang: Lang;
+  open: boolean;
+  onToggle: () => void;
+}) {
+  const v = verdictOf(item, component, lang);
+  const fiber = component?.fiber_g;
+  const sat = meal ? Math.round(meal.satiety_score || 0) : 0;
+  const health10 = meal ? Math.round(meal.health_score || 0) : 0;
+
   return (
     <div className="rounded-lg border overflow-hidden" style={{ borderColor: "var(--border)" }}>
       <button
@@ -42,7 +77,7 @@ function HistoryItemRow({ item, lang, open, onToggle }: { item: DailyFoodItem; l
       </button>
       {open && (
         <div style={{ padding: "10px 12px", background: "var(--surface-inset)", borderTop: "1px solid var(--border)" }}>
-          <div className="grid grid-cols-4 gap-2" style={{ fontSize: 11 }}>
+          <div className={fiber != null ? "grid grid-cols-4 gap-2" : "grid grid-cols-3 gap-2"} style={{ fontSize: 11 }}>
             <div>
               <div style={{ color: "var(--text-subtle)" }}>{tx(lang, "Calories", "Kalori")}</div>
               <div style={{ fontWeight: 700 }}>{Math.round(item.kcal)} kkal</div>
@@ -55,11 +90,25 @@ function HistoryItemRow({ item, lang, open, onToggle }: { item: DailyFoodItem; l
               <div style={{ color: "var(--text-subtle)" }}>{tx(lang, "Carbs", "Karbo")}</div>
               <div style={{ fontWeight: 700 }}>{Math.round(item.c)} g</div>
             </div>
-            <div>
-              <div style={{ color: "var(--text-subtle)" }}>{tx(lang, "Fat", "Lemak")}</div>
-              <div style={{ fontWeight: 700 }}>{Math.round(item.f)} g</div>
-            </div>
+            {fiber != null ? (
+              <div>
+                <div style={{ color: "var(--text-subtle)" }}>{tx(lang, "Fiber", "Serat")}</div>
+                <div style={{ fontWeight: 700 }}>{Math.round(fiber)} g</div>
+              </div>
+            ) : (
+              <div>
+                <div style={{ color: "var(--text-subtle)" }}>{tx(lang, "Fat", "Lemak")}</div>
+                <div style={{ fontWeight: 700 }}>{Math.round(item.f)} g</div>
+              </div>
+            )}
           </div>
+          {fiber != null && (
+            <div className="mt-2" style={{ fontSize: 11 }}>
+              <span style={{ color: "var(--text-subtle)" }}>{tx(lang, "Fat", "Lemak")}: </span>
+              <b>{Math.round(item.f)} g</b>
+            </div>
+          )}
+
           <div className="mt-2" style={{ fontSize: 11.5, color: "var(--text-soft)", lineHeight: 1.5 }}>
             <span style={{ fontWeight: 700, color: "var(--text)" }}>{tx(lang, "What could be improved: ", "Yang bisa diperbaiki: ")}</span>
             {v.reason}
@@ -69,6 +118,57 @@ function HistoryItemRow({ item, lang, open, onToggle }: { item: DailyFoodItem; l
               </>
             )}
           </div>
+
+          {/* From here down: only present when this item came from an AI scan
+              (meal is set) — the same fields ScanResultModal shows right after scanning. */}
+          {meal?.tags && meal.tags.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mt-2.5">
+              {meal.tags.map((t, i) => (
+                <span key={i} style={{ fontSize: 10.5, fontWeight: 800, padding: "3px 9px", borderRadius: 999, color: t.positive ? NUTRI.GREEN_DARK : "#B4690E", background: t.positive ? NUTRI.GREEN_TINT : "#FDF3E7" }}>{t.label}</span>
+              ))}
+            </div>
+          )}
+
+          {sat > 0 && (
+            <div className="mt-2.5">
+              <div style={{ fontSize: 11.5, fontWeight: 700, marginBottom: 3 }}>
+                {tx(lang, "Filling Rate", "Tingkat Kekenyangan")} <b style={{ color: "var(--brand)" }}>{sat}/10</b>
+              </div>
+              <div style={{ fontSize: 12, letterSpacing: 1.5, color: "var(--brand)" }}>{"◆".repeat(sat) + "◇".repeat(10 - sat)}</div>
+            </div>
+          )}
+
+          {health10 > 0 && (
+            <div className="mt-2.5">
+              <div style={{ fontSize: 11.5, fontWeight: 700, marginBottom: 3 }}>
+                {tx(lang, "Health Score", "Skor Sehat")} <b style={{ color: "var(--brand)" }}>{health10}/10</b>
+              </div>
+              <div style={{ height: 7, background: "var(--surface)", borderRadius: 5, overflow: "hidden" }}>
+                <div style={{ height: "100%", width: `${health10 * 10}%`, background: `linear-gradient(90deg,#34c759,${NUTRI.GREEN_DARK})` }} />
+              </div>
+            </div>
+          )}
+
+          {meal?.overall && (
+            <div className="mt-2.5">
+              <div style={{ fontSize: 10.5, fontWeight: 800, textTransform: "uppercase", letterSpacing: 0.6, color: "var(--text-subtle)", marginBottom: 4 }}>{tx(lang, "Overall analysis", "Analisa keseluruhan")}</div>
+              <div style={{ fontSize: 12, lineHeight: 1.5 }}>{meal.overall}</div>
+            </div>
+          )}
+
+          {meal?.recommendation && (
+            <div className="mt-2.5 rounded-lg" style={{ padding: "10px 11px", background: NUTRI.GREEN_TINT, border: `1px solid ${NUTRI.GREEN}33` }}>
+              <div style={{ fontSize: 10.5, fontWeight: 800, textTransform: "uppercase", letterSpacing: 0.6, color: NUTRI.GREEN_DARK, marginBottom: 4 }}>{tx(lang, "Better intake — what to add", "Asupan lebih baik — perlu ditambah")}</div>
+              <div style={{ fontSize: 12, lineHeight: 1.5, color: "#1f4d33" }}>{meal.recommendation}</div>
+              {meal.needs_more && meal.needs_more.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 mt-2">
+                  {meal.needs_more.map((n, i) => (
+                    <span key={i} style={{ fontSize: 10.5, fontWeight: 800, color: NUTRI.GREEN_DARK, background: "#fff", border: `1px solid ${NUTRI.GREEN}4d`, padding: "3px 8px", borderRadius: 999 }}>+ {n}</span>
+                  ))}
+                </div>
+              )}
+            </div>
+          )}
         </div>
       )}
     </div>
@@ -144,6 +244,7 @@ export const HistoryPage = ({ lang = "id" }: { lang?: Lang }) => {
   const { isAuthenticated, isLoading: authLoading } = useAuth();
   const [days, setDays] = useState<HistoryDay[]>([]);
   const [profile, setProfile] = useState<MemberProfile | null>(null);
+  const [meals, setMeals] = useState<Map<string, Meal>>(new Map());
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [openKey, setOpenKey] = useState<string | null>(null);
@@ -153,9 +254,12 @@ export const HistoryPage = ({ lang = "id" }: { lang?: Lang }) => {
     (async () => {
       setIsLoading(true);
       try {
-        const [d, p] = await Promise.all([getRecentHistory(), getMemberProfile()]);
+        // Meals load best-effort: a hiccup fetching the rich scan analysis
+        // shouldn't block the plain food log itself from showing.
+        const [d, p, m] = await Promise.all([getRecentHistory(), getMemberProfile(), getRecentMeals().catch(() => new Map<string, Meal>())]);
         setDays(d);
         setProfile(p);
+        setMeals(m);
       } catch (err) {
         setError(err instanceof Error ? err.message : (lang === "id" ? "Gagal memuat riwayat" : "Failed to load history"));
       } finally {
@@ -233,10 +337,14 @@ export const HistoryPage = ({ lang = "id" }: { lang?: Lang }) => {
               <div className="space-y-2">
                 {day.items.map((item, i) => {
                   const key = `${day.log_date}_${i}`;
+                  const meal = item.mid ? meals.get(item.mid) : undefined;
+                  const component = meal && item.cid ? meal.components.find((c) => c.id === item.cid) : undefined;
                   return (
                     <HistoryItemRow
                       key={key}
                       item={item}
+                      meal={meal}
+                      component={component}
                       lang={lang}
                       open={openKey === key}
                       onToggle={() => setOpenKey(openKey === key ? null : key)}

@@ -17,10 +17,14 @@
      frosted (backdrop-filter) so the gradient field behind shows through. */
   --bg: #EFEDEA;            /* page base */
   --bg-2: #F5F3F0;          /* alt page sections */
-  --surface: rgba(255, 255, 255, 0.62);   /* cards / panels (frosted) */
-  --surface-2: rgba(255, 255, 255, 0.45);  /* subtle raised */
-  --surface-inset: rgba(240, 237, 229, 0.55); /* inset wells / chips */
-  --surface-hover: rgba(255, 255, 255, 0.82); /* row/button hover */
+  /* Bumped from 0.62/0.45/0.55 — text over the colored orb field was reading
+     as low-contrast/blurry ("terlalu abus") on panels dense with text (e.g.
+     the post-scan analysis sheet), even with the blur. Still translucent
+     enough to read as glass, just solid enough to read as text. */
+  --surface: rgba(255, 255, 255, 0.88);   /* cards / panels (frosted) */
+  --surface-2: rgba(255, 255, 255, 0.7);  /* subtle raised */
+  --surface-inset: rgba(240, 237, 229, 0.82); /* inset wells / chips */
+  --surface-hover: rgba(255, 255, 255, 0.94); /* row/button hover */
   --surface-solid: #FFFFFF; /* opaque fallback where translucency hurts */
 
   /* Glass treatment */
@@ -85,10 +89,10 @@
 :root[data-theme="dark"] {
   --bg: #131410;
   --bg-2: #17180F;
-  --surface: rgba(31, 33, 25, 0.55);
-  --surface-2: rgba(43, 45, 35, 0.5);
-  --surface-inset: rgba(40, 42, 32, 0.55);
-  --surface-hover: rgba(54, 56, 44, 0.62);
+  --surface: rgba(24, 25, 19, 0.86);
+  --surface-2: rgba(34, 36, 27, 0.78);
+  --surface-inset: rgba(30, 32, 24, 0.82);
+  --surface-hover: rgba(54, 56, 44, 0.88);
   --surface-solid: #1E1F18;
 
   --glass-blur: saturate(150%) blur(16px);

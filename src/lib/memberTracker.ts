@@ -22,6 +22,16 @@ export interface DailyFoodItem {
   // from my.20fit.id / photo-scan saves) have no `m` — itemMeal() infers one
   // from the time so grouping still works for every item.
   m?: MealType;
+  // mid/cid: also additive (my.20fit.id ignores them too — see
+  // ct_log_meal in 2026-09-18_ct_meal_schema.sql). Present only on items
+  // logged through the native AI scan flow; they point at the full
+  // ct_meal/ct_meal_component row (tags, health/satiety score, analysis,
+  // recommendation) that src/lib/mealHistory.ts fetches for History to show
+  // the same rich breakdown ScanResultModal showed right after the scan.
+  // Absent on manually-typed food, or on anything logged before this existed
+  // — those fall back to the deterministic foodSummary.itemVerdict() re-derivation.
+  mid?: string;
+  cid?: string;
 }
 
 export type MealType = "breakfast" | "lunch" | "dinner" | "snack";
