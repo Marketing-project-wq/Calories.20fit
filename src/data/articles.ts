@@ -6,16 +6,20 @@
 // are keyed by `Lang` so the app's language toggle (see App.tsx `lang` state)
 // can select the right copy — pages read `art.title[lang]` etc.
 //
-// WHY STATIC (not the brief's nutrition_articles Postgres table): this repo
-// has no migration runner and no Supabase write access from CI — every schema
-// change is applied by hand to production (see supabase/migrations/*.sql
-// headers). Article copy is read-only reference content that never changes per
-// user, so bundling it ships it instantly, works offline, and needs no DB
-// round-trip. A matching nutrition_articles migration is provided under
-// supabase/migrations for teams that later want it DB-backed; the app reads
-// this bundle today.
+// LIVE SOURCE OF TRUTH IS THE DB, NOT THIS FILE. The public.nutrition_articles
+// Supabase table (see supabase/migrations/2026-09-16_nutrition_articles.sql)
+// is now the real source of truth — editable via the articles-api Edge
+// Function (supabase/functions/articles-api) so a non-repo developer can
+// add/edit articles without a code deploy. `useArticles()` (src/hooks/
+// useArticles.ts) fetches the live table on mount and swaps it in.
+// STATIC_ARTICLES below is only an in-browser fallback: it's what renders
+// instantly on first paint and what stays on screen if the DB fetch fails or
+// the table is briefly empty, so the site never breaks. It was seeded into
+// the DB verbatim and isn't otherwise read by any page directly — pages call
+// getArticle/getRelated/getFeatured with the live list from useArticles().
 import { Lang } from "../lib/i18n";
 import { IconName } from "../components/Icon";
+import { supabase } from "../lib/supabase";
 
 import memahamiKaloriId from "./articles/memahami-kalori-dan-makronutrien.md?raw";
 import memahamiKaloriEn from "./articles/memahami-kalori-dan-makronutrien.en.md?raw";
@@ -78,7 +82,8 @@ const AUTHOR = "20fit Nutrition Team";
 const AKG_ID = "Angka Kecukupan Gizi (AKG) — Permenkes RI No. 28 Tahun 2019";
 const AKG_EN = "Indonesian Nutritional Adequacy Rate (AKG) — Ministry of Health Regulation No. 28/2019";
 
-export const ARTICLES: Article[] = [
+/** In-browser fallback only — see the file header. Not the live source of truth. */
+export const STATIC_ARTICLES: Article[] = [
   {
     slug: "memahami-kalori-dan-makronutrien",
     title: {
@@ -516,19 +521,58 @@ export const CATEGORY_LABELS: Record<Lang, Record<ArticleCategory, string>> = {
   },
 };
 
-export function getArticle(slug: string): Article | undefined {
-  return ARTICLES.find((a) => a.slug === slug);
+export function getArticle(slug: string, list: Article[] = STATIC_ARTICLES): Article | undefined {
+  return list.find((a) => a.slug === slug);
 }
 
 /** Articles that share a category with `slug`, excluding it. */
-export function getRelated(slug: string, limit = 3): Article[] {
-  const current = getArticle(slug);
+export function getRelated(slug: string, list: Article[] = STATIC_ARTICLES, limit = 3): Article[] {
+  const current = getArticle(slug, list);
   if (!current) return [];
-  const sameCat = ARTICLES.filter((a) => a.slug !== slug && a.category === current.category);
-  const rest = ARTICLES.filter((a) => a.slug !== slug && a.category !== current.category);
+  const sameCat = list.filter((a) => a.slug !== slug && a.category === current.category);
+  const rest = list.filter((a) => a.slug !== slug && a.category !== current.category);
   return [...sameCat, ...rest].slice(0, limit);
 }
 
-export function getFeatured(limit = 3): Article[] {
-  return ARTICLES.slice(0, limit);
+export function getFeatured(list: Article[] = STATIC_ARTICLES, limit = 3): Article[] {
+  return list.slice(0, limit);
+}
+
+function mapDbRow(row: any): Article {
+  return {
+    slug: row.slug,
+    title: row.title,
+    excerpt: row.excerpt,
+    content: row.content,
+    category: row.category,
+    tags: row.tags,
+    readTimeMinutes: row.read_time_minutes,
+    isPremium: row.is_premium,
+    sources: row.sources,
+    author: row.author,
+    disclaimer: row.disclaimer,
+    coverIcon: row.cover_icon,
+    coverPhoto: row.cover_photo,
+    accent: row.accent,
+    publishedAt: row.published_at,
+  };
+}
+
+/**
+ * Fetches the live article list from Supabase (public.nutrition_articles,
+ * readable by anon). Returns null on any error or an empty table, so the
+ * caller (useArticles) can keep showing STATIC_ARTICLES instead of an
+ * empty page.
+ */
+export async function fetchArticlesFromDb(): Promise<Article[] | null> {
+  try {
+    const { data, error } = await supabase
+      .from("nutrition_articles")
+      .select("*")
+      .order("published_at", { ascending: true });
+    if (error || !data || data.length === 0) return null;
+    return data.map(mapDbRow);
+  } catch {
+    return null;
+  }
 }
