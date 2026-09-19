@@ -9,6 +9,7 @@ import { dailyCalorieGoal, dailyMacroTargets } from "../lib/nutrition";
 import * as FS from "../lib/foodSummary";
 import { getRecentMeals, Meal, MealComponent } from "../lib/mealHistory";
 import { ACTIVITIES, GOALS } from "./OnboardingPage";
+import { GoalRing } from "../components/GoalRing";
 import { Icon } from "../components/Icon";
 
 const tx = (lang: Lang, en: string, id: string) => (lang === "id" ? id : en);
@@ -341,59 +342,9 @@ function GoalsToggle({ open, onToggle, lang }: { open: boolean; onToggle: () => 
   );
 }
 
-// Round "goal ring" — same idea as a fitness app's daily-steps ring (a
-// circular gauge filling up toward 100%), but for today's calorie goal
-// instead of steps. Sits above the weekly line chart as the single "how much
-// have I filled today" glance; the line chart below it is the trend across
-// days, this ring is just today.
 function todayLocalStr(): string {
   const d = new Date();
   return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
-}
-
-function GoalRing({ days, target, lang }: { days: HistoryDay[]; target: number; lang: Lang }) {
-  if (target <= 0) return null;
-  const today = days.find((d) => d.log_date === todayLocalStr());
-  const consumed = today ? today.items.reduce((s, it) => s + (Number(it.kcal) || 0), 0) : 0;
-  const pct = Math.round((consumed / target) * 100);
-  const over = pct > 100;
-  const color = over ? COLORS.RED : pct >= 100 ? NUTRI.GREEN_DARK : NUTRI.GREEN;
-
-  const SIZE = 128, R = 52, STROKE = 13;
-  const C = 2 * Math.PI * R;
-  const filledFrac = Math.min(100, Math.max(0, pct)) / 100;
-  const cx = SIZE / 2, cy = SIZE / 2;
-
-  return (
-    <div className="rounded-2xl border p-4 mb-4 flex items-center gap-4 flex-wrap" style={{ borderColor: "var(--glass-hi)", background: "var(--surface)", boxShadow: "var(--glass-shadow)", backdropFilter: "var(--glass-blur)", WebkitBackdropFilter: "var(--glass-blur)" }}>
-      <svg width={SIZE} height={SIZE} viewBox={`0 0 ${SIZE} ${SIZE}`} style={{ flexShrink: 0 }} role="img" aria-label={tx(lang, `Today's goal ring: ${pct}%`, `Ring goal hari ini: ${pct}%`)}>
-        <circle cx={cx} cy={cy} r={R} fill="none" stroke="var(--surface-inset)" strokeWidth={STROKE} />
-        <circle
-          cx={cx} cy={cy} r={R} fill="none" stroke={color} strokeWidth={STROKE} strokeLinecap="round"
-          strokeDasharray={`${C * filledFrac} ${C}`}
-          transform={`rotate(-90 ${cx} ${cy})`}
-          style={{ transition: "stroke-dasharray .5s cubic-bezier(.2,.8,.2,1)" }}
-        />
-        <text x={cx} y={cy - 2} textAnchor="middle" fontSize={24} fontWeight={800} fill="var(--text)">{pct}%</text>
-        <text x={cx} y={cy + 16} textAnchor="middle" fontSize={10} fill="var(--text-subtle)">{tx(lang, "of goal", "dari target")}</text>
-      </svg>
-      <div style={{ minWidth: 0 }}>
-        <div style={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: 1, color: "var(--text-subtle)", marginBottom: 4 }}>
-          {tx(lang, "Today's overall", "Overall hari ini")}
-        </div>
-        <div style={{ fontSize: 14, fontWeight: 700 }}>
-          {Math.round(consumed).toLocaleString("id-ID")} / {Math.round(target).toLocaleString("id-ID")} kkal
-        </div>
-        <div style={{ fontSize: 12.5, color: "var(--text-soft)", marginTop: 3, lineHeight: 1.4 }}>
-          {over
-            ? tx(lang, `${pct - 100}% over today's target.`, `${pct - 100}% lewat target hari ini.`)
-            : pct >= 100
-            ? tx(lang, "Today's target reached.", "Target hari ini tercapai.")
-            : tx(lang, `${100 - pct}% left to reach today's target.`, `${100 - pct}% lagi untuk capai target hari ini.`)}
-        </div>
-      </div>
-    </div>
-  );
 }
 
 function formatDayLabel(dateStr: string, lang: Lang): string {
@@ -554,6 +505,8 @@ export const HistoryPage = ({ lang = "id" }: { lang?: Lang }) => {
 
   const goal = dailyCalorieGoal(profile);
   const macroT = dailyMacroTargets(profile, goal);
+  const todayDay = days.find((d) => d.log_date === todayLocalStr());
+  const todayConsumed = todayDay ? todayDay.items.reduce((s, it) => s + (Number(it.kcal) || 0), 0) : 0;
 
   return (
     <div className="max-w-2xl mx-auto px-4 py-8">
@@ -563,7 +516,7 @@ export const HistoryPage = ({ lang = "id" }: { lang?: Lang }) => {
       </div>
       {goalsOpen && <GoalsEditPanel profile={profile} lang={lang} onSaved={(p) => setProfile(p)} />}
 
-      <GoalRing days={days} target={goal} lang={lang} />
+      <GoalRing consumed={todayConsumed} target={goal} lang={lang} />
       <WeeklyChart days={days} target={goal} lang={lang} />
 
       <div className="space-y-6">

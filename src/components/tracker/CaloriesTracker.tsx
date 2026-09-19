@@ -16,6 +16,7 @@ import { dailyCalorieGoal, dailyMacroTargets } from "../../lib/nutrition";
 import * as Fasting from "../../lib/fasting";
 import * as FS from "../../lib/foodSummary";
 import { getMenuRecommend, MenuRecipe } from "../../lib/menuRecommend";
+import { GoalRing } from "../GoalRing";
 import { ScanResultModal } from "./ScanResultModal";
 import { MealPlanSection } from "./MealPlanSection";
 
@@ -225,6 +226,8 @@ export function CaloriesTracker({ lang }: { lang: Lang }) {
       <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: 14 }} className="ct-tracker-grid">
         {/* ---------- LEFT COLUMN ---------- */}
         <div style={{ display: "flex", flexDirection: "column" }}>
+          <GoalRing consumed={consumed} target={goal} lang={lang} />
+
           {/* PANEL 1 + 2 + 3 — target, macros, scan, type-food */}
           <div style={{ ...cardStyle, textAlign: "center" }}>
             <div style={{ fontSize: 11, letterSpacing: 1.5, textTransform: "uppercase", color: MUTED, fontWeight: 700 }}>
