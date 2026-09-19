@@ -127,15 +127,15 @@ export function CaloriesTracker({ lang }: { lang: Lang }) {
   useEffect(() => {
     let cancelled = false;
     if (gap.met) { setGapFoods([]); return; }
-    getMenuRecommend(gap.rem, 3).then((r) => { if (!cancelled) setGapFoods(r); });
+    getMenuRecommend(gap.rem, 3, lang).then((r) => { if (!cancelled) setGapFoods(r); });
     return () => { cancelled = true; };
-  }, [gap.rem.p, gap.rem.c, gap.rem.f, gap.met]);
+  }, [gap.rem.p, gap.rem.c, gap.rem.f, gap.met, lang]);
   useEffect(() => {
     let cancelled = false;
     const rem = { p: Math.max(0, macroT.p - totals.p), c: Math.max(0, macroT.c - totals.c), f: Math.max(0, macroT.f - totals.f) };
-    getMenuRecommend(rem, 8).then((r) => { if (!cancelled) setMenuRecs(r); });
+    getMenuRecommend(rem, 8, lang).then((r) => { if (!cancelled) setMenuRecs(r); });
     return () => { cancelled = true; };
-  }, [macroT.p, macroT.c, macroT.f, totals.p, totals.c, totals.f]);
+  }, [macroT.p, macroT.c, macroT.f, totals.p, totals.c, totals.f, lang]);
 
   // ---- scan ----
   const fileRef = useRef<HTMLInputElement>(null);
