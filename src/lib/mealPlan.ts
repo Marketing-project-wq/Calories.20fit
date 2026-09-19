@@ -1,24 +1,27 @@
-// Deterministic meal-plan generator built from the static food database.
-// Given a daily calorie target it composes breakfast/lunch/dinner/snack from
-// curated per-meal food pools, scaling the staple so each meal lands near its
-// calorie budget. A seed makes it deterministic per day (so today's plan is
-// stable) while "regenerate" varies it — the brief's "variasi setiap hari".
-import { Food, getFood, scaleFood } from "../data/foods";
+// Daily meal-plan generator, now sourced from my.20fit.id's Content API v1
+// recipe catalog (via src/lib/contentRecipes.ts) instead of the local static
+// food database. One recipe per meal slot (breakfast/lunch/dinner/snack),
+// each the closest kcal match to that slot's share of the daily target among
+// recipes not already used earlier the same day. A seed breaks ties among
+// near-equally-close candidates so "regenerate" gives real variety.
 import { MealType } from "./memberTracker";
+import { ContentRecipe } from "./contentRecipes";
 
-export interface PlanItem {
-  food: Food;
-  servings: number;
+export interface PlanMealItem {
+  key: string;
+  name: string;
   kcal: number;
   p: number;
   c: number;
   f: number;
+  emoji: string | null;
+  servings: number | null;
 }
 
 export interface PlanMeal {
   meal: MealType;
   budget: number;
-  items: PlanItem[];
+  items: PlanMealItem[];
   kcal: number;
   p: number;
   c: number;
@@ -36,19 +39,10 @@ export interface DayPlan {
 
 // Share of the daily target per meal.
 const MEAL_SHARE: Record<MealType, number> = { breakfast: 0.25, lunch: 0.35, dinner: 0.3, snack: 0.1 };
+const MEAL_ORDER: MealType[] = ["breakfast", "lunch", "dinner", "snack"];
 
-// Curated pools (food ids) so combinations read like real meals.
-const POOLS = {
-  breakfastMain: ["oatmeal", "roti-gandum", "roti-tawar-putih", "nasi-putih", "nasi-uduk"],
-  breakfastProtein: ["telur-rebus", "telur-dadar", "tempe-kukus", "yogurt-plain"],
-  breakfastExtra: ["pisang-ambon", "apel-merah", "pepaya", "susu-full-cream", "air-kelapa"],
-  staple: ["nasi-putih", "nasi-merah", "kentang-rebus", "singkong-rebus", "ubi-rebus"],
-  protein: ["dada-ayam-rebus", "ayam-goreng", "tongkol-goreng", "kembung-goreng", "lele-goreng", "tempe-goreng", "tahu-goreng", "rendang-sapi", "udang-rebus", "salmon-panggang"],
-  veg: ["bayam-rebus", "brokoli-rebus", "kangkung-tumis", "wortel-rebus", "capcay", "sup-sayur", "terong-tumis"],
-  snack: ["pisang-ambon", "apel-merah", "jeruk-manis", "almond", "yogurt-plain", "air-kelapa", "pir", "mangga", "keju-cheddar", "susu-kedelai"],
-};
-
-// mulberry32 — tiny seeded PRNG so plans are reproducible for a given seed.
+// mulberry32 — tiny seeded PRNG so a given seed always picks the same recipe
+// among tied candidates (stable per day; "regenerate" bumps the seed).
 function mulberry32(seed: number) {
   let a = seed >>> 0;
   return () => {
@@ -60,58 +54,40 @@ function mulberry32(seed: number) {
   };
 }
 
-function pick(ids: string[], rand: () => number): Food {
-  const id = ids[Math.floor(rand() * ids.length) % ids.length];
-  return getFood(id)!;
+function toItem(r: ContentRecipe): PlanMealItem {
+  return {
+    key: r.key,
+    name: r.name,
+    kcal: r.kcal || 0,
+    p: r.macros.p ?? 0,
+    c: r.macros.c ?? 0,
+    f: r.macros.f ?? 0,
+    emoji: r.emoji,
+    servings: r.servings,
+  };
 }
 
-function makeItem(food: Food, servings: number): PlanItem {
-  const s = Math.max(0.5, Math.round(servings * 2) / 2); // half-serving steps
-  const n = scaleFood(food, s);
-  return { food, servings: s, kcal: n.calories, p: n.protein, c: n.carbs, f: n.fat };
-}
+/** Null when `recipes` is empty (e.g. the Content API key isn't set up yet on my.20fit.id) — callers show a fallback, never crash on it. */
+export function generateMealPlanFromRecipes(recipes: ContentRecipe[], target: number, seed: number): DayPlan | null {
+  const pool = recipes.filter((r) => r.kcal != null && r.kcal > 0);
+  if (!pool.length) return null;
 
-function sum(items: PlanItem[]) {
-  return items.reduce(
-    (acc, it) => ({ kcal: acc.kcal + it.kcal, p: acc.p + it.p, c: acc.c + it.c, f: acc.f + it.f }),
-    { kcal: 0, p: 0, c: 0, f: 0 }
-  );
-}
-
-function buildMeal(meal: MealType, budget: number, rand: () => number): PlanMeal {
-  const items: PlanItem[] = [];
-  if (meal === "snack") {
-    const first = pick(POOLS.snack, rand);
-    items.push(makeItem(first, 1));
-    if (budget - items[0].kcal > 90) {
-      let second = pick(POOLS.snack, rand);
-      if (second.id === first.id) second = getFood("almond")!;
-      items.push(makeItem(second, 1));
-    }
-  } else if (meal === "breakfast") {
-    const protein = makeItem(pick(POOLS.breakfastProtein, rand), 1);
-    const extra = makeItem(pick(POOLS.breakfastExtra, rand), 1);
-    const mainFood = pick(POOLS.breakfastMain, rand);
-    const remaining = budget - protein.kcal - extra.kcal;
-    const servings = remaining > 0 ? remaining / mainFood.calories : 1;
-    items.push(makeItem(mainFood, servings), protein, extra);
-  } else {
-    // lunch / dinner: staple (scaled) + protein + veg
-    const protein = makeItem(pick(POOLS.protein, rand), 1);
-    const veg = makeItem(pick(POOLS.veg, rand), 1);
-    const stapleFood = pick(POOLS.staple, rand);
-    const remaining = budget - protein.kcal - veg.kcal;
-    const servings = remaining > 0 ? remaining / stapleFood.calories : 1;
-    items.push(makeItem(stapleFood, servings), protein, veg);
-  }
-  const t = sum(items);
-  return { meal, budget: Math.round(budget), items, ...t, kcal: Math.round(t.kcal), p: Math.round(t.p), c: Math.round(t.c), f: Math.round(t.f) };
-}
-
-export function generateMealPlan(target: number, seed: number): DayPlan {
   const rand = mulberry32(seed);
-  const order: MealType[] = ["breakfast", "lunch", "dinner", "snack"];
-  const meals = order.map((m) => buildMeal(m, target * MEAL_SHARE[m], rand));
+  const used = new Set<string>();
+  const meals: PlanMeal[] = MEAL_ORDER.map((meal) => {
+    const budget = target * MEAL_SHARE[meal];
+    const available = pool.filter((r) => !used.has(r.key));
+    const candidates = (available.length ? available : pool)
+      .map((r) => ({ r, dist: Math.abs((r.kcal || 0) - budget) }))
+      .sort((a, b) => a.dist - b.dist);
+    const near = candidates.filter((cand) => cand.dist <= budget * 0.35 + 40);
+    const shortlist = (near.length ? near : candidates).slice(0, 4);
+    const chosen = shortlist[Math.floor(rand() * shortlist.length)].r;
+    used.add(chosen.key);
+    const item = toItem(chosen);
+    return { meal, budget: Math.round(budget), items: [item], kcal: item.kcal, p: item.p, c: item.c, f: item.f };
+  });
+
   const t = meals.reduce(
     (acc, m) => ({ kcal: acc.kcal + m.kcal, p: acc.p + m.p, c: acc.c + m.c, f: acc.f + m.f }),
     { kcal: 0, p: 0, c: 0, f: 0 }
