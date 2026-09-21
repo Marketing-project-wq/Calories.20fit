@@ -22,7 +22,7 @@ import { Icon } from "./Icon";
 import { UNIVERSAL_NAV_ITEMS, getCurrentAppId } from "../lib/universalNav";
 import { getSsoTokens, appendSsoFragment, SsoTokens } from "../lib/supabase";
 
-const BAR_BG = "#111111";
+const BAR_BG = "#3F3F46";
 const BAR_TEXT = "#FFFFFF";
 const MENU_BG = "#FFFFFF";
 const CARD_HOVER = "#F5F5F5";
