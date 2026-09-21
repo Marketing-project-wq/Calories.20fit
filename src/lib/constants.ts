@@ -73,18 +73,3 @@ export const SCAN_LIMITS = {
   FILE_SIZE_MB: 5,
   ALLOWED_TYPES: ["image/jpeg", "image/png", "image/webp"],
 };
-
-export const SUBDOMAINS = [
-  {
-    name: "Scan Kalori",
-    icon: "leaf" as const,
-    url: "https://calorietracker.20fit.id",
-    key: "calories",
-  },
-  {
-    name: "My 20FIT",
-    icon: "target" as const,
-    url: MY20FIT,
-    key: "my20fit",
-  },
-];
