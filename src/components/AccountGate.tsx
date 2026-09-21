@@ -1,6 +1,7 @@
-import { COLORS, NUTRI, URLS } from "../lib/constants";
+import { COLORS, NUTRI } from "../lib/constants";
 import { cc } from "../lib/calorieCopy";
 import { Lang } from "../lib/i18n";
+import { Link } from "../lib/router";
 import { Icon, IconName } from "./Icon";
 
 /**
@@ -33,10 +34,12 @@ export function AccountGate({
     <div style={{ maxWidth: 560, margin: "0 auto", padding: "48px 20px" }}>
       <div
         style={{
-          borderRadius: 20,
+          borderRadius: 22,
           border: `1px solid ${NUTRI.GREEN_TINT}`,
-          background: "#FFFFFF",
-          boxShadow: "0 14px 40px -18px rgba(20,20,20,0.18)",
+          background: "var(--surface)",
+          boxShadow: "var(--glass-shadow)",
+          backdropFilter: "var(--glass-blur)",
+          WebkitBackdropFilter: "var(--glass-blur)",
           overflow: "hidden",
         }}
       >
@@ -63,20 +66,20 @@ export function AccountGate({
               fontSize: 28,
               lineHeight: 1.05,
               textTransform: "uppercase",
-              color: COLORS.BLACK,
+              color: "var(--text)",
               margin: "0 0 10px",
             }}
           >
             {title || g.defaultTitle}
           </h2>
-          <p style={{ fontSize: 14, lineHeight: 1.6, color: "#5A5A5A", margin: "0 0 18px" }}>
+          <p style={{ fontSize: 14, lineHeight: 1.6, color: "var(--text-muted)", margin: "0 0 18px" }}>
             {sub || g.defaultSub}
           </p>
 
           {bullets.length > 0 && (
             <ul style={{ listStyle: "none", margin: "0 0 22px", padding: 0, display: "flex", flexDirection: "column", gap: 10 }}>
               {bullets.map((b) => (
-                <li key={b} style={{ display: "flex", gap: 10, alignItems: "flex-start", fontSize: 14, color: "#3A3A3A" }}>
+                <li key={b} style={{ display: "flex", gap: 10, alignItems: "flex-start", fontSize: 14, color: "var(--text-muted)" }}>
                   <span style={{ color: NUTRI.GREEN_DARK, fontWeight: 700, flexShrink: 0 }}>✓</span>
                   <span>{b}</span>
                 </li>
@@ -85,14 +88,14 @@ export function AccountGate({
           )}
 
           <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
-            <a
-              href={URLS.SIGN_UP}
+            <Link
+              href="/register"
               className="sc-btn-primary"
               style={{
                 display: "block",
                 textAlign: "center",
-                background: COLORS.RED,
-                color: "#fff",
+                background: "var(--brand)",
+                color: "var(--on-brand)",
                 borderRadius: 12,
                 padding: "13px 18px",
                 fontSize: 15,
@@ -101,14 +104,14 @@ export function AccountGate({
               }}
             >
               {g.signUp}
-            </a>
-            <a
-              href={URLS.LOGIN}
+            </Link>
+            <Link
+              href="/login"
               className="sc-link-btn"
               style={{
                 display: "block",
                 textAlign: "center",
-                color: COLORS.BLACK,
+                color: "var(--text)",
                 borderRadius: 12,
                 padding: "11px 18px",
                 fontSize: 14,
@@ -117,7 +120,7 @@ export function AccountGate({
               }}
             >
               {g.login}
-            </a>
+            </Link>
           </div>
         </div>
       </div>

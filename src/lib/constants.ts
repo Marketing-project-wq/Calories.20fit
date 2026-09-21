@@ -64,6 +64,7 @@ export const API_BASE = (import.meta.env.VITE_API_URL as string) || MY20FIT;
 export const API = {
   SCAN_AI: "/api/scan/ai",
   SCAN_TEXT: "/api/scan/food-text",
+  SCAN_CORRECTION: "/api/scan/food-correction",
   SCAN_QUOTA: "/api/scan/quota",
   SCAN_BUY: "/api/scan/buy",
 };

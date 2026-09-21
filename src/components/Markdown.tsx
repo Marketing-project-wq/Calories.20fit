@@ -8,7 +8,7 @@ import { ReactNode } from "react";
 // nothing in the content string can inject markup. Typography lives in
 // index.css under `.ct-article`.
 
-const LINK_STYLE = { color: "#C41101", textDecoration: "underline" };
+const LINK_STYLE = { color: "var(--article-link)", textDecoration: "underline" };
 
 function renderInline(text: string, kp: string): ReactNode[] {
   const nodes: ReactNode[] = [];

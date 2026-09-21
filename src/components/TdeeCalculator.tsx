@@ -17,10 +17,10 @@ import {
 } from "../lib/tdee";
 
 const MONO = "'Barlow Condensed', ui-monospace, SFMono-Regular, Menlo, monospace";
-const BORDER = "#E4E0DB";
+const BORDER = "var(--border)";
 
 // Numbers get tabular figures so columns of kcal line up (brief requirement).
-function Kcal({ value, size = 28, color = COLORS.BLACK }: { value: number; size?: number; color?: string }) {
+function Kcal({ value, size = 28, color = "var(--text)" }: { value: number; size?: number; color?: string }) {
   return (
     <span style={{ fontFamily: MONO, fontSize: size, lineHeight: 1, color, fontVariantNumeric: "tabular-nums" }}>
       {value.toLocaleString("id-ID")}
@@ -29,7 +29,7 @@ function Kcal({ value, size = 28, color = COLORS.BLACK }: { value: number; size?
 }
 
 function labelStyle(): React.CSSProperties {
-  return { fontSize: 12, fontWeight: 600, color: "#6A6A6A", marginBottom: 6, display: "block" };
+  return { fontSize: 12, fontWeight: 600, color: "var(--text-soft)", marginBottom: 6, display: "block" };
 }
 function inputStyle(): React.CSSProperties {
   return {
@@ -39,8 +39,8 @@ function inputStyle(): React.CSSProperties {
     padding: "11px 12px",
     fontSize: 15,
     fontFamily: "inherit",
-    color: COLORS.BLACK,
-    background: "#fff",
+    color: "var(--text)",
+    background: "var(--surface)",
   };
 }
 
@@ -56,29 +56,31 @@ function TdeeRing({ bmr, tdee, caption }: { bmr: number; tdee: number; caption: 
     <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8 }}>
       <div style={{ position: "relative", width: size, height: size }}>
         <svg width={size} height={size} style={{ transform: "rotate(-90deg)" }}>
-          <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={BORDER} strokeWidth={stroke} />
+          {/* var() resolves in `style` but NOT in an SVG stroke attribute */}
+          <circle cx={size / 2} cy={size / 2} r={r} fill="none" strokeWidth={stroke} style={{ stroke: "var(--border)" }} />
           {/* activity portion (full ring, green) */}
           <circle cx={size / 2} cy={size / 2} r={r} fill="none" stroke={NUTRI.GREEN} strokeWidth={stroke} strokeDasharray={c} strokeDashoffset={0} strokeLinecap="round" />
-          {/* baseline portion (BMR, dark) drawn on top from the start */}
+          {/* baseline portion (BMR) drawn on top from the start — --text stays
+              dark in light mode and flips light in dark mode so it stays visible */}
           <circle
             cx={size / 2}
             cy={size / 2}
             r={r}
             fill="none"
-            stroke={COLORS.BLACK}
             strokeWidth={stroke}
             strokeDasharray={`${c * bmrFrac} ${c}`}
             strokeLinecap="round"
+            style={{ stroke: "var(--text)" }}
           />
         </svg>
         <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
           <Kcal value={tdee} size={34} />
-          <span style={{ fontSize: 11, color: "#8A8A8A", marginTop: 2 }}>{caption}</span>
+          <span style={{ fontSize: 11, color: "var(--text-subtle)", marginTop: 2 }}>{caption}</span>
         </div>
       </div>
-      <div style={{ display: "flex", gap: 14, fontSize: 11, color: "#6A6A6A" }}>
+      <div style={{ display: "flex", gap: 14, fontSize: 11, color: "var(--text-soft)" }}>
         <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
-          <span style={{ width: 9, height: 9, borderRadius: 2, background: COLORS.BLACK }} /> BMR
+          <span style={{ width: 9, height: 9, borderRadius: 2, background: "var(--text)" }} /> BMR
         </span>
         <span style={{ display: "flex", alignItems: "center", gap: 5 }}>
           <span style={{ width: 9, height: 9, borderRadius: 2, background: NUTRI.GREEN }} /> Aktivitas
@@ -146,9 +148,9 @@ export function TdeeCalculator({ lang }: { lang: Lang }) {
       {/* ---- Form ---- */}
       <form
         onSubmit={handleSubmit}
-        style={{ background: "#fff", border: `1px solid ${BORDER}`, borderRadius: 18, padding: "20px 18px", boxShadow: "0 10px 34px -20px rgba(20,20,20,0.25)" }}
+        style={{ background: "var(--surface)", border: `1px solid var(--glass-hi)`, borderRadius: 20, padding: "20px 18px", boxShadow: "var(--glass-shadow)", backdropFilter: "var(--glass-blur)", WebkitBackdropFilter: "var(--glass-blur)" }}
       >
-        <h3 style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 20, textTransform: "uppercase", color: COLORS.BLACK, margin: "0 0 16px" }}>
+        <h3 style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 20, textTransform: "uppercase", color: "var(--text)", margin: "0 0 16px" }}>
           {c.title}
         </h3>
 
@@ -166,9 +168,9 @@ export function TdeeCalculator({ lang }: { lang: Lang }) {
                   style={{
                     padding: "11px 12px",
                     borderRadius: 10,
-                    border: `1.5px solid ${selected ? COLORS.RED : BORDER}`,
-                    background: selected ? COLORS.PINK_ACCENT : "#fff",
-                    color: selected ? COLORS.RED : "#6A6A6A",
+                    border: `1.5px solid ${selected ? "var(--brand)" : BORDER}`,
+                    background: selected ? "var(--brand-soft)" : "var(--surface)",
+                    color: selected ? "var(--brand)" : "var(--text-soft)",
                     fontSize: 14,
                     fontWeight: 700,
                     cursor: "pointer",
@@ -200,7 +202,7 @@ export function TdeeCalculator({ lang }: { lang: Lang }) {
                   style={{ ...inputStyle(), paddingRight: 34 }}
                   min={0}
                 />
-                <span style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", fontSize: 11, color: "#A0A0A0" }}>
+                <span style={{ position: "absolute", right: 10, top: "50%", transform: "translateY(-50%)", fontSize: 11, color: "var(--text-faint)" }}>
                   {f.unit}
                 </span>
               </div>
@@ -227,13 +229,13 @@ export function TdeeCalculator({ lang }: { lang: Lang }) {
         </div>
 
         {error && (
-          <p style={{ fontSize: 13, color: COLORS.RED, margin: "0 0 12px" }}>{error}</p>
+          <p style={{ fontSize: 13, color: "var(--brand)", margin: "0 0 12px" }}>{error}</p>
         )}
 
         <button
           type="submit"
           className="sc-btn-primary"
-          style={{ width: "100%", background: COLORS.RED, color: "#fff", borderRadius: 12, padding: "13px 18px", fontSize: 15, fontWeight: 700, cursor: "pointer" }}
+          style={{ width: "100%", background: "var(--brand)", color: "var(--on-brand)", borderRadius: 12, padding: "13px 18px", fontSize: 15, fontWeight: 700, cursor: "pointer" }}
         >
           {result ? c.recalc : c.submit} →
         </button>
@@ -241,8 +243,8 @@ export function TdeeCalculator({ lang }: { lang: Lang }) {
 
       {/* ---- Result ---- */}
       {result && (
-        <div id="tdee-result" style={{ background: "#fff", border: `1px solid ${BORDER}`, borderRadius: 18, padding: "22px 18px", scrollMarginTop: 80 }}>
-          <h3 style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 22, textTransform: "uppercase", color: COLORS.BLACK, margin: "0 0 18px" }}>
+        <div id="tdee-result" style={{ background: "var(--surface)", border: `1px solid var(--glass-hi)`, borderRadius: 20, padding: "22px 18px", scrollMarginTop: 80, boxShadow: "var(--glass-shadow)", backdropFilter: "var(--glass-blur)", WebkitBackdropFilter: "var(--glass-blur)" }}>
+          <h3 style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 22, textTransform: "uppercase", color: "var(--text)", margin: "0 0 18px" }}>
             {c.resultTitle}
           </h3>
 
@@ -251,10 +253,10 @@ export function TdeeCalculator({ lang }: { lang: Lang }) {
             <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
               <div style={{ border: `1px solid ${BORDER}`, borderRadius: 12, padding: "12px 14px" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
-                  <span style={{ fontSize: 12, fontWeight: 700, color: "#6A6A6A", textTransform: "uppercase", letterSpacing: ".04em" }}>{c.bmrLabel}</span>
+                  <span style={{ fontSize: 12, fontWeight: 700, color: "var(--text-soft)", textTransform: "uppercase", letterSpacing: ".04em" }}>{c.bmrLabel}</span>
                   <Kcal value={result.bmr} size={24} />
                 </div>
-                <p style={{ fontSize: 11.5, color: "#9A9A9A", margin: "4px 0 0", lineHeight: 1.4 }}>{c.bmrDesc}</p>
+                <p style={{ fontSize: 11.5, color: "var(--text-faint)", margin: "4px 0 0", lineHeight: 1.4 }}>{c.bmrDesc}</p>
               </div>
               <div style={{ border: `1px solid ${NUTRI.GREEN_TINT}`, background: NUTRI.GREEN_TINT, borderRadius: 12, padding: "12px 14px" }}>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline" }}>
@@ -267,7 +269,7 @@ export function TdeeCalculator({ lang }: { lang: Lang }) {
           </div>
 
           {/* Goals */}
-          <span style={{ fontSize: 12, fontWeight: 700, color: "#6A6A6A", textTransform: "uppercase", letterSpacing: ".05em", display: "block", marginBottom: 10 }}>
+          <span style={{ fontSize: 12, fontWeight: 700, color: "var(--text-soft)", textTransform: "uppercase", letterSpacing: ".05em", display: "block", marginBottom: 10 }}>
             {c.goalsTitle}
           </span>
           <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: 8, marginBottom: 18 }}>
@@ -291,8 +293,8 @@ export function TdeeCalculator({ lang }: { lang: Lang }) {
                   style={{
                     textAlign: "left",
                     borderRadius: 12,
-                    border: `1.5px solid ${selected ? COLORS.RED : BORDER}`,
-                    background: selected ? COLORS.PINK_ACCENT : "#fff",
+                    border: `1.5px solid ${selected ? "var(--brand)" : BORDER}`,
+                    background: selected ? "var(--brand-soft)" : "var(--surface)",
                     padding: "12px 10px",
                     cursor: "pointer",
                     display: "flex",
@@ -300,9 +302,9 @@ export function TdeeCalculator({ lang }: { lang: Lang }) {
                     gap: 4,
                   }}
                 >
-                  <span style={{ fontSize: 11.5, fontWeight: 700, color: selected ? COLORS.RED : "#6A6A6A" }}>{name}</span>
-                  <Kcal value={val} size={22} color={selected ? COLORS.RED : COLORS.BLACK} />
-                  <span style={{ fontSize: 10, color: "#9A9A9A", lineHeight: 1.3 }}>{note}</span>
+                  <span style={{ fontSize: 11.5, fontWeight: 700, color: selected ? "var(--brand)" : "var(--text-soft)" }}>{name}</span>
+                  <Kcal value={val} size={22} color={selected ? "var(--brand)" : "var(--text)"} />
+                  <span style={{ fontSize: 10, color: "var(--text-faint)", lineHeight: 1.3 }}>{note}</span>
                 </button>
               );
             })}
@@ -311,10 +313,10 @@ export function TdeeCalculator({ lang }: { lang: Lang }) {
           {/* Macro suggestion */}
           {macros && macroKcalTotal > 0 && (
             <div style={{ border: `1px solid ${BORDER}`, borderRadius: 12, padding: "14px" }}>
-              <span style={{ fontSize: 12, fontWeight: 700, color: "#6A6A6A", textTransform: "uppercase", letterSpacing: ".05em", display: "block", marginBottom: 4 }}>
+              <span style={{ fontSize: 12, fontWeight: 700, color: "var(--text-soft)", textTransform: "uppercase", letterSpacing: ".05em", display: "block", marginBottom: 4 }}>
                 {c.macroTitle}
               </span>
-              <span style={{ fontSize: 11, color: "#9A9A9A", display: "block", marginBottom: 12 }}>
+              <span style={{ fontSize: 11, color: "var(--text-faint)", display: "block", marginBottom: 12 }}>
                 {c.macroFor((goal === "fat_loss" ? c.goalFatLoss : goal === "muscle_gain" ? c.goalMuscleGain : c.goalMaintain).toLowerCase())} · <Kcal value={target} size={12} /> {c.perDay}
               </span>
               {/* stacked proportion bar */}
@@ -326,11 +328,11 @@ export function TdeeCalculator({ lang }: { lang: Lang }) {
               <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
                 {macroRows.map((m) => (
                   <div key={m.label} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", fontSize: 13 }}>
-                    <span style={{ display: "flex", alignItems: "center", gap: 8, color: "#4A4A4A" }}>
+                    <span style={{ display: "flex", alignItems: "center", gap: 8, color: "var(--text-muted)" }}>
                       <span style={{ width: 10, height: 10, borderRadius: 3, background: m.color }} />
                       {m.label}
                     </span>
-                    <span style={{ color: COLORS.BLACK, fontWeight: 600, fontVariantNumeric: "tabular-nums" }}>
+                    <span style={{ color: "var(--text)", fontWeight: 600, fontVariantNumeric: "tabular-nums" }}>
                       {m.grams} g · {Math.round((m.kcal / macroKcalTotal) * 100)}%
                     </span>
                   </div>
@@ -339,7 +341,7 @@ export function TdeeCalculator({ lang }: { lang: Lang }) {
             </div>
           )}
 
-          <p style={{ fontSize: 11, color: "#9A9A9A", lineHeight: 1.6, margin: "16px 0 0", borderLeft: `3px solid ${NUTRI.GREEN}`, paddingLeft: 10 }}>
+          <p style={{ fontSize: 11, color: "var(--text-faint)", lineHeight: 1.6, margin: "16px 0 0", borderLeft: `3px solid ${NUTRI.GREEN}`, paddingLeft: 10 }}>
             {c.disclaimer}
           </p>
         </div>

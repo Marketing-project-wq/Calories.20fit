@@ -16,6 +16,8 @@ export const copy = {
       tracker: "Tracker",
       mealPlan: "Meal Plan",
       history: "Riwayat",
+      themeDark: "Mode gelap",
+      themeLight: "Mode terang",
     },
 
     // ---- Landing (/) ----
@@ -209,6 +211,8 @@ export const copy = {
       tracker: "Tracker",
       mealPlan: "Meal Plan",
       history: "History",
+      themeDark: "Dark mode",
+      themeLight: "Light mode",
     },
 
     landing: {

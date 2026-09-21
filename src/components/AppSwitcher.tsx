@@ -15,10 +15,10 @@ export const AppSwitcher = ({ currentKey }: AppSwitcherProps) => {
             key={subdomain.key}
             href={subdomain.url}
             className="p-3 rounded-lg text-center transition-all hover:bg-gray-100"
-            style={{ backgroundColor: isActive ? "#FCEBED" : "transparent" }}
+            style={{ backgroundColor: isActive ? "var(--brand-soft)" : "transparent" }}
           >
             <div className="mb-1" style={{ display: "flex", justifyContent: "center" }}><Icon name={subdomain.icon} size={22} /></div>
-            <div className="text-xs font-semibold" style={{ color: isActive ? COLORS.RED : "#606060" }}>
+            <div className="text-xs font-semibold" style={{ color: isActive ? "var(--brand)" : "#606060" }}>
               {subdomain.name}
             </div>
           </a>

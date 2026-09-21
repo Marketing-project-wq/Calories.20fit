@@ -27,9 +27,9 @@ export function LandingPage({ lang }: { lang: Lang }) {
   const featured = getFeatured(articles, 3);
 
   return (
-    <div style={{ background: "#EFEDEA" }}>
+    <div style={{ background: "var(--bg)" }}>
       {/* ---------- Section 1: Hero + calculator ---------- */}
-      <section style={{ position: "relative", overflow: "hidden", background: "linear-gradient(180deg,#FFFFFF 0%,#F6F4F1 100%)" }}>
+      <section style={{ position: "relative", overflow: "hidden", background: "linear-gradient(180deg,var(--surface) 0%,var(--surface-2) 100%)" }}>
         <Orbs />
         <div
           style={{
@@ -69,17 +69,17 @@ export function LandingPage({ lang }: { lang: Lang }) {
                 fontSize: "clamp(34px, 6vw, 56px)",
                 lineHeight: 0.98,
                 textTransform: "uppercase",
-                color: COLORS.BLACK,
+                color: "var(--text)",
                 margin: "0 0 16px",
                 whiteSpace: "pre-line",
               }}
             >
               {c.landing.heroTitle}
             </h1>
-            <p style={{ fontSize: 16, lineHeight: 1.6, color: "#4A4A4A", maxWidth: 460, margin: "0 0 20px" }}>
+            <p style={{ fontSize: 16, lineHeight: 1.6, color: "var(--text-muted)", maxWidth: 460, margin: "0 0 20px" }}>
               {c.landing.heroSub}
             </p>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: "#6A6A6A" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: "var(--text-soft)" }}>
               <Icon name="flame" size={17} color={COLORS.RED} />
               <span>{c.common.poweredBy}</span>
             </div>
@@ -98,7 +98,7 @@ export function LandingPage({ lang }: { lang: Lang }) {
             borderRadius: 22,
             overflow: "hidden",
             background: "linear-gradient(135deg,#141414 0%,#2a1210 100%)",
-            color: "#fff",
+            color: "var(--on-brand)",
             padding: "32px 26px",
           }}
         >
@@ -127,13 +127,13 @@ export function LandingPage({ lang }: { lang: Lang }) {
           ) : (
             <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center" }}>
               <a
-                href={URLS.SIGN_UP}
+                href="/register"
                 className="sc-link-btn"
-                style={{ background: COLORS.RED, color: "#fff", borderRadius: 12, padding: "13px 22px", fontSize: 15, fontWeight: 700, textDecoration: "none" }}
+                style={{ background: "var(--brand)", color: "var(--on-brand)", borderRadius: 12, padding: "13px 22px", fontSize: 15, fontWeight: 700, textDecoration: "none" }}
               >
                 {c.teaser.ctaPrimary} →
               </a>
-              <a href={URLS.LOGIN} style={{ color: "#fff", fontSize: 14, fontWeight: 600, textDecoration: "underline", opacity: 0.9 }}>
+              <a href="/login" style={{ color: "var(--on-brand)", fontSize: 14, fontWeight: 600, textDecoration: "underline", opacity: 0.9 }}>
                 {c.teaser.ctaSecondary}
               </a>
             </div>
@@ -145,12 +145,12 @@ export function LandingPage({ lang }: { lang: Lang }) {
       <section style={{ maxWidth: MAXW, margin: "0 auto", padding: "36px 20px 8px" }}>
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", gap: 12, marginBottom: 18 }}>
           <div>
-            <h2 style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: "clamp(24px,4vw,32px)", textTransform: "uppercase", color: COLORS.BLACK, margin: "0 0 4px" }}>
+            <h2 style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: "clamp(24px,4vw,32px)", textTransform: "uppercase", color: "var(--text)", margin: "0 0 4px" }}>
               {c.landing.previewArticlesTitle}
             </h2>
-            <p style={{ fontSize: 14, color: "#6A6A6A", margin: 0 }}>{c.landing.previewArticlesSub}</p>
+            <p style={{ fontSize: 14, color: "var(--text-soft)", margin: 0 }}>{c.landing.previewArticlesSub}</p>
           </div>
-          <Link href={ROUTES.ARTICLES} style={{ fontSize: 13, fontWeight: 700, color: COLORS.RED, whiteSpace: "nowrap" }} className="sc-link-btn">
+          <Link href={ROUTES.ARTICLES} style={{ fontSize: 13, fontWeight: 700, color: "var(--brand)", whiteSpace: "nowrap" }} className="sc-link-btn">
             {c.landing.previewArticlesCta} →
           </Link>
         </div>
@@ -160,7 +160,7 @@ export function LandingPage({ lang }: { lang: Lang }) {
               key={a.slug}
               href={ROUTES.article(a.slug)}
               className="sc-card"
-              style={{ display: "block", background: "#fff", border: "1px solid #E4E0DB", borderRadius: 16, overflow: "hidden", textDecoration: "none" }}
+              style={{ display: "block", background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 16, overflow: "hidden", textDecoration: "none" }}
             >
               <div style={{ height: 96, position: "relative", overflow: "hidden", background: `linear-gradient(135deg, ${a.accent}22, ${a.accent}0a)`, display: "flex", alignItems: "center", justifyContent: "center", color: a.accent }}>
                 <Icon name={a.coverIcon} size={34} strokeWidth={1.5} />
@@ -179,11 +179,11 @@ export function LandingPage({ lang }: { lang: Lang }) {
                   </span>
                   {a.isPremium && <Icon name="lock" size={12} color="#9A9A9A" style={{ marginLeft: 4 }} />}
                 </div>
-                <h3 style={{ fontSize: 16, fontWeight: 700, color: COLORS.BLACK, lineHeight: 1.25, margin: "0 0 8px", fontFamily: "Manrope, sans-serif" }}>
+                <h3 style={{ fontSize: 16, fontWeight: 700, color: "var(--text)", lineHeight: 1.25, margin: "0 0 8px", fontFamily: "Manrope, sans-serif" }}>
                   {a.title[lang]}
                 </h3>
-                <p style={{ fontSize: 13, color: "#6A6A6A", lineHeight: 1.5, margin: "0 0 10px" }}>{a.excerpt[lang]}</p>
-                <span style={{ fontSize: 12, color: "#9A9A9A", display: "inline-flex", alignItems: "center", gap: 5 }}>
+                <p style={{ fontSize: 13, color: "var(--text-soft)", lineHeight: 1.5, margin: "0 0 10px" }}>{a.excerpt[lang]}</p>
+                <span style={{ fontSize: 12, color: "var(--text-faint)", display: "inline-flex", alignItems: "center", gap: 5 }}>
                   <Icon name="clock" size={12} /> {a.readTimeMinutes} {lang === "id" ? "menit baca" : "min read"}
                 </span>
               </div>
@@ -200,20 +200,20 @@ export function LandingPage({ lang }: { lang: Lang }) {
             gridTemplateColumns: "repeat(auto-fit,minmax(280px,1fr))",
             gap: 24,
             alignItems: "center",
-            background: "#fff",
-            border: "1px solid #E4E0DB",
+            background: "var(--surface)",
+            border: "1px solid var(--border)",
             borderRadius: 22,
             padding: "28px 26px",
           }}
         >
           <div>
-            <h2 style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: "clamp(24px,4vw,34px)", textTransform: "uppercase", color: COLORS.BLACK, margin: "0 0 8px", display: "flex", alignItems: "center", gap: 10 }}>
+            <h2 style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: "clamp(24px,4vw,34px)", textTransform: "uppercase", color: "var(--text)", margin: "0 0 8px", display: "flex", alignItems: "center", gap: 10 }}>
               <Icon name="camera" size={24} color={COLORS.RED} /> {c.landing.previewScanTitle}
             </h2>
-            <p style={{ fontSize: 15, color: "#5A5A5A", lineHeight: 1.6, margin: "0 0 16px" }}>{c.landing.previewScanSub}</p>
+            <p style={{ fontSize: 15, color: "var(--text-muted)", lineHeight: 1.6, margin: "0 0 16px" }}>{c.landing.previewScanSub}</p>
             <ul style={{ listStyle: "none", padding: 0, margin: "0 0 20px", display: "flex", flexDirection: "column", gap: 8 }}>
               {c.landing.previewScanBullets.map((b) => (
-                <li key={b} style={{ display: "flex", gap: 10, alignItems: "flex-start", fontSize: 14, color: "#3A3A3A" }}>
+                <li key={b} style={{ display: "flex", gap: 10, alignItems: "flex-start", fontSize: 14, color: "var(--text-muted)" }}>
                   <span style={{ color: NUTRI.GREEN_DARK, fontWeight: 700 }}>✓</span>
                   <span>{b}</span>
                 </li>
@@ -223,20 +223,20 @@ export function LandingPage({ lang }: { lang: Lang }) {
               <Link
                 href={ROUTES.SCAN}
                 className="sc-btn-primary"
-                style={{ display: "inline-block", background: COLORS.RED, color: "#fff", borderRadius: 12, padding: "12px 22px", fontSize: 15, fontWeight: 700, textDecoration: "none" }}
+                style={{ display: "inline-block", background: "var(--brand)", color: "var(--on-brand)", borderRadius: 12, padding: "12px 22px", fontSize: 15, fontWeight: 700, textDecoration: "none" }}
               >
                 {c.landing.previewScanCta} →
               </Link>
             ) : (
               <div style={{ display: "flex", flexWrap: "wrap", gap: 12, alignItems: "center" }}>
                 <a
-                  href={URLS.SIGN_UP}
+                  href="/register"
                   className="sc-link-btn"
-                  style={{ display: "inline-block", background: COLORS.RED, color: "#fff", borderRadius: 12, padding: "12px 22px", fontSize: 15, fontWeight: 700, textDecoration: "none" }}
+                  style={{ display: "inline-block", background: "var(--brand)", color: "var(--on-brand)", borderRadius: 12, padding: "12px 22px", fontSize: 15, fontWeight: 700, textDecoration: "none" }}
                 >
                   {c.teaser.ctaPrimary} →
                 </a>
-                <a href={URLS.LOGIN} style={{ color: COLORS.BLACK, fontSize: 13, fontWeight: 600, textDecoration: "underline", opacity: 0.75 }}>
+                <a href="/login" style={{ color: "var(--text)", fontSize: 13, fontWeight: 600, textDecoration: "underline", opacity: 0.75 }}>
                   {c.teaser.ctaSecondary}
                 </a>
               </div>
@@ -244,13 +244,13 @@ export function LandingPage({ lang }: { lang: Lang }) {
           </div>
           {/* Simple scan mock */}
           <div style={{ display: "flex", justifyContent: "center" }}>
-            <div style={{ width: "100%", maxWidth: 280, border: "1px solid #E4E0DB", borderRadius: 18, overflow: "hidden", boxShadow: "0 16px 40px -22px rgba(20,20,20,0.3)" }}>
-              <div style={{ height: 120, background: "linear-gradient(135deg,#FCEBED,#DCFCE7)", display: "flex", alignItems: "center", justifyContent: "center", color: COLORS.RED }}><Icon name="bowl" size={44} strokeWidth={1.4} /></div>
+            <div style={{ width: "100%", maxWidth: 280, border: "1px solid var(--border)", borderRadius: 18, overflow: "hidden", boxShadow: "0 16px 40px -22px rgba(20,20,20,0.3)" }}>
+              <div style={{ height: 120, background: "linear-gradient(135deg,#FCEBED,#DCFCE7)", display: "flex", alignItems: "center", justifyContent: "center", color: "var(--brand)" }}><Icon name="bowl" size={44} strokeWidth={1.4} /></div>
               <div style={{ padding: "14px 16px" }}>
-                <div style={{ fontSize: 14, fontWeight: 700, color: COLORS.BLACK, marginBottom: 8 }}>Nasi Goreng</div>
+                <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text)", marginBottom: 8 }}>Nasi Goreng</div>
                 <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 10 }}>
-                  <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 30, color: COLORS.RED, fontVariantNumeric: "tabular-nums" }}>~400</span>
-                  <span style={{ fontSize: 12, color: "#9A9A9A" }}>kkal / porsi</span>
+                  <span style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 30, color: "var(--brand)", fontVariantNumeric: "tabular-nums" }}>~400</span>
+                  <span style={{ fontSize: 12, color: "var(--text-faint)" }}>kkal / porsi</span>
                 </div>
                 <div style={{ display: "flex", gap: 6 }}>
                   {[
@@ -258,9 +258,9 @@ export function LandingPage({ lang }: { lang: Lang }) {
                     { l: "K", v: "50g", col: NUTRI.AMBER },
                     { l: "L", v: "17g", col: COLORS.RED },
                   ].map((m) => (
-                    <div key={m.l} style={{ flex: 1, textAlign: "center", background: "#F6F4F1", borderRadius: 8, padding: "6px 0" }}>
+                    <div key={m.l} style={{ flex: 1, textAlign: "center", background: "var(--surface-2)", borderRadius: 8, padding: "6px 0" }}>
                       <div style={{ fontSize: 10, color: m.col, fontWeight: 700 }}>{m.l}</div>
-                      <div style={{ fontSize: 12, color: COLORS.BLACK, fontVariantNumeric: "tabular-nums" }}>{m.v}</div>
+                      <div style={{ fontSize: 12, color: "var(--text)", fontVariantNumeric: "tabular-nums" }}>{m.v}</div>
                     </div>
                   ))}
                 </div>

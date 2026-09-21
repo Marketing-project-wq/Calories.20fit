@@ -13,7 +13,7 @@ export function SiteFooter({ lang }: { lang: Lang }) {
     <footer style={{ background: "#141414", color: "#EFEDEA", marginTop: 48 }}>
       <div style={{ maxWidth: 1100, margin: "0 auto", padding: "36px 24px" }}>
         <div style={{ display: "flex", alignItems: "center", gap: 10, marginBottom: 12 }}>
-          <a href={URLS.MY_20FIT} style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 22, color: "#D62828" }}>
+          <a href={URLS.MY_20FIT} style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 22, color: "var(--brand-bright)" }}>
             20FIT
           </a>
           <span style={{ width: 1, height: 18, background: "#3A3A3A" }} />

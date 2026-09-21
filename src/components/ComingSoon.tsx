@@ -15,11 +15,11 @@ export function ComingSoon({ lang, title, icon = "wrench" }: { lang: Lang; title
   return (
     <div>
       <div style={{ maxWidth: 560, margin: "0 auto", padding: "72px 20px", textAlign: "center" }}>
-        <div style={{ marginBottom: 12, color: "#B0ABA4" }}><Icon name={icon} size={48} /></div>
-        <h1 style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 34, textTransform: "uppercase", color: COLORS.BLACK, margin: "0 0 8px" }}>
+        <div style={{ marginBottom: 12, color: "var(--text-faint)" }}><Icon name={icon} size={48} /></div>
+        <h1 style={{ fontFamily: "Barlow Condensed, sans-serif", fontSize: 34, textTransform: "uppercase", color: "var(--text)", margin: "0 0 8px" }}>
           {title || c.comingSoonTitle}
         </h1>
-        <p style={{ fontSize: 15, color: "#6A6A6A", margin: "0 0 22px" }}>{c.comingSoonTitle}</p>
+        <p style={{ fontSize: 15, color: "var(--text-soft)", margin: "0 0 22px" }}>{c.comingSoonTitle}</p>
         <Link
           href={ROUTES.HOME}
           className="sc-link-btn"
