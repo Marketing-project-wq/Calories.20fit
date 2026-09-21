@@ -40,7 +40,8 @@ export type IconName =
   | "moon"
   | "home"
   | "ticket"
-  | "users";
+  | "users"
+  | "logout";
 
 const PATHS: Record<IconName, JSX.Element> = {
   lock: (
@@ -258,6 +259,13 @@ const PATHS: Record<IconName, JSX.Element> = {
       <path d="M3 20a6 6 0 0 1 12 0" />
       <path d="M15.5 6a3.2 3.2 0 0 1 0 6.2" />
       <path d="M16 14.2c2.8.4 4.5 2.4 5 5.8" />
+    </>
+  ),
+  logout: (
+    <>
+      <path d="M10 20H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h4" />
+      <path d="M16 16l4-4-4-4" />
+      <line x1="20" y1="12" x2="9" y2="12" />
     </>
   ),
 };

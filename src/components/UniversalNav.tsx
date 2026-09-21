@@ -19,8 +19,11 @@
 import { useEffect, useRef, useState } from "react";
 import { Icon } from "./Icon";
 import { UNIVERSAL_NAV_ITEMS, getCurrentAppId } from "../lib/universalNav";
-import { getSsoTokens, appendSsoFragment, SsoTokens } from "../lib/supabase";
-import { generateSsoRelayToken } from "../lib/ssoRelay";
+import { appendSsoFragment } from "../lib/supabase";
+import { useSsoTokens, navigateWithSso } from "../lib/ssoRelay";
+import { announceDropdownOpen, onOtherDropdownOpen } from "../lib/dropdownCoordinator";
+
+const DROPDOWN_ID = "universal-nav";
 
 const MENU_BG = "#FFFFFF";
 const CARD_HOVER = "#F5F5F5";
@@ -36,29 +39,25 @@ function WaffleIcon() {
 
 export function UniversalNav() {
   const [open, setOpen] = useState(false);
-  const [ssoTokens, setSsoTokens] = useState<SsoTokens | null>(null);
+  // Kept fresh across sign-in/out (native /login, AuthNav sign-out) rather
+  // than fetched once at mount — see useSsoTokens() in ssoRelay.ts.
+  const ssoTokens = useSsoTokens();
   const rootRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const currentApp = getCurrentAppId();
   const currentItem = UNIVERSAL_NAV_ITEMS.find((i) => i.id === currentApp);
 
-  // If they're already signed in here, hand that session to whichever 20FIT
-  // app they switch to next — same Supabase project, so no separate sign-up
-  // on the other side (see appendSsoFragment()).
-  useEffect(() => {
-    let cancelled = false;
-    getSsoTokens().then((t) => {
-      if (!cancelled) setSsoTokens(t);
-    });
-    return () => {
-      cancelled = true;
-    };
-  }, []);
-
   // Focus the first item when the menu opens, so keyboard users land inside it.
   useEffect(() => {
     if (open) menuRef.current?.querySelector<HTMLElement>("a")?.focus();
   }, [open]);
+
+  // Only one nav-bar dropdown (this one, AuthNav's account menu) shows open
+  // at a time — see src/lib/dropdownCoordinator.ts.
+  useEffect(() => {
+    if (open) announceDropdownOpen(DROPDOWN_ID);
+  }, [open]);
+  useEffect(() => onOtherDropdownOpen(DROPDOWN_ID, () => setOpen(false)), []);
 
   useEffect(() => {
     if (!open) return;
@@ -142,15 +141,7 @@ export function UniversalNav() {
                     if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
                     e.preventDefault();
                     setOpen(false);
-                    // Best-effort: also relay a one-time sso_token, forward-compatible with
-                    // subdomains that adopt sso-consume (see src/lib/ssoRelay.ts) — the
-                    // #fragment hand-off above still carries the session either way.
-                    const targetHost = new URL(item.url).hostname;
-                    const relayToken = await generateSsoRelayToken(targetHost);
-                    const withRelay = relayToken
-                      ? `${item.url}${item.url.includes("?") ? "&" : "?"}sso_token=${encodeURIComponent(relayToken)}`
-                      : item.url;
-                    window.location.href = appendSsoFragment(withRelay, ssoTokens);
+                    await navigateWithSso(item.url, ssoTokens);
                   }}
                   className="un-card"
                   style={{

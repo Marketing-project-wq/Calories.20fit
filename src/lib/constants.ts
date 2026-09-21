@@ -57,6 +57,12 @@ export const URLS = {
   LOGIN: `${MY20FIT}/login?next=calories`,
   SIGN_UP: `${MY20FIT}/login?mode=up&next=calories`,
   TOPUP: `${MY20FIT}/calories`,
+  // Profile Hub pages, all on my.20fit.id (PROFILE20FIT repo — out of scope
+  // here, read-only). Linked via navigateWithSso() so the session carries
+  // over; the pages themselves are that repo's to build/maintain.
+  MY_PROFILE: `${MY20FIT}/profile`,
+  MY_PURCHASES: `${MY20FIT}/purchases`,
+  MY_SETTINGS: `${MY20FIT}/settings`,
 };
 
 export const API_BASE = (import.meta.env.VITE_API_URL as string) || MY20FIT;
