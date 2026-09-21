@@ -7,6 +7,11 @@
 // tokens) so the bar looks identical on every subdomain regardless of each
 // site's own light/dark theme.
 //
+// When the user is signed in here, every menu link hands that same session
+// to whatever 20FIT app they switch to (see appendSsoFragment() in
+// src/lib/supabase.ts) — one shared Supabase project across the whole
+// ecosystem, so switching apps never means signing up/in again.
+//
 // This repo (calorietracker.20fit.id / Marketing-project-wq/Calories.20fit)
 // is the only subdomain this session can edit. The other nine subdomains
 // listed in UNIVERSAL_NAV_ITEMS live in separate repos/Railway services and
@@ -15,6 +20,7 @@
 import { useEffect, useRef, useState } from "react";
 import { Icon } from "./Icon";
 import { UNIVERSAL_NAV_ITEMS, getCurrentAppId } from "../lib/universalNav";
+import { getSsoTokens, appendSsoFragment, SsoTokens } from "../lib/supabase";
 
 const BAR_BG = "#111111";
 const BAR_TEXT = "#FFFFFF";
@@ -32,10 +38,24 @@ function WaffleIcon() {
 
 export function UniversalNav() {
   const [open, setOpen] = useState(false);
+  const [ssoTokens, setSsoTokens] = useState<SsoTokens | null>(null);
   const rootRef = useRef<HTMLDivElement>(null);
   const menuRef = useRef<HTMLDivElement>(null);
   const currentApp = getCurrentAppId();
   const currentItem = UNIVERSAL_NAV_ITEMS.find((i) => i.id === currentApp);
+
+  // If they're already signed in here, hand that session to whichever 20FIT
+  // app they switch to next — same Supabase project, so no separate sign-up
+  // on the other side (see appendSsoFragment()).
+  useEffect(() => {
+    let cancelled = false;
+    getSsoTokens().then((t) => {
+      if (!cancelled) setSsoTokens(t);
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   // Focus the first item when the menu opens, so keyboard users land inside it.
   useEffect(() => {
@@ -129,7 +149,7 @@ export function UniversalNav() {
                 <a
                   key={item.id}
                   role="link"
-                  href={item.url}
+                  href={isActive ? item.url : appendSsoFragment(item.url, ssoTokens)}
                   aria-current={isActive ? "page" : undefined}
                   onClick={(e) => {
                     if (isActive) {
