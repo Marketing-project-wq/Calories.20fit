@@ -15,7 +15,6 @@ export interface PlanMealItem {
   c: number;
   f: number;
   emoji: string | null;
-  photoUrl: string | null;
   servings: number | null;
 }
 
@@ -64,7 +63,6 @@ function toItem(r: ContentRecipe): PlanMealItem {
     c: r.macros.c ?? 0,
     f: r.macros.f ?? 0,
     emoji: r.emoji,
-    photoUrl: r.photo_url,
     servings: r.servings,
   };
 }
