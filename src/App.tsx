@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { ROUTES } from "./lib/constants";
-import { Lang } from "./lib/i18n";
+import { Lang, readInitialLang, persistLang } from "./lib/i18n";
 import { cc } from "./lib/calorieCopy";
 import { useAuth } from "./hooks/useAuth";
 import { useTheme, LOGO } from "./lib/theme";
@@ -79,7 +79,11 @@ function MemberArea({ lang }: { lang: Lang }) {
 }
 
 export function App() {
-  const [lang, setLang] = useState<Lang>("id");
+  const [lang, setLangState] = useState<Lang>(() => readInitialLang());
+  const setLang = (l: Lang) => {
+    setLangState(l);
+    persistLang(l);
+  };
   const nav = cc(lang).nav;
   const { user, isAuthenticated, isLoading } = useAuth();
   const { theme, toggleTheme } = useTheme();
