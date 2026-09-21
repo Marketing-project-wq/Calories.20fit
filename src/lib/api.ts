@@ -75,7 +75,7 @@ export const apiClient = {
   // grants Access-Control-Allow-Credentials to /api/pub/* and /api/menu/*
   // (server.js:220-234), so we must NOT send `credentials: "include"` here or
   // the browser blocks the cross-origin response.
-  async scanPhoto(file: File): Promise<ScanResult> {
+  async scanPhoto(file: File, lang: string): Promise<ScanResult> {
     const session = await getSession();
     if (!session?.access_token) throw new Error("login_required");
     const image = await fileToBase64(file);
@@ -85,7 +85,7 @@ export const apiClient = {
         "Authorization": `Bearer ${session.access_token}`,
         "Content-Type": "application/json",
       },
-      body: JSON.stringify({ action: "food", image }),
+      body: JSON.stringify({ action: "food", image, lang }),
     });
     // /api/scan/ai returns 402 { code:"scan_limit" } when quota is exhausted,
     // 401 { session_expired } when the token is gone (server.js:7430-7471).
