@@ -134,7 +134,6 @@ export function App() {
         <span className="app-orb app-orb-2" />
         <span className="app-orb app-orb-3" />
       </div>
-      <UniversalNav />
       <div className="sc-nav-glass" style={{ borderBottom: "1px solid var(--nav-border)", position: "sticky", top: 0, zIndex: 50, boxShadow: "0 4px 24px var(--shadow-sm)" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto", padding: "8px 16px", display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "8px 12px" }}>
           {/* Brand + nav */}
@@ -178,8 +177,9 @@ export function App() {
             </nav>
           </div>
 
-          {/* Theme + language + auth */}
+          {/* App switcher + theme + language + auth */}
           <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+            <UniversalNav />
             <button
               onClick={toggleTheme}
               aria-label={theme === "dark" ? nav.themeLight : nav.themeDark}
