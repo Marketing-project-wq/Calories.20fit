@@ -1,5 +1,28 @@
 export type Lang = "id" | "en";
 
+// Persisted language choice — same localStorage convention as theme.tsx's
+// readInitialTheme(): read once on init so a hard refresh keeps whatever the
+// user last picked, instead of always resetting to "id".
+const LANG_STORAGE_KEY = "lang";
+
+export function readInitialLang(): Lang {
+  try {
+    const stored = localStorage.getItem(LANG_STORAGE_KEY);
+    if (stored === "id" || stored === "en") return stored;
+  } catch {
+    /* private mode / blocked storage — fall through */
+  }
+  return "id";
+}
+
+export function persistLang(lang: Lang): void {
+  try {
+    localStorage.setItem(LANG_STORAGE_KEY, lang);
+  } catch {
+    /* ignore */
+  }
+}
+
 export const t = {
   id: {
     // App tabs
