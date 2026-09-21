@@ -163,7 +163,7 @@ export function CaloriesTracker({ lang }: { lang: Lang }) {
     if (file.size > 5 * 1024 * 1024) { setScanError(tx(lang, "Photo too large (max 5MB).", "Foto terlalu besar (maks 5MB).")); return; }
     setScanning(true); setScanError(null); setScanResult(null);
     try {
-      const res = await apiClient.scanPhoto(file);
+      const res = await apiClient.scanPhoto(file, lang);
       setScanResult(res);
       apiClient.getQuota().then(setQuota).catch(() => {});
     } catch (err) {
