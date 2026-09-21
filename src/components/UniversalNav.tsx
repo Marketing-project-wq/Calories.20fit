@@ -20,6 +20,7 @@ import { useEffect, useRef, useState } from "react";
 import { Icon } from "./Icon";
 import { UNIVERSAL_NAV_ITEMS, getCurrentAppId } from "../lib/universalNav";
 import { getSsoTokens, appendSsoFragment, SsoTokens } from "../lib/supabase";
+import { generateSsoRelayToken } from "../lib/ssoRelay";
 
 const MENU_BG = "#FFFFFF";
 const CARD_HOVER = "#F5F5F5";
@@ -131,11 +132,25 @@ export function UniversalNav() {
                   role="link"
                   href={isActive ? item.url : appendSsoFragment(item.url, ssoTokens)}
                   aria-current={isActive ? "page" : undefined}
-                  onClick={(e) => {
+                  onClick={async (e) => {
                     if (isActive) {
                       e.preventDefault();
                       setOpen(false);
+                      return;
                     }
+                    // Let modified clicks (new tab, etc.) behave normally on the plain href above.
+                    if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
+                    e.preventDefault();
+                    setOpen(false);
+                    // Best-effort: also relay a one-time sso_token, forward-compatible with
+                    // subdomains that adopt sso-consume (see src/lib/ssoRelay.ts) — the
+                    // #fragment hand-off above still carries the session either way.
+                    const targetHost = new URL(item.url).hostname;
+                    const relayToken = await generateSsoRelayToken(targetHost);
+                    const withRelay = relayToken
+                      ? `${item.url}${item.url.includes("?") ? "&" : "?"}sso_token=${encodeURIComponent(relayToken)}`
+                      : item.url;
+                    window.location.href = appendSsoFragment(withRelay, ssoTokens);
                   }}
                   className="un-card"
                   style={{

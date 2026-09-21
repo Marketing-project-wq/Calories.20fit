@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
+import { consumeSsoRelayToken } from "../lib/ssoRelay";
 
 export const useAuth = () => {
   const [user, setUser] = useState<any>(null);
@@ -20,6 +21,18 @@ export const useAuth = () => {
         });
         // Strip tokens dari URL untuk security
         history.replaceState(null, "", location.pathname + location.search);
+      } else {
+        // One-time relay token (sso-generate/sso-consume) — the forward-
+        // compatible path other 20FIT subdomains adopt over time; still a
+        // no-op today unless something upstream actually issues one.
+        const q = new URLSearchParams(location.search);
+        const relayToken = q.get("sso_token");
+        if (relayToken) {
+          await consumeSsoRelayToken(relayToken);
+          q.delete("sso_token");
+          const qs = q.toString();
+          history.replaceState(null, "", location.pathname + (qs ? `?${qs}` : "") + location.hash);
+        }
       }
 
       // Get current user (null jika belum login - subdomain ini bisa dipakai tanpa login)
