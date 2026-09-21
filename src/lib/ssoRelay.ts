@@ -7,10 +7,51 @@
 // (that needs my.20fit.id and the others to add their own sso-consume
 // call), so every caller here must keep sending the fragment too and treat
 // the relay token as a best-effort addition, never the only mechanism.
+import { useEffect, useState } from "react";
 import { SUPABASE } from "./constants";
-import { supabase } from "./supabase";
+import { supabase, getSsoTokens, appendSsoFragment, SsoTokens } from "./supabase";
 
 const FN_BASE = `${SUPABASE.URL}/functions/v1`;
+
+/**
+ * Current session's SSO tokens, kept fresh across sign-in/out — not just
+ * fetched once at mount, since a user can log in or out here without a full
+ * page reload (native /login page, AuthNav sign-out) and a stale null would
+ * silently drop the fragment hand-off on the next nav-bar click.
+ */
+export function useSsoTokens(): SsoTokens | null {
+  const [tokens, setTokens] = useState<SsoTokens | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    const refresh = () => getSsoTokens().then((t) => { if (!cancelled) setTokens(t); });
+    refresh();
+    const { data: sub } = supabase.auth.onAuthStateChange(refresh);
+    return () => {
+      cancelled = true;
+      sub.subscription.unsubscribe();
+    };
+  }, []);
+  return tokens;
+}
+
+/**
+ * Navigates to another 20FIT subdomain, carrying the session both ways:
+ * the proven #fragment hand-off (appendSsoFragment) and, best-effort, a
+ * one-time relay token (generateSsoRelayToken) for subdomains that adopt
+ * sso-consume over time. Falls back to a plain redirect on any failure.
+ */
+export async function navigateWithSso(url: string, ssoTokens: SsoTokens | null): Promise<void> {
+  try {
+    const targetHost = new URL(url).hostname;
+    const relayToken = await generateSsoRelayToken(targetHost);
+    const withRelay = relayToken
+      ? `${url}${url.includes("?") ? "&" : "?"}sso_token=${encodeURIComponent(relayToken)}`
+      : url;
+    window.location.href = appendSsoFragment(withRelay, ssoTokens);
+  } catch {
+    window.location.href = url;
+  }
+}
 
 /**
  * Mints a one-time relay token carrying the CURRENT session, for a redirect

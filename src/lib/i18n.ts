@@ -34,6 +34,9 @@ export const t = {
     signUp: "Daftar",
     signOut: "Keluar",
     openMy20fit: "Buka My 20FIT",
+    myProfile: "Profil Saya",
+    purchaseHistory: "Riwayat Pembelian",
+    accountSettings: "Pengaturan Akun",
     // Hero
     badge: "Scan kalori",
     heroTitle: "Foto makanan,\nlihat estimasi kalorinya",
@@ -130,6 +133,9 @@ export const t = {
     signUp: "Sign Up",
     signOut: "Sign Out",
     openMy20fit: "Open My 20FIT",
+    myProfile: "My Profile",
+    purchaseHistory: "Purchase History",
+    accountSettings: "Account Settings",
     // Hero
     badge: "Calorie scan",
     heroTitle: "Photo your food,\nsee the calorie estimate",
