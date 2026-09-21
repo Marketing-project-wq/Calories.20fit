@@ -37,7 +37,10 @@ export type IconName =
   | "drumstick"
   | "clock"
   | "sun"
-  | "moon";
+  | "moon"
+  | "home"
+  | "ticket"
+  | "users";
 
 const PATHS: Record<IconName, JSX.Element> = {
   lock: (
@@ -236,6 +239,27 @@ const PATHS: Record<IconName, JSX.Element> = {
     </>
   ),
   moon: <path d="M20 13.5A8 8 0 1 1 10.5 4a6.5 6.5 0 0 0 9.5 9.5z" />,
+  home: (
+    <>
+      <path d="M4 11.5 12 4l8 7.5" />
+      <path d="M6 10v9.5a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V10" />
+      <path d="M10 20.5v-6h4v6" />
+    </>
+  ),
+  ticket: (
+    <>
+      <path d="M3 9a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v1a2 2 0 0 0 0 4v1a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-1a2 2 0 0 0 0-4z" />
+      <line x1="14.5" y1="7" x2="14.5" y2="17" />
+    </>
+  ),
+  users: (
+    <>
+      <circle cx="9" cy="8" r="3.2" />
+      <path d="M3 20a6 6 0 0 1 12 0" />
+      <path d="M15.5 6a3.2 3.2 0 0 1 0 6.2" />
+      <path d="M16 14.2c2.8.4 4.5 2.4 5 5.8" />
+    </>
+  ),
 };
 
 export function Icon({
