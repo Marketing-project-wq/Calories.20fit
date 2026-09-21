@@ -134,11 +134,22 @@ export async function getContentRecipes(opts: { lang?: Lang; source?: "all" | "o
 // from that app's own router (src/router.tsx: `resep/${source}/${id}` — a
 // two-segment path, not the joined key). Used to deep-link a recipe card
 // straight to its full page on recipe.20fit.id.
-export function recipeDetailUrl(key: string): string {
+//
+// recipe.20fit.id (repo MENU, src/lib/auth.tsx) reads the SAME SSO hand-off
+// this app's own useAuth.ts consumes from my.20fit.id — a
+// #access_token=...&refresh_token=... URL fragment, same Supabase project
+// (cpvzwqptzcxnwzfzgrmt) — and logs the tab in on load. So when `tokens` is
+// passed (the current, already-authenticated user's session — this page is
+// itself gated behind login, see AccountGate), the link hands that session
+// straight to recipe.20fit.id instead of leaving them signed out there.
+export function recipeDetailUrl(key: string, tokens?: { access_token: string; refresh_token: string } | null): string {
   const i = key.indexOf(":");
   const source = i > 0 ? key.slice(0, i) : "official";
   const id = i > 0 ? key.slice(i + 1) : key;
-  return `https://recipe.20fit.id/resep/${encodeURIComponent(source)}/${encodeURIComponent(id)}`;
+  const base = `https://recipe.20fit.id/resep/${encodeURIComponent(source)}/${encodeURIComponent(id)}`;
+  if (!tokens) return base;
+  const frag = new URLSearchParams({ access_token: tokens.access_token, refresh_token: tokens.refresh_token });
+  return `${base}#${frag.toString()}`;
 }
 
 export async function getContentRecipe(key: string, lang?: Lang): Promise<ContentRecipe | null> {

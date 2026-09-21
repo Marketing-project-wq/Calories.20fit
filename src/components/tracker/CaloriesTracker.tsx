@@ -17,6 +17,7 @@ import * as Fasting from "../../lib/fasting";
 import * as FS from "../../lib/foodSummary";
 import { getMenuRecommend, MenuRecipe } from "../../lib/menuRecommend";
 import { recipeDetailUrl } from "../../lib/contentRecipes";
+import { getSsoTokens } from "../../lib/supabase";
 import { GoalRing } from "../GoalRing";
 import { ScanResultModal } from "./ScanResultModal";
 import { MealPlanSection } from "./MealPlanSection";
@@ -74,6 +75,17 @@ export function CaloriesTracker({ lang }: { lang: Lang }) {
   const [quota, setQuota] = useState<QuotaData | null>(null);
   const [loading, setLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
+
+  // SSO hand-off tokens for recipe.20fit.id links — this page is itself
+  // gated behind login (see AccountGate/App.tsx), so a user reaching it
+  // always has an account; this just carries that session over so recipe
+  // links don't land them signed out on a different subdomain.
+  const [ssoTokens, setSsoTokens] = useState<{ access_token: string; refresh_token: string } | null>(null);
+  useEffect(() => {
+    let cancelled = false;
+    getSsoTokens().then((t) => { if (!cancelled) setSsoTokens(t); });
+    return () => { cancelled = true; };
+  }, []);
 
   // fasting/countdown re-render tick + minute clock
   const [tick, setTick] = useState(0);
@@ -356,7 +368,7 @@ export function CaloriesTracker({ lang }: { lang: Lang }) {
             )}
 
             {/* PANEL 6 — nutrient gap */}
-            <NutrientGapView lang={lang} gap={gap} foods={gapFoods} kc={kc} />
+            <NutrientGapView lang={lang} gap={gap} foods={gapFoods} kc={kc} ssoTokens={ssoTokens} />
 
             {/* PANEL 7 — what to eat next */}
             {guidance && (
@@ -413,7 +425,7 @@ export function CaloriesTracker({ lang }: { lang: Lang }) {
       </div>
 
       {/* Daily meal plan — folded in from the former standalone /meal-plan page */}
-      <MealPlanSection lang={lang} target={baseGoal} profile={profile} />
+      <MealPlanSection lang={lang} target={baseGoal} profile={profile} ssoTokens={ssoTokens} />
 
       {/* bottom — menu recommendations */}
       {menuRecs.length > 0 && (
@@ -423,7 +435,7 @@ export function CaloriesTracker({ lang }: { lang: Lang }) {
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(150px,1fr))", gap: 12, marginTop: 12 }}>
             {menuRecs.map((r, i) => {
               const nm = (r.nm && (lang === "id" ? r.nm.id || r.nm.en : r.nm.en || r.nm.id)) || "";
-              const href = typeof r.id === "string" ? recipeDetailUrl(r.id) : undefined;
+              const href = typeof r.id === "string" ? recipeDetailUrl(r.id, ssoTokens) : undefined;
               return (
                 <a
                   key={i}
@@ -491,7 +503,7 @@ function HealthMeter({ lang, health }: { lang: Lang; health: FS.HealthResult }) 
   );
 }
 
-function NutrientGapView({ lang, gap, foods, kc }: { lang: Lang; gap: FS.NutrientGap; foods: MenuRecipe[]; kc: string }) {
+function NutrientGapView({ lang, gap, foods, kc, ssoTokens }: { lang: Lang; gap: FS.NutrientGap; foods: MenuRecipe[]; kc: string; ssoTokens: { access_token: string; refresh_token: string } | null }) {
   return (
     <div style={{ marginTop: 14, borderTop: `1px solid ${BORDER}`, paddingTop: 12 }}>
       <div style={{ fontSize: 11, fontWeight: 800, textTransform: "uppercase", letterSpacing: 1, color: MUTED, marginBottom: 8 }}>{tx(lang, "Nutrient gap today", "Kekurangan nutrisi hari ini")}</div>
@@ -514,7 +526,7 @@ function NutrientGapView({ lang, gap, foods, kc }: { lang: Lang; gap: FS.Nutrien
           </div>
           <div>
             {(foods.length > 0
-              ? foods.map((r) => ({ e: r.emoji || "🍲", name: (r.nm && (lang === "id" ? r.nm.id || r.nm.en : r.nm.en || r.nm.id)) || "", meta: `~${r.kcal} ${kc} · P${r.p} C${r.c} F${r.f}`, tint: r.tint, href: typeof r.id === "string" ? recipeDetailUrl(r.id) : undefined }))
+              ? foods.map((r) => ({ e: r.emoji || "🍲", name: (r.nm && (lang === "id" ? r.nm.id || r.nm.en : r.nm.en || r.nm.id)) || "", meta: `~${r.kcal} ${kc} · P${r.p} C${r.c} F${r.f}`, tint: r.tint, href: typeof r.id === "string" ? recipeDetailUrl(r.id, ssoTokens) : undefined }))
               : gap.staticFoods.map((s) => ({ e: s.e, name: s.name, meta: "", tint: undefined, href: undefined }))
             ).map((f, i) => (
               <a
