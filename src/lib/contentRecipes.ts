@@ -7,6 +7,7 @@
 // function call in this app.
 import { SUPABASE } from "./constants";
 import { Lang } from "./i18n";
+import { SsoTokens, appendSsoFragment } from "./supabase";
 
 export interface RecipeMacros {
   p: number | null;
@@ -148,12 +149,10 @@ export function parseRecipeKey(key: string): { source: string; id: string } {
 // passed (the current, already-authenticated user's session — this page is
 // itself gated behind login, see AccountGate), the link hands that session
 // straight to recipe.20fit.id instead of leaving them signed out there.
-export function recipeDetailUrl(key: string, tokens?: { access_token: string; refresh_token: string } | null): string {
+export function recipeDetailUrl(key: string, tokens?: SsoTokens | null): string {
   const { source, id } = parseRecipeKey(key);
   const base = `https://recipe.20fit.id/resep/${encodeURIComponent(source)}/${encodeURIComponent(id)}`;
-  if (!tokens) return base;
-  const frag = new URLSearchParams({ access_token: tokens.access_token, refresh_token: tokens.refresh_token });
-  return `${base}#${frag.toString()}`;
+  return appendSsoFragment(base, tokens ?? null);
 }
 
 export async function getContentRecipe(key: string, lang?: Lang): Promise<ContentRecipe | null> {
