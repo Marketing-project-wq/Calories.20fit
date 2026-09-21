@@ -127,6 +127,12 @@ export async function getContentRecipes(opts: { lang?: Lang; source?: "all" | "o
   return getPublicCatalogFallback(lang, limit);
 }
 
+/** Splits a "source:id" composite key (e.g. "official:gado-gado") into its parts — "official" source when the key carries none. */
+export function parseRecipeKey(key: string): { source: string; id: string } {
+  const i = key.indexOf(":");
+  return i > 0 ? { source: key.slice(0, i), id: key.slice(i + 1) } : { source: "official", id: key };
+}
+
 // recipe.20fit.id's own recipe-catalog SPA reads a detail page at
 // /resep/:source/:id (source = "official" | "member", id = the bare id —
 // NOT the "source:id" composite `key` this API returns; that composite only
@@ -143,9 +149,7 @@ export async function getContentRecipes(opts: { lang?: Lang; source?: "all" | "o
 // itself gated behind login, see AccountGate), the link hands that session
 // straight to recipe.20fit.id instead of leaving them signed out there.
 export function recipeDetailUrl(key: string, tokens?: { access_token: string; refresh_token: string } | null): string {
-  const i = key.indexOf(":");
-  const source = i > 0 ? key.slice(0, i) : "official";
-  const id = i > 0 ? key.slice(i + 1) : key;
+  const { source, id } = parseRecipeKey(key);
   const base = `https://recipe.20fit.id/resep/${encodeURIComponent(source)}/${encodeURIComponent(id)}`;
   if (!tokens) return base;
   const frag = new URLSearchParams({ access_token: tokens.access_token, refresh_token: tokens.refresh_token });

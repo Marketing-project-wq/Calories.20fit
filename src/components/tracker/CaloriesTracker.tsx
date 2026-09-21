@@ -16,8 +16,9 @@ import { dailyCalorieGoal, dailyMacroTargets } from "../../lib/nutrition";
 import * as Fasting from "../../lib/fasting";
 import * as FS from "../../lib/foodSummary";
 import { getMenuRecommend, MenuRecipe } from "../../lib/menuRecommend";
-import { recipeDetailUrl } from "../../lib/contentRecipes";
+import { recipeDetailUrl, parseRecipeKey } from "../../lib/contentRecipes";
 import { getSsoTokens } from "../../lib/supabase";
+import { RecipeThumb } from "../RecipeThumb";
 import { GoalRing } from "../GoalRing";
 import { ScanResultModal } from "./ScanResultModal";
 import { MealPlanSection } from "./MealPlanSection";
@@ -436,6 +437,7 @@ export function CaloriesTracker({ lang }: { lang: Lang }) {
             {menuRecs.map((r, i) => {
               const nm = (r.nm && (lang === "id" ? r.nm.id || r.nm.en : r.nm.en || r.nm.id)) || "";
               const href = typeof r.id === "string" ? recipeDetailUrl(r.id, ssoTokens) : undefined;
+              const bareId = typeof r.id === "string" ? parseRecipeKey(r.id).id : null;
               return (
                 <a
                   key={i}
@@ -444,7 +446,11 @@ export function CaloriesTracker({ lang }: { lang: Lang }) {
                   rel={href ? "noopener noreferrer" : undefined}
                   style={{ border: `1px solid ${BORDER}`, borderRadius: 14, overflow: "hidden", display: "block", textDecoration: "none", color: "inherit", cursor: href ? "pointer" : "default" }}
                 >
-                  <div style={{ height: 82, display: "grid", placeItems: "center", fontSize: 38, background: `linear-gradient(160deg, ${r.tint || "#eee"}33, ${r.tint || "#eee"}11)` }}>{r.emoji || "🍲"}</div>
+                  {bareId ? (
+                    <RecipeThumb id={bareId} name={nm} emoji={r.emoji} width="100%" height={82} radius={0} />
+                  ) : (
+                    <div style={{ height: 82, display: "grid", placeItems: "center", fontSize: 38, background: `linear-gradient(160deg, ${r.tint || "#eee"}33, ${r.tint || "#eee"}11)` }}>{r.emoji || "🍲"}</div>
+                  )}
                   <div style={{ padding: "9px 11px" }}>
                     <div style={{ fontWeight: 700, fontSize: 13, lineHeight: 1.25 }}>{nm}</div>
                     <div style={{ fontSize: 10.5, color: MUTED, marginTop: 4, fontWeight: 700 }}>~{r.kcal} {kc} · P{r.p} C{r.c} F{r.f}</div>
@@ -526,8 +532,8 @@ function NutrientGapView({ lang, gap, foods, kc, ssoTokens }: { lang: Lang; gap:
           </div>
           <div>
             {(foods.length > 0
-              ? foods.map((r) => ({ e: r.emoji || "🍲", name: (r.nm && (lang === "id" ? r.nm.id || r.nm.en : r.nm.en || r.nm.id)) || "", meta: `~${r.kcal} ${kc} · P${r.p} C${r.c} F${r.f}`, tint: r.tint, href: typeof r.id === "string" ? recipeDetailUrl(r.id, ssoTokens) : undefined }))
-              : gap.staticFoods.map((s) => ({ e: s.e, name: s.name, meta: "", tint: undefined, href: undefined }))
+              ? foods.map((r) => ({ e: r.emoji || "🍲", id: typeof r.id === "string" ? parseRecipeKey(r.id).id : null, name: (r.nm && (lang === "id" ? r.nm.id || r.nm.en : r.nm.en || r.nm.id)) || "", meta: `~${r.kcal} ${kc} · P${r.p} C${r.c} F${r.f}`, href: typeof r.id === "string" ? recipeDetailUrl(r.id, ssoTokens) : undefined }))
+              : gap.staticFoods.map((s) => ({ e: s.e, id: null, name: s.name, meta: "", href: undefined }))
             ).map((f, i) => (
               <a
                 key={i}
@@ -536,7 +542,9 @@ function NutrientGapView({ lang, gap, foods, kc, ssoTokens }: { lang: Lang; gap:
                 rel={f.href ? "noopener noreferrer" : undefined}
                 style={{ display: "flex", alignItems: "center", gap: 10, padding: "7px 0", textDecoration: "none", color: "inherit", cursor: f.href ? "pointer" : "default" }}
               >
-                <div style={{ width: 30, height: 30, borderRadius: 9, display: "grid", placeItems: "center", fontSize: 17, flex: "0 0 auto", background: f.tint ? `linear-gradient(160deg, ${f.tint}33, ${f.tint}11)` : "var(--surface-inset)" }}>{f.e}</div>
+                {f.id ? <RecipeThumb id={f.id} name={f.name} emoji={f.e} width={30} height={30} radius={9} fontSize={17} /> : (
+                  <div style={{ width: 30, height: 30, borderRadius: 9, display: "grid", placeItems: "center", fontSize: 17, flex: "0 0 auto", background: "var(--surface-inset)" }}>{f.e}</div>
+                )}
                 <div style={{ flex: 1, minWidth: 0, fontSize: 13, fontWeight: 650 }}>{f.name}</div>
                 {f.meta && <div style={{ fontSize: 11, color: MUTED, fontWeight: 700, whiteSpace: "nowrap" }}>{f.meta}</div>}
               </a>

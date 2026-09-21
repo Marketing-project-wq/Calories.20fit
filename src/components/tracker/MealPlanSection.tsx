@@ -11,8 +11,9 @@ import { t, Lang } from "../../lib/i18n";
 import { cc } from "../../lib/calorieCopy";
 import { MemberProfile, MealType } from "../../lib/memberTracker";
 import { generateMealPlanFromRecipes, dayOfYearSeed } from "../../lib/mealPlan";
-import { getContentRecipes, ContentRecipe, recipeDetailUrl } from "../../lib/contentRecipes";
+import { getContentRecipes, ContentRecipe, recipeDetailUrl, parseRecipeKey } from "../../lib/contentRecipes";
 import { Icon, IconName } from "../Icon";
+import { RecipeThumb } from "../RecipeThumb";
 
 const BORDER = "var(--border)";
 const MEAL_ICON: Record<MealType, IconName> = { breakfast: "egg", lunch: "bowl", dinner: "utensils", snack: "bowl" };
@@ -89,18 +90,7 @@ export function MealPlanSection({ lang, target, profile, ssoTokens }: { lang: La
                         key={it.key}
                         style={{ display: "flex", alignItems: "center", gap: 12, padding: "9px 0", borderBottom: i < meal.items.length - 1 ? `1px solid ${BORDER}` : "none" }}
                       >
-                        <div style={{ width: 52, height: 52, borderRadius: 12, flex: "0 0 auto", overflow: "hidden", position: "relative", background: "var(--surface-inset)", display: "grid", placeItems: "center", fontSize: 24 }}>
-                          {it.emoji || "🍲"}
-                          {it.photoUrl && (
-                            <img
-                              src={it.photoUrl}
-                              alt=""
-                              loading="lazy"
-                              onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
-                              style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
-                            />
-                          )}
-                        </div>
+                        <RecipeThumb id={parseRecipeKey(it.key).id} name={it.name} emoji={it.emoji} />
                         <div style={{ flex: 1, minWidth: 0 }}>
                           <div style={{ fontSize: 13.5, fontWeight: 650, color: "var(--text-muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{it.name}</div>
                           <div style={{ fontSize: 12, color: "var(--text-faint)", fontWeight: 600, marginTop: 2, fontVariantNumeric: "tabular-nums" }}>{it.kcal} {tr.kcal}</div>
