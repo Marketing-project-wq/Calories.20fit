@@ -17,7 +17,7 @@ import { Icon, IconName } from "../Icon";
 const BORDER = "var(--border)";
 const MEAL_ICON: Record<MealType, IconName> = { breakfast: "egg", lunch: "bowl", dinner: "utensils", snack: "bowl" };
 
-export function MealPlanSection({ lang, target, profile }: { lang: Lang; target: number; profile: MemberProfile | null }) {
+export function MealPlanSection({ lang, target, profile, ssoTokens }: { lang: Lang; target: number; profile: MemberProfile | null; ssoTokens: { access_token: string; refresh_token: string } | null }) {
   const tr = t[lang];
   const c = cc(lang);
   const mp = c.mealPlan;
@@ -85,18 +85,35 @@ export function MealPlanSection({ lang, target, profile }: { lang: Lang; target:
                   </div>
                   <div style={{ display: "flex", flexDirection: "column" }}>
                     {meal.items.map((it, i) => (
-                      <a
+                      <div
                         key={it.key}
-                        href={recipeDetailUrl(it.key)}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        style={{ display: "flex", justifyContent: "space-between", alignItems: "center", gap: 8, fontSize: 13.5, padding: "7px 0", borderBottom: i < meal.items.length - 1 ? `1px solid ${BORDER}` : "none", textDecoration: "none", color: "inherit", cursor: "pointer" }}
+                        style={{ display: "flex", alignItems: "center", gap: 12, padding: "9px 0", borderBottom: i < meal.items.length - 1 ? `1px solid ${BORDER}` : "none" }}
                       >
-                        <span style={{ flex: 1, color: "var(--text-muted)", minWidth: 0 }}>
-                          {it.emoji ? `${it.emoji} ` : ""}{it.name}
-                        </span>
-                        <span style={{ color: "var(--text)", fontWeight: 600, flexShrink: 0, fontVariantNumeric: "tabular-nums" }}>{it.kcal} {tr.kcal}</span>
-                      </a>
+                        <div style={{ width: 52, height: 52, borderRadius: 12, flex: "0 0 auto", overflow: "hidden", position: "relative", background: "var(--surface-inset)", display: "grid", placeItems: "center", fontSize: 24 }}>
+                          {it.emoji || "🍲"}
+                          {it.photoUrl && (
+                            <img
+                              src={it.photoUrl}
+                              alt=""
+                              loading="lazy"
+                              onError={(e) => { (e.currentTarget as HTMLImageElement).style.display = "none"; }}
+                              style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }}
+                            />
+                          )}
+                        </div>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div style={{ fontSize: 13.5, fontWeight: 650, color: "var(--text-muted)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{it.name}</div>
+                          <div style={{ fontSize: 12, color: "var(--text-faint)", fontWeight: 600, marginTop: 2, fontVariantNumeric: "tabular-nums" }}>{it.kcal} {tr.kcal}</div>
+                        </div>
+                        <a
+                          href={recipeDetailUrl(it.key, ssoTokens)}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          style={{ flex: "0 0 auto", fontSize: 12, fontWeight: 700, padding: "8px 13px", borderRadius: 999, background: "var(--brand)", color: "var(--on-brand)", textDecoration: "none", whiteSpace: "nowrap" }}
+                        >
+                          {mp.seeRecipe}
+                        </a>
+                      </div>
                     ))}
                   </div>
                 </div>

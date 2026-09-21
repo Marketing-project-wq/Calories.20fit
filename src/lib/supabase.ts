@@ -15,3 +15,11 @@ export const supabase = createClient(SUPABASE.URL, SUPABASE.ANON_KEY || "missing
     storageKey: SUPABASE.STORAGE_KEY,
   },
 });
+
+/** Current session's tokens, for SSO hand-off to other 20FIT subdomains (same Supabase project) — see recipeDetailUrl(). Null when signed out. */
+export async function getSsoTokens(): Promise<{ access_token: string; refresh_token: string } | null> {
+  const { data } = await supabase.auth.getSession();
+  const s = data.session;
+  if (!s?.access_token || !s?.refresh_token) return null;
+  return { access_token: s.access_token, refresh_token: s.refresh_token };
+}
