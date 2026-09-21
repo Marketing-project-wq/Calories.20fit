@@ -1,11 +1,10 @@
-// Ecosystem-wide "app switcher" bar — same design across every 20FIT
-// subdomain (my.20fit.id, recipe.20fit.id, calorietracker.20fit.id, etc.),
-// so a member can jump straight to any other 20FIT product from wherever
-// they are. Deliberately NOT sticky/fixed: it sits once at the very top of
-// the page, above this app's own nav (which stays sticky on its own,
-// unaffected — see App.tsx). Colors are fixed (not this app's theme
-// tokens) so the bar looks identical on every subdomain regardless of each
-// site's own light/dark theme.
+// Ecosystem-wide "app switcher" — lets a member jump straight to any other
+// 20FIT product (my.20fit.id, recipe.20fit.id, calorietracker.20fit.id,
+// etc.) from wherever they are. Renders as a single waffle-icon button that
+// sits inline in this app's own nav bar (see App.tsx) — matching that bar's
+// own theme-aware button styling — rather than as a separate colored strip;
+// only the dropdown menu itself keeps fixed (not theme-token) colors, since
+// it's meant to look the same regardless of the page's own light/dark theme.
 //
 // When the user is signed in here, every menu link hands that same session
 // to whatever 20FIT app they switch to (see appendSsoFragment() in
@@ -15,15 +14,13 @@
 // This repo (calorietracker.20fit.id / Marketing-project-wq/Calories.20fit)
 // is the only subdomain this session can edit. The other nine subdomains
 // listed in UNIVERSAL_NAV_ITEMS live in separate repos/Railway services and
-// need this same bar added on their own — see src/lib/universalNav.ts for
-// the shared item list to port over.
+// need this same switcher added on their own — see src/lib/universalNav.ts
+// for the shared item list to port over.
 import { useEffect, useRef, useState } from "react";
 import { Icon } from "./Icon";
 import { UNIVERSAL_NAV_ITEMS, getCurrentAppId } from "../lib/universalNav";
 import { getSsoTokens, appendSsoFragment, SsoTokens } from "../lib/supabase";
 
-const BAR_BG = "#3F3F46";
-const BAR_TEXT = "#FFFFFF";
 const MENU_BG = "#FFFFFF";
 const CARD_HOVER = "#F5F5F5";
 const ACTIVE_BORDER = "#111111";
@@ -100,45 +97,28 @@ export function UniversalNav() {
 
   return (
     <div ref={rootRef} style={{ position: "relative", zIndex: 9999, fontFamily: "system-ui, -apple-system, sans-serif" }}>
-      <div
+      <button
+        onClick={() => setOpen((o) => !o)}
+        aria-label={currentItem ? `Menu aplikasi 20FIT — ${currentItem.label}` : "Menu aplikasi 20FIT"}
+        title="20FIT"
+        aria-expanded={open}
+        aria-haspopup="true"
         style={{
-          display: "flex",
+          display: "inline-flex",
           alignItems: "center",
-          justifyContent: "space-between",
-          gap: 12,
-          padding: "9px 16px",
-          background: BAR_BG,
-          color: BAR_TEXT,
+          justifyContent: "center",
+          width: 32,
+          height: 32,
+          borderRadius: 8,
+          background: open ? "var(--brand-soft)" : "var(--track)",
+          color: open ? "var(--brand)" : "var(--text-soft)",
+          border: "none",
+          cursor: "pointer",
+          flexShrink: 0,
         }}
       >
-        <a href="https://20fit.id" style={{ color: BAR_TEXT, textDecoration: "none", fontWeight: 700, fontSize: 15, letterSpacing: ".02em", flexShrink: 0 }}>
-          20FIT
-        </a>
-        <span style={{ opacity: 0.72, fontSize: 12.5, fontWeight: 600, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", flex: "1 1 auto", textAlign: "center" }}>
-          {currentItem?.label || "20FIT"}
-        </span>
-        <button
-          onClick={() => setOpen((o) => !o)}
-          aria-label="Menu aplikasi 20FIT"
-          aria-expanded={open}
-          aria-haspopup="true"
-          style={{
-            display: "inline-flex",
-            alignItems: "center",
-            justifyContent: "center",
-            width: 30,
-            height: 30,
-            flexShrink: 0,
-            background: open ? "rgba(255,255,255,0.15)" : "transparent",
-            border: "none",
-            borderRadius: 8,
-            color: BAR_TEXT,
-            cursor: "pointer",
-          }}
-        >
-          <WaffleIcon />
-        </button>
-      </div>
+        <WaffleIcon />
+      </button>
 
       {open && (
         <>
@@ -208,26 +188,25 @@ export function UniversalNav() {
           .un-menu {
             position: fixed;
             inset: 0;
-            top: 48px;
             width: 100vw;
-            height: calc(100vh - 48px);
+            height: 100vh;
             grid-template-columns: repeat(2, 1fr);
             align-content: start;
             border-radius: 0;
             overflow-y: auto;
-            padding: 20px 16px 40px;
+            padding: 64px 16px 40px;
           }
           .un-close-mobile {
             display: flex;
             position: fixed;
-            top: 8px;
+            top: 12px;
             right: 12px;
             width: 32px;
             height: 32px;
             align-items: center;
             justify-content: center;
-            background: rgba(255,255,255,0.15);
-            color: #fff;
+            background: rgba(0,0,0,0.06);
+            color: #1a1a1a;
             border: none;
             border-radius: 8px;
             font-size: 16px;
