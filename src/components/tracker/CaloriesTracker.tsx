@@ -478,6 +478,11 @@ export function CaloriesTracker({ lang }: { lang: Lang }) {
       )}
 
       <style>{`
+        /* Grid items default to min-width: auto, so without this they refuse to
+           shrink below their widest descendant's content (a MacroBar row, a
+           button label, etc.) — silently pushing that content off-screen on
+           narrow phones instead of letting it wrap. */
+        .ct-tracker-grid, .ct-tracker-grid > * { min-width: 0; }
         @media (min-width: 900px) { .ct-tracker-grid { grid-template-columns: 1fr 1fr !important; align-items: start; } }
         @keyframes ctSpin { to { transform: rotate(360deg); } }
       `}</style>
