@@ -247,9 +247,9 @@ export function CaloriesTracker({ lang }: { lang: Lang }) {
             <div style={{ fontSize: 11, letterSpacing: 1.5, textTransform: "uppercase", color: MUTED, fontWeight: 700 }}>
               {tx(lang, "Your daily calorie target", "Target kalori harianmu")}
             </div>
-            <div style={{ display: "flex", alignItems: "center", gap: 20, justifyContent: "center", margin: "8px 0 4px", textAlign: "left" }}>
+            <div style={{ display: "flex", flexWrap: "wrap", alignItems: "center", gap: 20, justifyContent: "center", margin: "8px 0 4px", textAlign: "left" }}>
               <Thermometer frac={goal > 0 ? consumed / goal : 0} />
-              <div>
+              <div style={{ minWidth: 0, flex: "1 1 200px" }}>
                 <div style={{ fontSize: 46, fontWeight: 900, lineHeight: 1, color: "var(--brand)" }}>{goal}</div>
                 <div style={{ color: MUTED, fontSize: 13 }}>{tx(lang, "kcal / day — from your BMI & profile", "kkal / hari — dari BMI & profilmu")}</div>
                 <div style={{ marginTop: 8, fontSize: 13, color: MUTED }}>
@@ -269,11 +269,11 @@ export function CaloriesTracker({ lang }: { lang: Lang }) {
             </div>
 
             {/* scan buttons */}
-            <div style={{ marginTop: 14, display: "flex", gap: 10 }}>
-              <button onClick={() => camRef.current?.click()} style={{ flex: 1, padding: 14, border: 0, borderRadius: 11, background: "var(--brand)", color: "var(--on-brand)", fontWeight: 800, fontSize: 14, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+            <div style={{ marginTop: 14, display: "flex", flexWrap: "wrap", gap: 10 }}>
+              <button onClick={() => camRef.current?.click()} style={{ flex: "1 1 130px", minWidth: 0, padding: 14, border: 0, borderRadius: 11, background: "var(--brand)", color: "var(--on-brand)", fontWeight: 800, fontSize: 14, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
                 <Icon name="camera" size={20} color="#fff" /> {tx(lang, "Take photo", "Ambil foto")}
               </button>
-              <button onClick={() => fileRef.current?.click()} style={{ flex: 1, padding: 14, border: `1px solid ${BORDER}`, borderRadius: 11, background: "var(--surface-inset)", color: INK, fontWeight: 800, fontSize: 14, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
+              <button onClick={() => fileRef.current?.click()} style={{ flex: "1 1 130px", minWidth: 0, padding: 14, border: `1px solid ${BORDER}`, borderRadius: 11, background: "var(--surface-inset)", color: INK, fontWeight: 800, fontSize: 14, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 8 }}>
                 <svg width={18} height={18} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2" /><circle cx="8.5" cy="8.5" r="1.5" /><polyline points="21 15 16 10 5 21" /></svg>
                 {tx(lang, "Album", "Album")}
               </button>
