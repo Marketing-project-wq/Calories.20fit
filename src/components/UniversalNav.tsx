@@ -12,16 +12,18 @@
 // ecosystem, so switching apps never means signing up/in again.
 //
 // This repo (calorietracker.20fit.id / Marketing-project-wq/Calories.20fit)
-// is the only subdomain this session can edit. The other nine subdomains
-// listed in UNIVERSAL_NAV_ITEMS live in separate repos/Railway services and
-// need this same switcher added on their own — see src/lib/universalNav.ts
-// for the shared item list to port over.
-import { useEffect, useRef, useState } from "react";
+// is the only subdomain this session can edit. The other 20FIT subdomains
+// (each its own item in UNIVERSAL_NAV_ITEMS) live in separate repos/Railway
+// services and need this same switcher added on their own; the Booking and
+// Progress items instead point at pages within my.20fit.id itself — see
+// src/lib/universalNav.ts for the shared item list to port over.
+import { Fragment, useEffect, useRef, useState } from "react";
 import { Icon } from "./Icon";
-import { UNIVERSAL_NAV_ITEMS, getCurrentAppId } from "../lib/universalNav";
+import { UNIVERSAL_NAV_ITEMS, UNIVERSAL_NAV_GROUP_LABELS, UniversalNavGroup, getCurrentAppId } from "../lib/universalNav";
 import { appendSsoFragment } from "../lib/supabase";
 import { useSsoTokens, navigateWithSso } from "../lib/ssoRelay";
 import { announceDropdownOpen, onOtherDropdownOpen } from "../lib/dropdownCoordinator";
+import { Lang } from "../lib/i18n";
 
 const DROPDOWN_ID = "universal-nav";
 
@@ -37,7 +39,7 @@ function WaffleIcon() {
   );
 }
 
-export function UniversalNav() {
+export function UniversalNav({ lang }: { lang: Lang }) {
   const [open, setOpen] = useState(false);
   // Kept fresh across sign-in/out (native /login, AuthNav sign-out) rather
   // than fetched once at mount — see useSsoTokens() in ssoRelay.ts.
@@ -128,42 +130,50 @@ export function UniversalNav() {
       {open && (
         <>
           <div ref={menuRef} className="un-menu" aria-label="20FIT — pilih aplikasi" style={{ background: MENU_BG, boxShadow: "0 8px 32px rgba(0,0,0,0.18)" }}>
-            {UNIVERSAL_NAV_ITEMS.map((item) => {
+            {UNIVERSAL_NAV_ITEMS.map((item, i) => {
               const isActive = item.id === currentApp;
+              const prevGroup: UniversalNavGroup | undefined = UNIVERSAL_NAV_ITEMS[i - 1]?.group;
+              const startsGroup = item.group !== prevGroup;
               return (
-                <a
-                  key={item.id}
-                  role="link"
-                  href={isActive ? item.url : appendSsoFragment(item.url, ssoTokens)}
-                  aria-current={isActive ? "page" : undefined}
-                  onClick={async (e) => {
-                    if (isActive) {
+                <Fragment key={item.id}>
+                  {startsGroup && (
+                    <div className="un-section-label" style={{ gridColumn: "1 / -1" }}>
+                      {UNIVERSAL_NAV_GROUP_LABELS[lang][item.group]}
+                    </div>
+                  )}
+                  <a
+                    role="link"
+                    href={isActive ? item.url : appendSsoFragment(item.url, ssoTokens)}
+                    aria-current={isActive ? "page" : undefined}
+                    onClick={async (e) => {
+                      if (isActive) {
+                        e.preventDefault();
+                        setOpen(false);
+                        return;
+                      }
+                      // Let modified clicks (new tab, etc.) behave normally on the plain href above.
+                      if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
                       e.preventDefault();
                       setOpen(false);
-                      return;
-                    }
-                    // Let modified clicks (new tab, etc.) behave normally on the plain href above.
-                    if (e.button !== 0 || e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
-                    e.preventDefault();
-                    setOpen(false);
-                    await navigateWithSso(item.url, ssoTokens);
-                  }}
-                  className="un-card"
-                  style={{
-                    background: isActive ? "#F0F0F0" : "transparent",
-                    borderColor: isActive ? ACTIVE_BORDER : "transparent",
-                    cursor: isActive ? "default" : "pointer",
-                  }}
-                >
-                  {item.iconSrc ? (
-                    <img src={item.iconSrc} alt="" width={80} height={80} loading="lazy" style={{ display: "block" }} />
-                  ) : (
-                    <Icon name={item.icon} size={56} color={item.color} strokeWidth={1.8} />
-                  )}
-                  <span className="un-label">{item.label}</span>
-                  <span className="un-desc">{item.description}</span>
-                  {isActive && <span className="un-here">● Kamu di sini</span>}
-                </a>
+                      await navigateWithSso(item.url, ssoTokens);
+                    }}
+                    className="un-card"
+                    style={{
+                      background: isActive ? "#F0F0F0" : "transparent",
+                      borderColor: isActive ? ACTIVE_BORDER : "transparent",
+                      cursor: isActive ? "default" : "pointer",
+                    }}
+                  >
+                    {item.iconSrc ? (
+                      <img src={item.iconSrc} alt="" width={100} height={100} loading="lazy" style={{ display: "block" }} />
+                    ) : (
+                      <Icon name={item.icon} size={70} color={item.color} strokeWidth={1.8} />
+                    )}
+                    <span className="un-label">{item.label}</span>
+                    <span className="un-desc">{item.description}</span>
+                    {isActive && <span className="un-here">● Kamu di sini</span>}
+                  </a>
+                </Fragment>
               );
             })}
           </div>
@@ -179,6 +189,8 @@ export function UniversalNav() {
         .un-label { font-size: 12px; font-weight: 600; line-height: 1.2; margin-top: 6px; }
         .un-desc { font-size: 10px; color: #888; margin-top: 2px; line-height: 1.2; }
         .un-here { font-size: 9px; color: #16A34A; margin-top: 4px; font-weight: 600; }
+        .un-section-label { font-size: 10px; letter-spacing: .06em; text-transform: uppercase; color: #999; font-weight: 700; margin: 14px 4px 4px; }
+        .un-section-label:first-child { margin-top: 0; }
         .un-close-mobile { display: none; }
 
         .un-menu {
@@ -186,10 +198,13 @@ export function UniversalNav() {
           top: 100%;
           right: 0;
           width: min(480px, 95vw);
+          max-height: calc(100vh - 84px);
+          overflow-y: auto;
           border-radius: 0 0 16px 16px;
           padding: 16px;
           display: grid;
           grid-template-columns: repeat(3, 1fr);
+          align-content: start;
           gap: 8px;
           animation: unMenuIn .2s ease;
         }

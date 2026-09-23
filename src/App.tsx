@@ -183,7 +183,7 @@ export function App() {
               labels compress away below md (768px), same breakpoint as
               AuthNav's name and UniversalNav's "Products" label. */}
           <div className="ct-header-right" style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
-            <UniversalNav />
+            <UniversalNav lang={lang} />
             <button
               onClick={toggleTheme}
               aria-label={theme === "dark" ? nav.themeLight : nav.themeDark}
