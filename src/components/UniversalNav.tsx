@@ -17,6 +17,7 @@
 // need this same switcher added on their own — see src/lib/universalNav.ts
 // for the shared item list to port over.
 import { useEffect, useRef, useState } from "react";
+import { Icon } from "./Icon";
 import { UNIVERSAL_NAV_ITEMS, getCurrentAppId } from "../lib/universalNav";
 import { appendSsoFragment } from "../lib/supabase";
 import { useSsoTokens, navigateWithSso } from "../lib/ssoRelay";
@@ -149,7 +150,11 @@ export function UniversalNav() {
                     cursor: isActive ? "default" : "pointer",
                   }}
                 >
-                  <img src={item.iconSrc} alt="" width={40} height={40} loading="lazy" style={{ display: "block" }} />
+                  {item.iconSrc ? (
+                    <img src={item.iconSrc} alt="" width={40} height={40} loading="lazy" style={{ display: "block" }} />
+                  ) : (
+                    <Icon name={item.icon} size={28} color={item.color} strokeWidth={1.8} />
+                  )}
                   <span className="un-label">{item.label}</span>
                   <span className="un-desc">{item.description}</span>
                   {isActive && <span className="un-here">● Kamu di sini</span>}
