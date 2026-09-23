@@ -156,9 +156,9 @@ export function UniversalNav() {
                   }}
                 >
                   {item.iconSrc ? (
-                    <img src={item.iconSrc} alt="" width={40} height={40} loading="lazy" style={{ display: "block" }} />
+                    <img src={item.iconSrc} alt="" width={80} height={80} loading="lazy" style={{ display: "block" }} />
                   ) : (
-                    <Icon name={item.icon} size={28} color={item.color} strokeWidth={1.8} />
+                    <Icon name={item.icon} size={56} color={item.color} strokeWidth={1.8} />
                   )}
                   <span className="un-label">{item.label}</span>
                   <span className="un-desc">{item.description}</span>
