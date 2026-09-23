@@ -35,10 +35,21 @@ export const useAuth = () => {
         }
       }
 
-      // Get current user (null jika belum login - subdomain ini bisa dipakai tanpa login)
-      const { data } = await supabase.auth.getUser();
-      setUser(data.user ?? null);
-      setIsLoading(false);
+      // Get current user (null jika belum login - subdomain ini bisa dipakai tanpa login).
+      // Deliberately getSession(), NOT getUser(): getUser() re-validates the
+      // token against Supabase's /user endpoint over the network every time,
+      // and on a hard refresh (which can interrupt or race that request) a
+      // transient failure comes back as `{ user: null }` with no thrown
+      // error — indistinguishable from actually being logged out. getSession()
+      // instead trusts the session persistSession already restored from
+      // localStorage, so a hard refresh never forces a re-login just because
+      // the network was momentarily unavailable.
+      try {
+        const { data } = await supabase.auth.getSession();
+        setUser(data.session?.user ?? null);
+      } finally {
+        setIsLoading(false);
+      }
     })();
 
     // Listen untuk auth state changes
