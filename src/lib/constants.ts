@@ -65,6 +65,15 @@ export const URLS = {
   MY_SETTINGS: `${MY20FIT}/settings`,
 };
 
+// Same address/link my.20fit.id's own footer uses (PROFILE20FIT repo,
+// login.html) — kept in sync here rather than invented, since a wrong
+// contact detail in a live footer actively misleads people trying to reach
+// 20FIT.
+export const CONTACT = {
+  EMAIL: "Marketing@20fit.id",
+  SITE: "https://20fit.id",
+};
+
 export const API_BASE = (import.meta.env.VITE_API_URL as string) || MY20FIT;
 
 export const API = {

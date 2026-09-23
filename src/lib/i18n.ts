@@ -121,6 +121,9 @@ export const t = {
     // Footer
     footerTagline: "Satu akun untuk scan kalori, menu diet, dan panduan medical check-up.",
     footerDisclaimer: "Estimasi kalori dihitung dari analisis foto dan bersifat perkiraan. Bukan saran medis, bukan target kalori personal. Untuk keputusan kesehatan, konsultasikan dengan tenaga kesehatan.",
+    footerEcosystem: "Ekosistem 20FIT",
+    footerContact: "Kontak",
+    footerRights: (year: number) => `© ${year} 20FIT. Semua hak dilindungi.`,
     sessionCount: (n: number) => `${n} analisis di sesi ini`,
   },
   en: {
@@ -220,6 +223,9 @@ export const t = {
     // Footer
     footerTagline: "One account for calorie scanning, diet menus, and medical check-up guides.",
     footerDisclaimer: "Calorie estimates are calculated from photo analysis and are approximate. Not medical advice, not a personal calorie target. For health decisions, consult a healthcare professional.",
+    footerEcosystem: "20FIT Ecosystem",
+    footerContact: "Contact",
+    footerRights: (year: number) => `© ${year} 20FIT. All rights reserved.`,
     sessionCount: (n: number) => `${n} analyses this session`,
   },
 } as const;
