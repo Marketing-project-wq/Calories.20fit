@@ -109,7 +109,7 @@ export const AuthNav = ({ lang, isLoading, isAuthenticated, user }: AuthNavProps
             {initial}
           </span>
         )}
-        <span style={{ fontSize: 12, fontWeight: 600, color: "var(--text)", maxWidth: 110, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} className="hidden sm:inline">
+        <span style={{ fontSize: 12, fontWeight: 600, color: "var(--text)", maxWidth: 110, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }} className="hidden md:inline">
           {firstName}
         </span>
       </button>
