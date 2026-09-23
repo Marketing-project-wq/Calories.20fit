@@ -1,9 +1,10 @@
 // Config for the 20FIT ecosystem-wide "universal nav" app switcher — the
 // same bar + mega menu every 20FIT subdomain shows so a member can jump
-// straight to any other 20FIT product. Icons are the brand's own full-color
-// SVG set (public/icons/, uploaded straight from Figma) rather than this
-// app's line-icon set — see iconSrc. `icon`/`color` are kept only as an
-// Icon.tsx fallback for any future item that doesn't have branded art yet.
+// straight to any other 20FIT product. Icons are matched 1:1 against the
+// live "Products" switcher on my.20fit.id/profile20fit: most items use the
+// brand's own full-color SVG set (public/icons/, uploaded straight from
+// Figma) via iconSrc; Talent has no custom art there either (just a plain
+// outline person), so it's left on the Icon.tsx fallback on purpose.
 import { IconName } from "../components/Icon";
 
 export interface UniversalNavItem {
@@ -11,7 +12,7 @@ export interface UniversalNavItem {
   label: string;
   description: string;
   icon: IconName;
-  iconSrc: string;
+  iconSrc?: string;
   url: string;
   color: string;
 }
@@ -25,8 +26,8 @@ export const UNIVERSAL_NAV_ITEMS: UniversalNavItem[] = [
   { id: "media", label: "Media", description: "Blog & Artikel", icon: "book", iconSrc: "/icons/vector-20fit-media.svg", url: "https://media.20fit.id", color: "#8B5CF6" },
   { id: "workout", label: "Workout", description: "Streaming Latihan", icon: "dumbbell", iconSrc: "/icons/vector-20fit-gym.svg", url: "https://workout.20fit.id", color: "#EF4444" },
   { id: "photo", label: "Photo", description: "Foto Event", icon: "camera", iconSrc: "/icons/vector-20fit-photo.svg", url: "https://photo.20fit.id", color: "#EC4899" },
-  { id: "ticket", label: "Ticket", description: "Tiket & Booking", icon: "ticket", iconSrc: "/icons/footer-ticket.svg", url: "https://ticket.20fit.id", color: "#14B8A6" },
-  { id: "talent", label: "Talent", description: "Talent & Event Organizer", icon: "users", iconSrc: "/icons/vector-20fit-event.svg", url: "https://talent.20fit.id", color: "#3B82F6" },
+  { id: "ticket", label: "Ticket", description: "Tiket & Booking", icon: "ticket", iconSrc: "/icons/vector-20fit-event.svg", url: "https://ticket.20fit.id", color: "#14B8A6" },
+  { id: "talent", label: "Talent", description: "Talent & Event Organizer", icon: "users", url: "https://talent.20fit.id", color: "#3B82F6" },
 ];
 
 const HOST_MAP: Record<string, string> = {
