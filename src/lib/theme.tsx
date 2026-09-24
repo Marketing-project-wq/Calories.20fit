@@ -40,8 +40,11 @@ function applyTheme(theme: Theme) {
     const root = document.documentElement;
     root.setAttribute("data-theme", theme);
     root.style.colorScheme = theme; // native form controls / scrollbars follow
+    // Matches --header-bg in index.css (light #FFFFFF / dark #1A1A1A) — the
+    // browser's own chrome should read as the header, not brand red. Kept in
+    // sync with the same two literals in index.html's pre-hydration script.
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute("content", theme === "dark" ? "#131410" : "#C41101");
+    if (meta) meta.setAttribute("content", theme === "dark" ? "#1A1A1A" : "#FFFFFF");
   } catch {
     /* SSR / no document — no-op */
   }
