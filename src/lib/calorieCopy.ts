@@ -24,7 +24,6 @@ export const copy = {
 
     // ---- Landing (/) ----
     landing: {
-      heroKicker: "Gratis · Tanpa akun",
       heroTitle: "Berapa Kalori yang\nKamu Butuhkan?",
       heroSub: "Hitung kebutuhan kalori harianmu dalam 30 detik — dipakai ahli gizi & klinik.",
       previewArticlesTitle: "Belajar nutrisi dari sumber terpercaya",
@@ -220,7 +219,6 @@ export const copy = {
     },
 
     landing: {
-      heroKicker: "Free · No account",
       heroTitle: "How Many Calories\nDo You Need?",
       heroSub: "Calculate your daily calorie needs in 30 seconds — used by dietitians & clinics.",
       previewArticlesTitle: "Learn nutrition from trusted sources",

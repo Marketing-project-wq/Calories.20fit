@@ -57,22 +57,6 @@ export function LandingPage({ lang }: { lang: Lang }) {
           className="ct-hero-grid"
         >
           <div style={{ paddingTop: 12 }}>
-            <span
-              style={{
-                display: "inline-block",
-                fontSize: 12,
-                fontWeight: 700,
-                letterSpacing: ".06em",
-                textTransform: "uppercase",
-                color: NUTRI.GREEN_DARK,
-                background: NUTRI.GREEN_TINT,
-                borderRadius: 999,
-                padding: "5px 12px",
-                marginBottom: 16,
-              }}
-            >
-              {c.landing.heroKicker}
-            </span>
             <h1
               style={{
                 fontFamily: "Barlow Condensed, sans-serif",
