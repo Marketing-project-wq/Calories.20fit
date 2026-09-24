@@ -40,11 +40,15 @@ function applyTheme(theme: Theme) {
     const root = document.documentElement;
     root.setAttribute("data-theme", theme);
     root.style.colorScheme = theme; // native form controls / scrollbars follow
-    // Matches --header-bg in index.css (light #FFFFFF / dark #1A1A1A) — the
-    // browser's own chrome should read as the header, not brand red. Kept in
-    // sync with the same two literals in index.html's pre-hydration script.
+    // Matches --bg in index.css (light #EFEDEA / dark #131410) — the header
+    // is now a floating translucent pill with margin around it (see
+    // .ct-header-bar in App.tsx), not flush against the top edge, so it's
+    // the PAGE background that's actually adjacent to the browser's own
+    // chrome now, not the header's fill. Never brand red either way. Kept
+    // in sync with the same two literals in index.html's pre-hydration
+    // script.
     const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) meta.setAttribute("content", theme === "dark" ? "#1A1A1A" : "#FFFFFF");
+    if (meta) meta.setAttribute("content", theme === "dark" ? "#131410" : "#EFEDEA");
   } catch {
     /* SSR / no document — no-op */
   }

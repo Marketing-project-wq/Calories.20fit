@@ -68,12 +68,13 @@
   --inverse-surface: #141414;
   --inverse-text: #FFFFFF;
 
-  /* Header — deliberately its own flat, neutral surface (not --surface, not
-     brand red): seamless with the browser/OS chrome (address bar, status
-     bar) on Android/iOS. No blur, no shadow, no gradient — see .ct-header
-     usage in App.tsx and <meta name="theme-color"> in index.html/theme.tsx,
-     which must stay in sync with these two hex values. */
-  --header-bg: #FFFFFF;
+  /* Header — its own floating, neutral surface (not --surface, not brand
+     red): a translucent pill blurred over the page (backdrop-filter, see
+     .ct-header-bar in App.tsx), not flush against the browser/OS chrome —
+     the PAGE background (--bg) is what's seamless with the browser chrome
+     now, so <meta name="theme-color"> (index.html/theme.tsx) is matched to
+     --bg, not to this token. */
+  --header-bg: rgba(255, 255, 255, 0.85);
   --header-border: #F0F0F0;
   --header-text: #1A1A1A;
   --header-text-secondary: #9CA3AF;
@@ -136,7 +137,7 @@
   --inverse-surface: #F1EFE6;
   --inverse-text: #16170F;
 
-  --header-bg: #1A1A1A;
+  --header-bg: rgba(10, 10, 10, 0.85);
   --header-border: #2D2D2D;
   --header-text: #F5F5F5;
   --header-text-secondary: #6B7280;
