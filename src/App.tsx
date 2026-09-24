@@ -176,11 +176,32 @@ export function App() {
         <span className="app-orb app-orb-2" />
         <span className="app-orb app-orb-3" />
       </div>
-      {/* Flat, seamless header — no blur, no shadow, no gradient, never brand
-          red (see index.css --header-bg / theme.tsx). Matches the OS/browser
-          chrome (theme-color meta) so there's no visible seam on Android/iOS. */}
-      <div style={{ background: "var(--header-bg)", borderBottom: "1px solid var(--header-border)", position: "sticky", top: 0, zIndex: 50, paddingTop: "env(safe-area-inset-top, 0px)" }}>
-        <div className="ct-header-bar" style={{ maxWidth: 1100, margin: "0 auto", padding: "0 16px", height: 48, display: "flex", flexWrap: "nowrap", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+      {/* Floating pill header — translucent + blurred (never brand red; see
+          index.css --header-bg / theme.tsx). It no longer touches the top
+          edge, so it's the PAGE background (--bg), not the header's own
+          fill, that now sits flush against the browser/OS chrome — the
+          <meta name="theme-color"> below is matched to --bg accordingly
+          (see theme.tsx), not to --header-bg. */}
+      <div style={{ position: "sticky", top: 0, zIndex: 50, paddingTop: "env(safe-area-inset-top, 0px)" }}>
+        <div
+          className="ct-header-bar"
+          style={{
+            margin: "8px 12px 0",
+            padding: "0 20px",
+            height: 48,
+            display: "flex",
+            flexWrap: "nowrap",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: 12,
+            background: "var(--header-bg)",
+            border: "1px solid var(--header-border)",
+            borderRadius: 14,
+            boxShadow: "0 2px 12px var(--shadow-sm)",
+            backdropFilter: "blur(12px)",
+            WebkitBackdropFilter: "blur(12px)",
+          }}
+        >
           {/* Brand + nav */}
           <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0, flex: "1 1 auto" }}>
             <Link href={ROUTES.HOME} style={{ display: "flex", alignItems: "center", flexShrink: 0 }} aria-label="20FIT Calorie Tracker">
@@ -230,6 +251,9 @@ export function App() {
               line (see .ct-header-bar/.ct-navstrip below). */}
           <div className="ct-header-right" style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
             <UniversalNav lang={lang} />
+            {/* Icon-only at every width (no text label) — matches the
+                Products button's treatment; the label still appears in the
+                mobile More menu's row below. */}
             <button
               onClick={toggleTheme}
               aria-label={theme === "dark" ? nav.themeLight : nav.themeDark}
@@ -238,10 +262,8 @@ export function App() {
               style={{
                 alignItems: "center",
                 justifyContent: "center",
-                gap: 6,
-                minWidth: 32,
+                width: 32,
                 height: 32,
-                padding: "0 8px",
                 borderRadius: 8,
                 background: "var(--track)",
                 color: "var(--text-soft)",
@@ -250,9 +272,6 @@ export function App() {
               }}
             >
               <Icon name={theme === "dark" ? "sun" : "moon"} size={16} />
-              <span style={{ fontSize: 12, fontWeight: 600, whiteSpace: "nowrap" }}>
-                {theme === "dark" ? nav.themeLight : nav.themeDark}
-              </span>
             </button>
             <div className="ct-lang-toggle hidden md:flex" style={{ background: "var(--track)", borderRadius: 10, padding: 3, gap: 2, flexShrink: 0 }}>
               {(["id", "en"] as Lang[]).map((l) => (
@@ -413,12 +432,21 @@ export function App() {
         /* Header must always stay one line — never wrap to a second row.
            Below md (768px), page tabs/theme/language already fully collapse
            into the "More" menu (see App() — .hidden md:flex etc.), leaving
-           just [Logo] [Products] [Profile] [More] in the bar itself; this
-           just claws back a bit more width on very narrow phones so those 4
-           never get pushed off, and keeps the lang toggle inside the More
-           dropdown compact too (same .ct-lang-toggle class, reused there). */
-        @media (max-width: 480px) {
-          .ct-header-bar { height: 44px !important; padding-left: 10px !important; padding-right: 10px !important; gap: 6px !important; }
+           just [Logo] [Products] [Profile] [More] in the bar itself, so the
+           whole "compact mobile" treatment (tighter floating margins, smaller
+           radius, less padding) applies at that same breakpoint — there's no
+           longer a separate narrower threshold for it. Keeps the lang toggle
+           inside the More dropdown compact too (same .ct-lang-toggle class,
+           reused there). */
+        @media (max-width: 767px) {
+          .ct-header-bar {
+            height: 44px !important;
+            margin: 6px 8px 0 !important;
+            padding-left: 14px !important;
+            padding-right: 14px !important;
+            border-radius: 12px !important;
+            gap: 6px !important;
+          }
           .ct-header-right { gap: 4px !important; }
           .ct-lang-toggle { padding: 2px !important; }
           .ct-lang-toggle button { padding: 3px 7px !important; }

@@ -36,28 +36,21 @@ export const AuthNav = ({ lang, isLoading, isAuthenticated, user }: AuthNavProps
   }, [showMenu]);
   useEffect(() => onOtherDropdownOpen(DROPDOWN_ID, () => setShowMenu(false)), []);
 
-  // Sesi belum diketahui (cek awal) — jangan kedip dari "Sign In" ke avatar.
-  if (isLoading) return <div style={{ width: 76, height: 30 }} />;
+  // Sesi belum diketahui (cek awal) — jangan kedip dari "Sign up" ke avatar.
+  if (isLoading) return <div style={{ width: 50, height: 30 }} />;
 
   if (!isAuthenticated) {
-    // Native auth on THIS app — internal routes, no redirect to my.20fit.id.
+    // Single "Sign up" text link straight to /register — no separate "Sign
+    // in" link and no dropdown, per the header spec. /register itself has
+    // an "Already have an account?" link that switches to sign-in mode
+    // (see AuthPage.tsx), so this isn't a dead end for existing members.
     return (
-      <div style={{ display: "flex", alignItems: "center", gap: 6 }}>
-        <Link
-          href="/login"
-          className="sc-link-btn"
-          style={{ fontSize: 12, fontWeight: "bold", color: "var(--text)", textDecoration: "none", padding: "6px 10px" }}
-        >
-          {tr.signIn}
-        </Link>
-        <Link
-          href="/register"
-          className="sc-btn-primary"
-          style={{ background: "var(--brand)", color: "var(--on-brand)", borderRadius: 8, padding: "7px 14px", fontSize: 12, fontWeight: "bold", textDecoration: "none", whiteSpace: "nowrap" }}
-        >
-          {tr.signUp}
-        </Link>
-      </div>
+      <Link
+        href="/register"
+        style={{ fontSize: 12, fontWeight: 700, color: "var(--text)", textDecoration: "none", padding: "6px 10px", whiteSpace: "nowrap" }}
+      >
+        {tr.signUp}
+      </Link>
     );
   }
 
