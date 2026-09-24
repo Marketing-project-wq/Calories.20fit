@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { COLORS, NUTRI } from "../lib/constants";
 import { Lang } from "../lib/i18n";
 import { cc, ACTIVITY_LABELS } from "../lib/calorieCopy";
@@ -86,6 +86,134 @@ function TdeeRing({ bmr, tdee, caption }: { bmr: number; tdee: number; caption: 
           <span style={{ width: 9, height: 9, borderRadius: 2, background: NUTRI.GREEN }} /> Aktivitas
         </span>
       </div>
+    </div>
+  );
+}
+
+// Custom-positioned dropdown for Activity Level, replacing a native
+// <select> — on mobile, a native <select> hands off to the OS's own
+// full-screen picker (a bottom sheet on iOS, a full-width modal on
+// Android), which broke the "stay inline/scrollable like desktop" feel the
+// rest of this card has. This is a plain positioned popover instead (same
+// open/close + outside-click + Escape pattern as the app-switcher/profile/
+// More dropdowns in App.tsx and UniversalNav.tsx), so activity selection
+// behaves identically — and stays proportioned to the card, not the whole
+// viewport — at every screen size.
+function ActivityDropdown({
+  lang,
+  value,
+  onChange,
+}: {
+  lang: Lang;
+  value: ActivityLevel | "";
+  onChange: (v: ActivityLevel) => void;
+}) {
+  const [open, setOpen] = useState(false);
+  const rootRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (!open) return;
+    const onClickOutside = (e: MouseEvent) => {
+      if (rootRef.current && !rootRef.current.contains(e.target as Node)) setOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setOpen(false);
+    };
+    document.addEventListener("mousedown", onClickOutside);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onClickOutside);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  const selected = value ? ACTIVITY_LABELS[lang][value] : null;
+  const placeholder = lang === "id" ? "Pilih level aktivitas…" : "Choose activity level…";
+
+  return (
+    <div ref={rootRef} style={{ position: "relative" }}>
+      <button
+        type="button"
+        onClick={() => setOpen((o) => !o)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        style={{
+          ...inputStyle(),
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "space-between",
+          gap: 8,
+          cursor: "pointer",
+          textAlign: "left",
+        }}
+      >
+        <span style={{ color: selected ? "var(--text)" : "var(--text-faint)", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
+          {selected ? `${selected.name} — ${selected.desc}` : placeholder}
+        </span>
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ flexShrink: 0, color: "var(--text-faint)", transform: open ? "rotate(180deg)" : undefined, transition: "transform .15s" }}>
+          <path d="M6 9l6 6 6-6" />
+        </svg>
+      </button>
+
+      {open && (
+        <div
+          role="listbox"
+          className="tdee-activity-menu"
+          style={{
+            position: "absolute",
+            top: "calc(100% + 6px)",
+            left: 0,
+            right: 0,
+            zIndex: 20,
+            maxHeight: 240,
+            overflowY: "auto",
+            background: "var(--surface-solid)",
+            border: `1px solid ${BORDER}`,
+            borderRadius: 12,
+            boxShadow: "0 8px 32px var(--shadow-md)",
+            padding: 6,
+          }}
+        >
+          {ACTIVITY_LEVELS.map((lvl) => {
+            const meta = ACTIVITY_LABELS[lang][lvl];
+            const isSelected = value === lvl;
+            return (
+              <button
+                key={lvl}
+                type="button"
+                role="option"
+                aria-selected={isSelected}
+                onClick={() => {
+                  onChange(lvl);
+                  setOpen(false);
+                }}
+                className="tdee-activity-option"
+                style={{
+                  display: "block",
+                  width: "100%",
+                  textAlign: "left",
+                  padding: "9px 10px",
+                  borderRadius: 8,
+                  border: "none",
+                  cursor: "pointer",
+                  background: isSelected ? "var(--brand-soft)" : "transparent",
+                }}
+              >
+                <div style={{ fontSize: 13, fontWeight: 700, color: isSelected ? "var(--brand)" : "var(--text)" }}>{meta.name}</div>
+                <div style={{ fontSize: 11, color: isSelected ? "var(--brand)" : "var(--text-faint)" }}>{meta.desc}</div>
+              </button>
+            );
+          })}
+        </div>
+      )}
+
+      <style>{`
+        .tdee-activity-option:hover { background: var(--header-hover); }
+        @media (max-width: 480px) {
+          .tdee-activity-menu { max-height: 200px; padding: 4px; }
+          .tdee-activity-option { padding: 7px 8px !important; }
+        }
+      `}</style>
     </div>
   );
 }
@@ -213,19 +341,7 @@ export function TdeeCalculator({ lang }: { lang: Lang }) {
         {/* Activity */}
         <div style={{ marginBottom: 18 }}>
           <label style={labelStyle()}>{c.activityLabel}</label>
-          <select value={activity} onChange={(e) => setActivity(e.target.value as ActivityLevel | "")} style={{ ...inputStyle(), appearance: "auto" }}>
-            <option value="" disabled>
-              {lang === "id" ? "Pilih level aktivitas…" : "Choose activity level…"}
-            </option>
-            {ACTIVITY_LEVELS.map((lvl) => {
-              const meta = ACTIVITY_LABELS[lang][lvl];
-              return (
-                <option key={lvl} value={lvl}>
-                  {meta.name} — {meta.desc}
-                </option>
-              );
-            })}
-          </select>
+          <ActivityDropdown lang={lang} value={activity} onChange={setActivity} />
         </div>
 
         {error && (

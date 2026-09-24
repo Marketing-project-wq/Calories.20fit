@@ -26,7 +26,7 @@ export const copy = {
     landing: {
       heroKicker: "Gratis · Tanpa akun",
       heroTitle: "Berapa Kalori yang\nKamu Butuhkan?",
-      heroSub: "Hitung kebutuhan kalori harianmu dalam 30 detik. Berbasis rumus Mifflin-St Jeor — dipakai ahli gizi & klinik.",
+      heroSub: "Hitung kebutuhan kalori harianmu dalam 30 detik — dipakai ahli gizi & klinik.",
       previewArticlesTitle: "Belajar nutrisi dari sumber terpercaya",
       previewArticlesSub: "Artikel berbasis fakta — WHO, Kemenkes, jurnal ilmiah. Bukan mitos diet.",
       previewArticlesCta: "Lihat semua artikel",
@@ -197,7 +197,6 @@ export const copy = {
     },
 
     common: {
-      poweredBy: "Berbasis rumus Mifflin-St Jeor",
       loading: "Memuat…",
       comingSoonTitle: "Segera hadir",
       notFoundTitle: "Halaman tidak ditemukan",
@@ -223,7 +222,7 @@ export const copy = {
     landing: {
       heroKicker: "Free · No account",
       heroTitle: "How Many Calories\nDo You Need?",
-      heroSub: "Calculate your daily calorie needs in 30 seconds. Based on the Mifflin-St Jeor equation — used by dietitians & clinics.",
+      heroSub: "Calculate your daily calorie needs in 30 seconds — used by dietitians & clinics.",
       previewArticlesTitle: "Learn nutrition from trusted sources",
       previewArticlesSub: "Fact-based articles — WHO, Kemenkes, scientific journals. Not diet myths.",
       previewArticlesCta: "See all articles",
@@ -384,7 +383,6 @@ export const copy = {
     },
 
     common: {
-      poweredBy: "Based on the Mifflin-St Jeor equation",
       loading: "Loading…",
       comingSoonTitle: "Coming soon",
       notFoundTitle: "Page not found",

@@ -10,15 +10,18 @@ import { Icon } from "../components/Icon";
 
 const MAXW = 1100;
 
-// Real-member photo duo shown right under the hero calculator — social proof
-// placed exactly where a visitor is about to act, not competing with the
-// calculator itself for attention. Hosted on 20FIT's existing WordPress
-// media library (same host the app already trusts for the brand wordmark —
-// see LOGO in src/lib/theme.tsx), not this repo's own asset pipeline.
-const HERO_PHOTOS = [
-  "https://media.20fit.id/wp-content/uploads/2026/09/WhatsApp-Image-2026-07-31-at-15.05.26.jpeg",
-  "https://media.20fit.id/wp-content/uploads/2026/09/WhatsApp-Image-2026-07-31-at-16.45.06-1-2.jpeg",
-];
+// Real-member photo under the hero headline — only ONE shows at a time, the
+// other swapped in by CSS at the same 860px breakpoint the hero itself
+// stacks at (see .ct-hero-photo-mobile/.ct-hero-photo-desktop below), rather
+// than showing both together. Hosted on 20FIT's existing WordPress media
+// library (same host the app already trusts for the brand wordmark — see
+// LOGO in src/lib/theme.tsx), not this repo's own asset pipeline. Which
+// photo goes to which breakpoint is an arbitrary pick since this session
+// can't preview them (sandbox network policy blocks media.20fit.id) — swap
+// HERO_PHOTO_MOBILE/HERO_PHOTO_DESKTOP if the wrong one ends up on the
+// wrong size.
+const HERO_PHOTO_MOBILE = "https://media.20fit.id/wp-content/uploads/2026/09/WhatsApp-Image-2026-07-31-at-15.05.26.jpeg";
+const HERO_PHOTO_DESKTOP = "https://media.20fit.id/wp-content/uploads/2026/09/WhatsApp-Image-2026-07-31-at-16.45.06-1-2.jpeg";
 
 function Orbs() {
   return (
@@ -84,39 +87,32 @@ export function LandingPage({ lang }: { lang: Lang }) {
             >
               {c.landing.heroTitle}
             </h1>
+
+            {/* Real-member photo — a single wide shot right under the
+                headline; alt="" (decorative) since the photo's exact
+                content isn't authored copy this session can describe. */}
+            <div
+              style={{
+                aspectRatio: "16 / 9",
+                borderRadius: 18,
+                overflow: "hidden",
+                border: "1px solid var(--border)",
+                boxShadow: "0 10px 28px -18px rgba(20,20,20,0.35)",
+                margin: "0 0 20px",
+                maxWidth: 460,
+              }}
+            >
+              <img src={HERO_PHOTO_MOBILE} alt="" loading="lazy" className="ct-hero-photo-mobile" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+              <img src={HERO_PHOTO_DESKTOP} alt="" loading="lazy" className="ct-hero-photo-desktop" style={{ width: "100%", height: "100%", objectFit: "cover", display: "none" }} />
+            </div>
+
             <p style={{ fontSize: 16, lineHeight: 1.6, color: "var(--text-muted)", maxWidth: 460, margin: "0 0 20px" }}>
               {c.landing.heroSub}
             </p>
-            <div style={{ display: "flex", alignItems: "center", gap: 10, fontSize: 13, color: "var(--text-soft)" }}>
-              <Icon name="flame" size={17} color={COLORS.RED} />
-              <span>{c.common.poweredBy}</span>
-            </div>
           </div>
 
           <div>
             <TdeeCalculator lang={lang} />
-
-            {/* Real-member photo duo — fixed aspect + object-fit: cover so
-                it looks clean regardless of each photo's own orientation.
-                alt="" (decorative): no caption/description is asserted here
-                since the photos' exact content isn't authored copy — swap
-                in real alt text once that's known. */}
-            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 14 }}>
-              {HERO_PHOTOS.map((src) => (
-                <div
-                  key={src}
-                  style={{
-                    aspectRatio: "4 / 5",
-                    borderRadius: 16,
-                    overflow: "hidden",
-                    border: "1px solid var(--border)",
-                    boxShadow: "0 10px 28px -18px rgba(20,20,20,0.35)",
-                  }}
-                >
-                  <img src={src} alt="" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
-                </div>
-              ))}
-            </div>
           </div>
         </div>
       </section>
@@ -302,10 +298,15 @@ export function LandingPage({ lang }: { lang: Lang }) {
 
       <SiteFooter lang={lang} />
 
-      {/* Stack hero to one column on narrow screens */}
+      {/* Stack hero to one column on narrow screens; swap which of the two
+          hero photos shows at the same breakpoint (never both). */}
       <style>{`
         @media (max-width: 860px) {
           .ct-hero-grid { grid-template-columns: 1fr !important; }
+        }
+        @media (min-width: 861px) {
+          .ct-hero-photo-mobile { display: none !important; }
+          .ct-hero-photo-desktop { display: block !important; }
         }
       `}</style>
     </div>
