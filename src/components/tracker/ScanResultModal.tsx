@@ -108,12 +108,25 @@ export function ScanResultModal({ lang, result, goal, eaten, onLogged, onClose, 
     }
   };
 
-  const saveEdit = async (i: number, name: string, amt: number, unit: string, kcal: number) => {
+  const saveEdit = async (
+    i: number,
+    name: string,
+    amt: number,
+    unit: string,
+    kcal: number,
+    macros?: { protein_g: number; carbs_g: number; fat_g: number; fiber_g?: number }
+  ) => {
     const next = comps.slice();
     const c = { ...next[i] };
     c.name = name;
     c.portion = unit === "g" ? `${amt}g` : `${amt} ${unit}`;
     c.kcal = kcal;
+    if (macros) {
+      c.protein_g = macros.protein_g;
+      c.carbs_g = macros.carbs_g;
+      c.fat_g = macros.fat_g;
+      if (macros.fiber_g !== undefined) c.fiber_g = macros.fiber_g;
+    }
     c._source = "user";
     next[i] = c;
     setComps(next);
@@ -235,7 +248,7 @@ export function ScanResultModal({ lang, result, goal, eaten, onLogged, onClose, 
               editing={editIdx === idx}
               onEdit={() => setEditIdx(idx)}
               onCancel={() => setEditIdx(null)}
-              onSave={(name, amt, unit, kcal) => saveEdit(idx, name, amt, unit, kcal)}
+              onSave={(name, amt, unit, kcal, macros) => saveEdit(idx, name, amt, unit, kcal, macros)}
               onDelete={() => deleteComp(idx)}
             />
           ))}
@@ -292,7 +305,9 @@ export function ScanResultModal({ lang, result, goal, eaten, onLogged, onClose, 
 
 function PortionRow({ lang, it, kc, editing, onEdit, onCancel, onSave, onDelete }: {
   lang: Lang; it: Comp; kc: string; editing: boolean;
-  onEdit: () => void; onCancel: () => void; onSave: (name: string, amt: number, unit: string, kcal: number) => void; onDelete: () => void;
+  onEdit: () => void; onCancel: () => void;
+  onSave: (name: string, amt: number, unit: string, kcal: number, macros?: { protein_g: number; carbs_g: number; fat_g: number; fiber_g?: number }) => void;
+  onDelete: () => void;
 }) {
   const v = itemVerdict({ name: it.name, kcal: it.kcal, p: it.protein_g, c: it.carbs_g, f: it.fat_g, t: "" }, lang);
   const au = parseAmtUnit(it.portion);
@@ -301,13 +316,52 @@ function PortionRow({ lang, it, kc, editing, onEdit, onCancel, onSave, onDelete 
   const [unit, setUnit] = useState(au.unit);
   const [kcal, setKcal] = useState(String(Math.round(it.kcal)));
   const [msg, setMsg] = useState("");
+  const [computing, setComputing] = useState(false);
   const inp: React.CSSProperties = { width: "100%", padding: "9px 10px", border: `1px solid ${BORDER}`, borderRadius: 9, fontSize: 14, fontFamily: "inherit", background: "var(--surface)", color: INK, boxSizing: "border-box" };
 
   if (editing) {
-    const submit = () => {
+    // Editing grams XOR kcal (not both, not neither) auto-fills the other —
+    // grams -> kcal asks my.20fit.id's dictionary/AI estimator (the same one
+    // the "type food + grams" flow uses); the opposite direction has no such
+    // endpoint (it only computes kcal from a name+grams, never the reverse),
+    // so kcal -> grams instead scales from this item's own kcal-per-gram
+    // density (macros scaled the same ratio). Only for unit "g" — pcs/ml/L
+    // have no per-gram estimator to ask either way.
+    const submit = async () => {
       const a = parseFloat(amt);
       const k = parseInt(kcal, 10);
       if (!name.trim() || !(a > 0) || !(k > 0)) { setMsg(tx(lang, "Fill name, amount & kcal.", "Isi nama, jumlah & kkal dulu.")); return; }
+
+      const origAmt = au.amt;
+      const origKcal = Math.round(it.kcal);
+      const gramsChanged = unit === "g" && origAmt !== "" && Math.round(a) !== origAmt;
+      const kcalChanged = k !== origKcal;
+
+      if (unit === "g" && gramsChanged && !kcalChanged) {
+        setComputing(true);
+        setMsg("");
+        try {
+          const est = await apiClient.estimateFoodText(name.trim(), Math.round(a), lang);
+          onSave(name.trim(), a, unit, est.kcal, { protein_g: est.p, carbs_g: est.c, fat_g: est.f });
+          return;
+        } catch {
+          setMsg(tx(lang, "Couldn't recalculate kcal — saved as typed.", "Gagal hitung ulang kkal — tersimpan sesuai isian."));
+        } finally {
+          setComputing(false);
+        }
+      } else if (unit === "g" && kcalChanged && !gramsChanged && origAmt !== "" && origKcal > 0) {
+        const density = origKcal / origAmt;
+        const newGrams = density > 0 ? Math.round(k / density) : a;
+        const ratio = k / origKcal;
+        onSave(name.trim(), newGrams, unit, k, {
+          protein_g: +(it.protein_g * ratio).toFixed(1),
+          carbs_g: +(it.carbs_g * ratio).toFixed(1),
+          fat_g: +(it.fat_g * ratio).toFixed(1),
+          fiber_g: +(it.fiber_g * ratio).toFixed(1),
+        });
+        return;
+      }
+
       onSave(name.trim(), a, unit, k);
     };
     return (
@@ -329,12 +383,14 @@ function PortionRow({ lang, it, kc, editing, onEdit, onCancel, onSave, onDelete 
           </label>
         </div>
         <div style={{ display: "flex", gap: 8, alignItems: "center", flexWrap: "wrap" }}>
-          <button type="button" onClick={submit} style={{ border: 0, borderRadius: 9, background: "var(--brand)", color: "var(--on-brand)", fontWeight: 800, fontSize: 13, padding: "9px 16px", cursor: "pointer" }}>{tx(lang, "Save correction", "Simpan koreksi")}</button>
-          <button type="button" onClick={onCancel} style={{ border: `1px solid ${BORDER}`, borderRadius: 9, background: "transparent", color: INK, fontWeight: 700, fontSize: 13, padding: "9px 14px", cursor: "pointer" }}>{tx(lang, "Cancel", "Batal")}</button>
+          <button type="button" onClick={submit} disabled={computing} style={{ border: 0, borderRadius: 9, background: "var(--brand)", color: "var(--on-brand)", fontWeight: 800, fontSize: 13, padding: "9px 16px", cursor: computing ? "default" : "pointer", opacity: computing ? 0.6 : 1 }}>
+            {computing ? tx(lang, "Calculating…", "Menghitung…") : tx(lang, "Save correction", "Simpan koreksi")}
+          </button>
+          <button type="button" onClick={onCancel} disabled={computing} style={{ border: `1px solid ${BORDER}`, borderRadius: 9, background: "transparent", color: INK, fontWeight: 700, fontSize: 13, padding: "9px 14px", cursor: "pointer" }}>{tx(lang, "Cancel", "Batal")}</button>
           {msg && <span style={{ fontSize: 12, color: "var(--brand)" }}>{msg}</span>}
-          <button type="button" onClick={onDelete} style={{ marginLeft: "auto", border: "1px solid #e6b3ad", borderRadius: 9, background: "transparent", color: "var(--brand)", fontWeight: 700, fontSize: 13, padding: "9px 14px", cursor: "pointer" }}>{tx(lang, "Delete food", "Hapus makanan")}</button>
+          <button type="button" onClick={onDelete} disabled={computing} style={{ marginLeft: "auto", border: "1px solid #e6b3ad", borderRadius: 9, background: "transparent", color: "var(--brand)", fontWeight: 700, fontSize: 13, padding: "9px 14px", cursor: "pointer" }}>{tx(lang, "Delete food", "Hapus makanan")}</button>
         </div>
-        <div style={{ fontSize: 11.5, color: MUTED }}>{tx(lang, "Your correction helps 20FIT get more accurate over time (grams & calories).", "Koreksimu bikin 20FIT makin akurat seiring waktu (gram & kalori).")}</div>
+        <div style={{ fontSize: 11.5, color: MUTED }}>{tx(lang, "Change just the amount or just the calories and we'll work out the other one for you.", "Ubah jumlahnya saja atau kalorinya saja, yang satu lagi otomatis kami hitungkan.")}</div>
       </div>
     );
   }

@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { ROUTES } from "./lib/constants";
-import { Lang } from "./lib/i18n";
+import { Lang, readInitialLang, persistLang } from "./lib/i18n";
 import { cc } from "./lib/calorieCopy";
 import { useAuth } from "./hooks/useAuth";
 import { useTheme, LOGO } from "./lib/theme";
 import { AuthNav } from "./components/AuthNav";
 import { Icon } from "./components/Icon";
+import { UniversalNav } from "./components/UniversalNav";
 import { Link, useLocation, matchRoute, navigate } from "./lib/router";
 import { LandingPage } from "./pages/LandingPage";
 import { HistoryPage } from "./pages/HistoryPage";
@@ -78,7 +79,11 @@ function MemberArea({ lang }: { lang: Lang }) {
 }
 
 export function App() {
-  const [lang, setLang] = useState<Lang>("id");
+  const [lang, setLangState] = useState<Lang>(() => readInitialLang());
+  const setLang = (l: Lang) => {
+    setLangState(l);
+    persistLang(l);
+  };
   const nav = cc(lang).nav;
   const { user, isAuthenticated, isLoading } = useAuth();
   const { theme, toggleTheme } = useTheme();
@@ -130,7 +135,7 @@ export function App() {
         <span className="app-orb app-orb-3" />
       </div>
       <div className="sc-nav-glass" style={{ borderBottom: "1px solid var(--nav-border)", position: "sticky", top: 0, zIndex: 50, boxShadow: "0 4px 24px var(--shadow-sm)" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto", padding: "8px 16px", display: "flex", flexWrap: "wrap", alignItems: "center", justifyContent: "space-between", gap: "8px 12px" }}>
+        <div className="ct-header-bar" style={{ maxWidth: 1100, margin: "0 auto", padding: "8px 16px", display: "flex", flexWrap: "nowrap", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
           {/* Brand + nav */}
           <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0, flex: "1 1 auto" }}>
             <Link href={ROUTES.HOME} style={{ display: "flex", alignItems: "center", flexShrink: 0 }} aria-label="20FIT Calorie Tracker">
@@ -138,6 +143,7 @@ export function App() {
                 src={LOGO[theme]}
                 alt="20FIT"
                 height={28}
+                className="ct-header-logo"
                 style={{ height: 28, width: "auto", display: "block", objectFit: "contain" }}
               />
             </Link>
@@ -172,8 +178,12 @@ export function App() {
             </nav>
           </div>
 
-          {/* Theme + language + auth */}
-          <div style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+          {/* App switcher + theme + language + auth — these 4 controls must
+              never be hidden or dropped to a hamburger; only their text
+              labels compress away below md (768px), same breakpoint as
+              AuthNav's name and UniversalNav's "Products" label. */}
+          <div className="ct-header-right" style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
+            <UniversalNav lang={lang} />
             <button
               onClick={toggleTheme}
               aria-label={theme === "dark" ? nav.themeLight : nav.themeDark}
@@ -182,8 +192,10 @@ export function App() {
                 display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
-                width: 32,
+                gap: 6,
+                minWidth: 32,
                 height: 32,
+                padding: "0 8px",
                 borderRadius: 8,
                 background: "var(--track)",
                 color: "var(--text-soft)",
@@ -192,8 +204,11 @@ export function App() {
               }}
             >
               <Icon name={theme === "dark" ? "sun" : "moon"} size={16} />
+              <span className="hidden md:inline" style={{ fontSize: 12, fontWeight: 600, whiteSpace: "nowrap" }}>
+                {theme === "dark" ? nav.themeLight : nav.themeDark}
+              </span>
             </button>
-            <div style={{ display: "flex", background: "var(--track)", borderRadius: 10, padding: 3, gap: 2 }}>
+            <div className="ct-lang-toggle" style={{ display: "flex", background: "var(--track)", borderRadius: 10, padding: 3, gap: 2, flexShrink: 0 }}>
               {(["id", "en"] as Lang[]).map((l) => (
                 <button
                   key={l}
@@ -225,6 +240,25 @@ export function App() {
       {/* Hide the nav strip's scrollbar (WebKit) */}
       <style>{`
         .ct-navstrip::-webkit-scrollbar { display: none; }
+
+        /* Header must always stay one line — never wrap to a second row.
+           The nav-link strip (Tracker/Articles/History) already scrolls
+           horizontally instead of wrapping; below this we just claw back
+           enough width on narrow phones so the 4 required controls
+           (Products, theme, language, profile) never get pushed off. */
+        @media (max-width: 480px) {
+          .ct-header-bar { padding-left: 10px !important; padding-right: 10px !important; gap: 6px !important; }
+          .ct-header-right { gap: 4px !important; }
+          .ct-lang-toggle { padding: 2px !important; }
+          .ct-lang-toggle button { padding: 3px 7px !important; }
+          /* The logo is a remote-hosted wordmark image of unknown width —
+             cap it so it can never crowd out the 4 required controls on the
+             right (same "logo shrinks first" priority the spec calls for). */
+          .ct-header-logo { max-width: 92px !important; }
+        }
+        @media (max-width: 360px) {
+          .ct-header-logo { height: 22px !important; max-width: 68px !important; }
+        }
       `}</style>
     </div>
   );

@@ -57,6 +57,21 @@ export const URLS = {
   LOGIN: `${MY20FIT}/login?next=calories`,
   SIGN_UP: `${MY20FIT}/login?mode=up&next=calories`,
   TOPUP: `${MY20FIT}/calories`,
+  // Profile Hub pages, all on my.20fit.id (PROFILE20FIT repo — out of scope
+  // here, read-only). Linked via navigateWithSso() so the session carries
+  // over; the pages themselves are that repo's to build/maintain.
+  MY_PROFILE: `${MY20FIT}/profile`,
+  MY_PURCHASES: `${MY20FIT}/purchases`,
+  MY_SETTINGS: `${MY20FIT}/settings`,
+};
+
+// Same address/link my.20fit.id's own footer uses (PROFILE20FIT repo,
+// login.html) — kept in sync here rather than invented, since a wrong
+// contact detail in a live footer actively misleads people trying to reach
+// 20FIT.
+export const CONTACT = {
+  EMAIL: "Marketing@20fit.id",
+  SITE: "https://20fit.id",
 };
 
 export const API_BASE = (import.meta.env.VITE_API_URL as string) || MY20FIT;
@@ -73,18 +88,3 @@ export const SCAN_LIMITS = {
   FILE_SIZE_MB: 5,
   ALLOWED_TYPES: ["image/jpeg", "image/png", "image/webp"],
 };
-
-export const SUBDOMAINS = [
-  {
-    name: "Scan Kalori",
-    icon: "leaf" as const,
-    url: "https://calorietracker.20fit.id",
-    key: "calories",
-  },
-  {
-    name: "My 20FIT",
-    icon: "target" as const,
-    url: MY20FIT,
-    key: "my20fit",
-  },
-];

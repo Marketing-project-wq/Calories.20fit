@@ -7,6 +7,7 @@
 // function call in this app.
 import { SUPABASE } from "./constants";
 import { Lang } from "./i18n";
+import { SsoTokens, appendSsoFragment } from "./supabase";
 
 export interface RecipeMacros {
   p: number | null;
@@ -127,6 +128,12 @@ export async function getContentRecipes(opts: { lang?: Lang; source?: "all" | "o
   return getPublicCatalogFallback(lang, limit);
 }
 
+/** Splits a "source:id" composite key (e.g. "official:gado-gado") into its parts — "official" source when the key carries none. */
+export function parseRecipeKey(key: string): { source: string; id: string } {
+  const i = key.indexOf(":");
+  return i > 0 ? { source: key.slice(0, i), id: key.slice(i + 1) } : { source: "official", id: key };
+}
+
 // recipe.20fit.id's own recipe-catalog SPA reads a detail page at
 // /resep/:source/:id (source = "official" | "member", id = the bare id —
 // NOT the "source:id" composite `key` this API returns; that composite only
@@ -134,11 +141,18 @@ export async function getContentRecipes(opts: { lang?: Lang; source?: "all" | "o
 // from that app's own router (src/router.tsx: `resep/${source}/${id}` — a
 // two-segment path, not the joined key). Used to deep-link a recipe card
 // straight to its full page on recipe.20fit.id.
-export function recipeDetailUrl(key: string): string {
-  const i = key.indexOf(":");
-  const source = i > 0 ? key.slice(0, i) : "official";
-  const id = i > 0 ? key.slice(i + 1) : key;
-  return `https://recipe.20fit.id/resep/${encodeURIComponent(source)}/${encodeURIComponent(id)}`;
+//
+// recipe.20fit.id (repo MENU, src/lib/auth.tsx) reads the SAME SSO hand-off
+// this app's own useAuth.ts consumes from my.20fit.id — a
+// #access_token=...&refresh_token=... URL fragment, same Supabase project
+// (cpvzwqptzcxnwzfzgrmt) — and logs the tab in on load. So when `tokens` is
+// passed (the current, already-authenticated user's session — this page is
+// itself gated behind login, see AccountGate), the link hands that session
+// straight to recipe.20fit.id instead of leaving them signed out there.
+export function recipeDetailUrl(key: string, tokens?: SsoTokens | null): string {
+  const { source, id } = parseRecipeKey(key);
+  const base = `https://recipe.20fit.id/resep/${encodeURIComponent(source)}/${encodeURIComponent(id)}`;
+  return appendSsoFragment(base, tokens ?? null);
 }
 
 export async function getContentRecipe(key: string, lang?: Lang): Promise<ContentRecipe | null> {

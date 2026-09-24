@@ -534,8 +534,27 @@ export function getRelated(slug: string, list: Article[] = STATIC_ARTICLES, limi
   return [...sameCat, ...rest].slice(0, limit);
 }
 
+/**
+ * A cross-section of the catalog for the landing page's "browse all
+ * articles" teaser — one article per distinct category first, then filling
+ * any remaining slots from the rest. A plain `list.slice(0, limit)` looked
+ * wrong here: the array happens to start with two nutrition-basics articles
+ * in a row, so the "featured" preview (meant to represent the whole
+ * catalog) looked the same as just filtering to Nutrition Basics.
+ */
 export function getFeatured(list: Article[] = STATIC_ARTICLES, limit = 3): Article[] {
-  return list.slice(0, limit);
+  const seenCategories = new Set<ArticleCategory>();
+  const diverse: Article[] = [];
+  const rest: Article[] = [];
+  for (const a of list) {
+    if (seenCategories.has(a.category)) {
+      rest.push(a);
+    } else {
+      seenCategories.add(a.category);
+      diverse.push(a);
+    }
+  }
+  return [...diverse, ...rest].slice(0, limit);
 }
 
 function mapDbRow(row: any): Article {

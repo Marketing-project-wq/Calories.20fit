@@ -194,9 +194,15 @@ export async function saveOnboarding(o: OnboardingInput): Promise<void> {
   }
 }
 
-export async function signOutNative(): Promise<void> {
+/**
+ * scope "global" (the default here) revokes the refresh token server-side —
+ * a real "log out everywhere" across every 20FIT subdomain sharing this
+ * Supabase project, not just this tab's local session. Any other subdomain
+ * still holding that refresh token fails to renew it next time it tries.
+ */
+export async function signOutNative(scope: "global" | "local" = "global"): Promise<void> {
   try {
-    await supabase.auth.signOut();
+    await supabase.auth.signOut({ scope });
   } finally {
     try {
       localStorage.removeItem("fitco_uid");

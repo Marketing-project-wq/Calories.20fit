@@ -1,5 +1,28 @@
 export type Lang = "id" | "en";
 
+// Persisted language choice — same localStorage convention as theme.tsx's
+// readInitialTheme(): read once on init so a hard refresh keeps whatever the
+// user last picked, instead of always resetting to "id".
+const LANG_STORAGE_KEY = "lang";
+
+export function readInitialLang(): Lang {
+  try {
+    const stored = localStorage.getItem(LANG_STORAGE_KEY);
+    if (stored === "id" || stored === "en") return stored;
+  } catch {
+    /* private mode / blocked storage — fall through */
+  }
+  return "id";
+}
+
+export function persistLang(lang: Lang): void {
+  try {
+    localStorage.setItem(LANG_STORAGE_KEY, lang);
+  } catch {
+    /* ignore */
+  }
+}
+
 export const t = {
   id: {
     // App tabs
@@ -11,6 +34,9 @@ export const t = {
     signUp: "Daftar",
     signOut: "Keluar",
     openMy20fit: "Buka My 20FIT",
+    myProfile: "Profil Saya",
+    purchaseHistory: "Riwayat Pembelian",
+    accountSettings: "Pengaturan Akun",
     // Hero
     badge: "Scan kalori",
     heroTitle: "Foto makanan,\nlihat estimasi kalorinya",
@@ -95,6 +121,9 @@ export const t = {
     // Footer
     footerTagline: "Satu akun untuk scan kalori, menu diet, dan panduan medical check-up.",
     footerDisclaimer: "Estimasi kalori dihitung dari analisis foto dan bersifat perkiraan. Bukan saran medis, bukan target kalori personal. Untuk keputusan kesehatan, konsultasikan dengan tenaga kesehatan.",
+    footerEcosystem: "Ekosistem 20FIT",
+    footerContact: "Kontak",
+    footerRights: (year: number) => `© ${year} 20FIT. Semua hak dilindungi.`,
     sessionCount: (n: number) => `${n} analisis di sesi ini`,
   },
   en: {
@@ -107,6 +136,9 @@ export const t = {
     signUp: "Sign Up",
     signOut: "Sign Out",
     openMy20fit: "Open My 20FIT",
+    myProfile: "My Profile",
+    purchaseHistory: "Purchase History",
+    accountSettings: "Account Settings",
     // Hero
     badge: "Calorie scan",
     heroTitle: "Photo your food,\nsee the calorie estimate",
@@ -191,6 +223,9 @@ export const t = {
     // Footer
     footerTagline: "One account for calorie scanning, diet menus, and medical check-up guides.",
     footerDisclaimer: "Calorie estimates are calculated from photo analysis and are approximate. Not medical advice, not a personal calorie target. For health decisions, consult a healthcare professional.",
+    footerEcosystem: "20FIT Ecosystem",
+    footerContact: "Contact",
+    footerRights: (year: number) => `© ${year} 20FIT. All rights reserved.`,
     sessionCount: (n: number) => `${n} analyses this session`,
   },
 } as const;
