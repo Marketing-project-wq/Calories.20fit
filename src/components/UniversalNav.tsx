@@ -109,10 +109,8 @@ export function UniversalNav({ lang }: { lang: Lang }) {
           display: "inline-flex",
           alignItems: "center",
           justifyContent: "center",
-          gap: 6,
-          minWidth: 32,
+          width: 32,
           height: 32,
-          padding: "0 8px",
           borderRadius: 8,
           background: open ? "var(--brand-soft)" : "var(--track)",
           color: open ? "var(--brand)" : "var(--text-soft)",
@@ -122,9 +120,6 @@ export function UniversalNav({ lang }: { lang: Lang }) {
         }}
       >
         <WaffleIcon />
-        <span className="hidden md:inline" style={{ fontSize: 12, fontWeight: 600, whiteSpace: "nowrap" }}>
-          Products
-        </span>
       </button>
 
       {open && (

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { ROUTES } from "./lib/constants";
 import { Lang, readInitialLang, persistLang } from "./lib/i18n";
 import { cc } from "./lib/calorieCopy";
@@ -7,6 +7,7 @@ import { useTheme, LOGO } from "./lib/theme";
 import { AuthNav } from "./components/AuthNav";
 import { Icon } from "./components/Icon";
 import { UniversalNav } from "./components/UniversalNav";
+import { announceDropdownOpen, onOtherDropdownOpen } from "./lib/dropdownCoordinator";
 import { Link, useLocation, matchRoute, navigate } from "./lib/router";
 import { LandingPage } from "./pages/LandingPage";
 import { HistoryPage } from "./pages/HistoryPage";
@@ -18,6 +19,20 @@ import { AccountGate } from "./components/AccountGate";
 import { CaloriesTracker } from "./components/tracker/CaloriesTracker";
 import { SiteFooter } from "./components/SiteFooter";
 import { MemberProfile, getMemberProfile, needsOnboarding } from "./lib/memberTracker";
+
+// Vertical 3-dot "more" glyph — mobile-only overflow menu (page tabs +
+// language + theme, which collapse out of the header below md). No matching
+// icon exists in Icon.tsx's line-icon set, so this is a one-off inline SVG,
+// same pattern as UniversalNav's own WaffleIcon.
+function MoreIcon() {
+  return (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+      <circle cx="12" cy="5" r="2" />
+      <circle cx="12" cy="12" r="2" />
+      <circle cx="12" cy="19" r="2" />
+    </svg>
+  );
+}
 
 function NotFound({ lang }: { lang: Lang }) {
   const c = cc(lang).common;
@@ -89,6 +104,33 @@ export function App() {
   const { theme, toggleTheme } = useTheme();
   const path = useLocation();
 
+  // Mobile-only "More" overflow menu: page tabs + language + theme move in
+  // here below md, since the header itself must stay one line (see
+  // .ct-navstrip / .ct-header-right media queries below). Same open/close +
+  // dropdown-coordinator pattern as UniversalNav/AuthNav's own menus.
+  const MORE_DROPDOWN_ID = "header-more";
+  const [moreOpen, setMoreOpen] = useState(false);
+  const moreRef = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    if (moreOpen) announceDropdownOpen(MORE_DROPDOWN_ID);
+  }, [moreOpen]);
+  useEffect(() => onOtherDropdownOpen(MORE_DROPDOWN_ID, () => setMoreOpen(false)), []);
+  useEffect(() => {
+    if (!moreOpen) return;
+    const onClickOutside = (e: MouseEvent) => {
+      if (moreRef.current && !moreRef.current.contains(e.target as Node)) setMoreOpen(false);
+    };
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setMoreOpen(false);
+    };
+    document.addEventListener("mousedown", onClickOutside);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onClickOutside);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [moreOpen]);
+
   const NAV_ITEMS: { key: string; label: string; href: string }[] = isAuthenticated
     ? [
         { key: "tracker", label: nav.tracker, href: ROUTES.HOME },
@@ -151,8 +193,8 @@ export function App() {
               />
             </Link>
             <nav
-              style={{ display: "flex", gap: 2, overflowX: "auto", scrollbarWidth: "none", minWidth: 0 }}
-              className="ct-navstrip"
+              style={{ gap: 2, overflowX: "auto", scrollbarWidth: "none", minWidth: 0 }}
+              className="ct-navstrip hidden md:flex"
             >
               {NAV_ITEMS.map((item) => {
                 const active = isActive(item.href);
@@ -181,18 +223,19 @@ export function App() {
             </nav>
           </div>
 
-          {/* App switcher + theme + language + auth — these 4 controls must
-              never be hidden or dropped to a hamburger; only their text
-              labels compress away below md (768px), same breakpoint as
-              AuthNav's name and UniversalNav's "Products" label. */}
+          {/* App switcher + profile stay visible at every width (icon-only
+              below md); page tabs, theme and language fully collapse into
+              the mobile-only "More" menu below md instead of just losing
+              their text labels — the header itself must always stay one
+              line (see .ct-header-bar/.ct-navstrip below). */}
           <div className="ct-header-right" style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
             <UniversalNav lang={lang} />
             <button
               onClick={toggleTheme}
               aria-label={theme === "dark" ? nav.themeLight : nav.themeDark}
               title={theme === "dark" ? nav.themeLight : nav.themeDark}
+              className="hidden md:inline-flex"
               style={{
-                display: "inline-flex",
                 alignItems: "center",
                 justifyContent: "center",
                 gap: 6,
@@ -207,11 +250,11 @@ export function App() {
               }}
             >
               <Icon name={theme === "dark" ? "sun" : "moon"} size={16} />
-              <span className="hidden md:inline" style={{ fontSize: 12, fontWeight: 600, whiteSpace: "nowrap" }}>
+              <span style={{ fontSize: 12, fontWeight: 600, whiteSpace: "nowrap" }}>
                 {theme === "dark" ? nav.themeLight : nav.themeDark}
               </span>
             </button>
-            <div className="ct-lang-toggle" style={{ display: "flex", background: "var(--track)", borderRadius: 10, padding: 3, gap: 2, flexShrink: 0 }}>
+            <div className="ct-lang-toggle hidden md:flex" style={{ background: "var(--track)", borderRadius: 10, padding: 3, gap: 2, flexShrink: 0 }}>
               {(["id", "en"] as Lang[]).map((l) => (
                 <button
                   key={l}
@@ -234,6 +277,129 @@ export function App() {
               ))}
             </div>
             <AuthNav lang={lang} isLoading={isLoading} isAuthenticated={isAuthenticated} user={user} />
+
+            {/* Mobile-only overflow menu — page tabs + language + theme,
+                which don't fit the single-line header below md. */}
+            <div ref={moreRef} className="flex md:hidden" style={{ position: "relative", flexShrink: 0 }}>
+              <button
+                onClick={() => setMoreOpen((o) => !o)}
+                aria-label={nav.more}
+                title={nav.more}
+                aria-expanded={moreOpen}
+                aria-haspopup="true"
+                style={{
+                  display: "inline-flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: 32,
+                  height: 32,
+                  borderRadius: 8,
+                  background: moreOpen ? "var(--brand-soft)" : "var(--track)",
+                  color: moreOpen ? "var(--brand)" : "var(--text-soft)",
+                  border: "none",
+                  cursor: "pointer",
+                }}
+              >
+                <MoreIcon />
+              </button>
+
+              {moreOpen && (
+                <div
+                  className="ct-more-menu"
+                  style={{
+                    position: "absolute",
+                    top: "calc(100% + 8px)",
+                    right: 0,
+                    zIndex: 61,
+                    width: 220,
+                    background: "var(--surface-solid)",
+                    border: "1px solid var(--border)",
+                    borderRadius: 14,
+                    boxShadow: "0 8px 32px var(--shadow-md)",
+                    padding: 6,
+                    overflow: "hidden",
+                  }}
+                >
+                  {NAV_ITEMS.map((item) => {
+                    const active = isActive(item.href);
+                    return (
+                      <Link
+                        key={item.key}
+                        href={item.href}
+                        onClick={() => setMoreOpen(false)}
+                        style={{
+                          display: "block",
+                          padding: "10px 12px",
+                          fontFamily: "Barlow Condensed, sans-serif",
+                          fontSize: 13,
+                          letterSpacing: ".05em",
+                          textTransform: "uppercase",
+                          borderRadius: 8,
+                          textDecoration: "none",
+                          color: active ? "var(--brand)" : "var(--text-soft)",
+                          background: active ? "var(--brand-soft)" : "transparent",
+                        }}
+                      >
+                        {item.label}
+                      </Link>
+                    );
+                  })}
+
+                  <hr style={{ border: "none", borderTop: "1px solid var(--border)", margin: "6px 0" }} />
+
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "6px 12px" }}>
+                    <span style={{ fontSize: 12, fontWeight: 600, color: "var(--text-soft)" }}>{nav.language}</span>
+                    <div className="ct-lang-toggle" style={{ display: "flex", background: "var(--track)", borderRadius: 10, padding: 3, gap: 2 }}>
+                      {(["id", "en"] as Lang[]).map((l) => (
+                        <button
+                          key={l}
+                          onClick={() => setLang(l)}
+                          style={{
+                            padding: "4px 10px",
+                            fontFamily: "Barlow Condensed, sans-serif",
+                            fontSize: 11,
+                            letterSpacing: ".06em",
+                            textTransform: "uppercase",
+                            borderRadius: 6,
+                            border: "none",
+                            background: l === lang ? "var(--text)" : "transparent",
+                            color: l === lang ? "var(--surface)" : "var(--text-subtle)",
+                            cursor: "pointer",
+                          }}
+                        >
+                          {l.toUpperCase()}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      toggleTheme();
+                      setMoreOpen(false);
+                    }}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 8,
+                      width: "100%",
+                      textAlign: "left",
+                      padding: "10px 12px",
+                      fontSize: 13,
+                      fontWeight: 600,
+                      color: "var(--text)",
+                      background: "none",
+                      border: "none",
+                      borderRadius: 8,
+                      cursor: "pointer",
+                    }}
+                  >
+                    <Icon name={theme === "dark" ? "sun" : "moon"} size={16} />
+                    {theme === "dark" ? nav.themeLight : nav.themeDark}
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
@@ -245,17 +411,19 @@ export function App() {
         .ct-navstrip::-webkit-scrollbar { display: none; }
 
         /* Header must always stay one line — never wrap to a second row.
-           The nav-link strip (Tracker/Articles/History) already scrolls
-           horizontally instead of wrapping; below this we just claw back
-           enough width on narrow phones so the 4 required controls
-           (Products, theme, language, profile) never get pushed off. */
+           Below md (768px), page tabs/theme/language already fully collapse
+           into the "More" menu (see App() — .hidden md:flex etc.), leaving
+           just [Logo] [Products] [Profile] [More] in the bar itself; this
+           just claws back a bit more width on very narrow phones so those 4
+           never get pushed off, and keeps the lang toggle inside the More
+           dropdown compact too (same .ct-lang-toggle class, reused there). */
         @media (max-width: 480px) {
           .ct-header-bar { height: 44px !important; padding-left: 10px !important; padding-right: 10px !important; gap: 6px !important; }
           .ct-header-right { gap: 4px !important; }
           .ct-lang-toggle { padding: 2px !important; }
           .ct-lang-toggle button { padding: 3px 7px !important; }
           /* The logo is a remote-hosted wordmark image of unknown width —
-             cap it so it can never crowd out the 4 required controls on the
+             cap it so it can never crowd out the other controls on the
              right (same "logo shrinks first" priority the spec calls for). */
           .ct-header-logo { max-width: 92px !important; }
         }
