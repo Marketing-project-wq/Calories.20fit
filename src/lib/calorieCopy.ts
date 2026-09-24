@@ -18,6 +18,8 @@ export const copy = {
       history: "Riwayat",
       themeDark: "Mode gelap",
       themeLight: "Mode terang",
+      language: "Bahasa",
+      more: "Lainnya",
     },
 
     // ---- Landing (/) ----
@@ -214,6 +216,8 @@ export const copy = {
       history: "History",
       themeDark: "Dark mode",
       themeLight: "Light mode",
+      language: "Language",
+      more: "More",
     },
 
     landing: {
