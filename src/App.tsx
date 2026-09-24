@@ -134,8 +134,11 @@ export function App() {
         <span className="app-orb app-orb-2" />
         <span className="app-orb app-orb-3" />
       </div>
-      <div className="sc-nav-glass" style={{ borderBottom: "1px solid var(--nav-border)", position: "sticky", top: 0, zIndex: 50, boxShadow: "0 4px 24px var(--shadow-sm)" }}>
-        <div className="ct-header-bar" style={{ maxWidth: 1100, margin: "0 auto", padding: "8px 16px", display: "flex", flexWrap: "nowrap", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
+      {/* Flat, seamless header — no blur, no shadow, no gradient, never brand
+          red (see index.css --header-bg / theme.tsx). Matches the OS/browser
+          chrome (theme-color meta) so there's no visible seam on Android/iOS. */}
+      <div style={{ background: "var(--header-bg)", borderBottom: "1px solid var(--header-border)", position: "sticky", top: 0, zIndex: 50, paddingTop: "env(safe-area-inset-top, 0px)" }}>
+        <div className="ct-header-bar" style={{ maxWidth: 1100, margin: "0 auto", padding: "0 16px", height: 48, display: "flex", flexWrap: "nowrap", alignItems: "center", justifyContent: "space-between", gap: 12 }}>
           {/* Brand + nav */}
           <div style={{ display: "flex", alignItems: "center", gap: 12, minWidth: 0, flex: "1 1 auto" }}>
             <Link href={ROUTES.HOME} style={{ display: "flex", alignItems: "center", flexShrink: 0 }} aria-label="20FIT Calorie Tracker">
@@ -247,7 +250,7 @@ export function App() {
            enough width on narrow phones so the 4 required controls
            (Products, theme, language, profile) never get pushed off. */
         @media (max-width: 480px) {
-          .ct-header-bar { padding-left: 10px !important; padding-right: 10px !important; gap: 6px !important; }
+          .ct-header-bar { height: 44px !important; padding-left: 10px !important; padding-right: 10px !important; gap: 6px !important; }
           .ct-header-right { gap: 4px !important; }
           .ct-lang-toggle { padding: 2px !important; }
           .ct-lang-toggle button { padding: 3px 7px !important; }

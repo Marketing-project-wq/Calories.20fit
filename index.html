@@ -2,14 +2,23 @@
 <html lang="id">
   <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <meta name="description" content="Scan foto makanan untuk estimasi kalori dan nutrisi. Bagian dari ekosistem kesehatan 20FIT." />
-    <meta name="theme-color" content="#C41101" />
+    <!-- Neutral fallback (pre-JS / JS-disabled) — matches --header-bg light in
+         index.css. Never brand red: a red address bar isn't seamless with
+         browser chrome. The inline script below overwrites this synchronously
+         to the resolved theme's header color before first paint. -->
+    <meta name="theme-color" content="#FFFFFF" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
     <title>Scan Kalori • 20FIT</title>
     <script>
       // Set the theme BEFORE first paint so there is no flash of the wrong
       // palette. Mirrors src/lib/theme.tsx (localStorage["theme"] → OS pref →
-      // light). Kept inline + synchronous on purpose.
+      // light). Kept inline + synchronous on purpose. Also flips the
+      // theme-color meta here (not just in theme.tsx) so the browser's own
+      // chrome (address bar / status bar) matches the header from the very
+      // first frame, not just after React hydrates.
       (function () {
         try {
           var t = localStorage.getItem("theme");
@@ -18,6 +27,8 @@
           }
           document.documentElement.setAttribute("data-theme", t);
           document.documentElement.style.colorScheme = t;
+          var meta = document.querySelector('meta[name="theme-color"]');
+          if (meta) meta.setAttribute("content", t === "dark" ? "#1A1A1A" : "#FFFFFF");
         } catch (e) {}
       })();
     </script>

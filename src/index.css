@@ -68,9 +68,18 @@
   --inverse-surface: #141414;
   --inverse-text: #FFFFFF;
 
+  /* Header — deliberately its own flat, neutral surface (not --surface, not
+     brand red): seamless with the browser/OS chrome (address bar, status
+     bar) on Android/iOS. No blur, no shadow, no gradient — see .ct-header
+     usage in App.tsx and <meta name="theme-color"> in index.html/theme.tsx,
+     which must stay in sync with these two hex values. */
+  --header-bg: #FFFFFF;
+  --header-border: #F0F0F0;
+  --header-text: #1A1A1A;
+  --header-text-secondary: #9CA3AF;
+  --header-hover: #F5F5F5;
+
   /* Chrome */
-  --nav-glass: rgba(255, 255, 255, 0.72);
-  --nav-border: rgba(20, 20, 20, 0.08);
   --shadow-sm: rgba(20, 20, 20, 0.04);
   --shadow-md: rgba(20, 20, 20, 0.08);
   --shadow-lg: rgba(20, 20, 20, 0.18);
@@ -127,8 +136,12 @@
   --inverse-surface: #F1EFE6;
   --inverse-text: #16170F;
 
-  --nav-glass: rgba(19, 20, 16, 0.72);
-  --nav-border: rgba(255, 255, 255, 0.08);
+  --header-bg: #1A1A1A;
+  --header-border: #2D2D2D;
+  --header-text: #F5F5F5;
+  --header-text-secondary: #6B7280;
+  --header-hover: #2A2A2A;
+
   --shadow-sm: rgba(0, 0, 0, 0.4);
   --shadow-md: rgba(0, 0, 0, 0.5);
   --shadow-lg: rgba(0, 0, 0, 0.6);
@@ -418,12 +431,6 @@ textarea:focus {
 }
 :root[data-theme="dark"] .sc-orb {
   opacity: 0.32;
-}
-
-.sc-nav-glass {
-  background: var(--nav-glass);
-  backdrop-filter: blur(18px) saturate(180%);
-  -webkit-backdrop-filter: blur(18px) saturate(180%);
 }
 
 /* ---- Long-form article typography (Markdown renderer output) ---- */
