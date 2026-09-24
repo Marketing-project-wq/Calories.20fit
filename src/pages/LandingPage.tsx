@@ -10,6 +10,16 @@ import { Icon } from "../components/Icon";
 
 const MAXW = 1100;
 
+// Real-member photo duo shown right under the hero calculator — social proof
+// placed exactly where a visitor is about to act, not competing with the
+// calculator itself for attention. Hosted on 20FIT's existing WordPress
+// media library (same host the app already trusts for the brand wordmark —
+// see LOGO in src/lib/theme.tsx), not this repo's own asset pipeline.
+const HERO_PHOTOS = [
+  "https://media.20fit.id/wp-content/uploads/2026/09/WhatsApp-Image-2026-07-31-at-15.05.26.jpeg",
+  "https://media.20fit.id/wp-content/uploads/2026/09/WhatsApp-Image-2026-07-31-at-16.45.06-1-2.jpeg",
+];
+
 function Orbs() {
   return (
     <div className="sc-orb-field" aria-hidden>
@@ -85,6 +95,28 @@ export function LandingPage({ lang }: { lang: Lang }) {
 
           <div>
             <TdeeCalculator lang={lang} />
+
+            {/* Real-member photo duo — fixed aspect + object-fit: cover so
+                it looks clean regardless of each photo's own orientation.
+                alt="" (decorative): no caption/description is asserted here
+                since the photos' exact content isn't authored copy — swap
+                in real alt text once that's known. */}
+            <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 10, marginTop: 14 }}>
+              {HERO_PHOTOS.map((src) => (
+                <div
+                  key={src}
+                  style={{
+                    aspectRatio: "4 / 5",
+                    borderRadius: 16,
+                    overflow: "hidden",
+                    border: "1px solid var(--border)",
+                    boxShadow: "0 10px 28px -18px rgba(20,20,20,0.35)",
+                  }}
+                >
+                  <img src={src} alt="" loading="lazy" style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
+                </div>
+              ))}
+            </div>
           </div>
         </div>
       </section>
