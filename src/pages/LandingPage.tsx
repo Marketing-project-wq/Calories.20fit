@@ -180,12 +180,12 @@ export function LandingPage({ lang }: { lang: Lang }) {
             {c.landing.previewArticlesCta} →
           </Link>
         </div>
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: 16 }}>
+        <div className="ct-article-grid" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(260px,1fr))", gap: 16 }}>
           {featured.map((a) => (
             <Link
               key={a.slug}
               href={ROUTES.article(a.slug)}
-              className="sc-card"
+              className="sc-card ct-article-card"
               style={{ display: "block", background: "var(--surface)", border: "1px solid var(--border)", borderRadius: 16, overflow: "hidden", textDecoration: "none" }}
             >
               <div style={{ height: 96, position: "relative", overflow: "hidden", background: `linear-gradient(135deg, ${a.accent}22, ${a.accent}0a)`, display: "flex", alignItems: "center", justifyContent: "center", color: a.accent }}>
@@ -307,6 +307,29 @@ export function LandingPage({ lang }: { lang: Lang }) {
         @media (min-width: 861px) {
           .ct-hero-photo-mobile { display: none !important; }
           .ct-hero-photo-desktop { display: block !important; }
+        }
+
+        /* Article previews: horizontal swipeable carousel on mobile instead
+           of stacking to one column — each card peeks the next one so it
+           reads as "swipe for more", scroll-snap so it settles on a card
+           edge instead of stopping mid-card. Desktop grid is untouched. */
+        @media (max-width: 640px) {
+          .ct-article-grid {
+            display: flex !important;
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            -webkit-overflow-scrolling: touch;
+            gap: 12px !important;
+            margin: 0 -20px;
+            padding: 0 20px 6px;
+            scrollbar-width: none;
+          }
+          .ct-article-grid::-webkit-scrollbar { display: none; }
+          .ct-article-card {
+            scroll-snap-align: start;
+            flex: 0 0 82%;
+            min-width: 0;
+          }
         }
       `}</style>
     </div>
