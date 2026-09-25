@@ -246,19 +246,16 @@ export function App() {
             </nav>
           </div>
 
-          {/* App switcher + profile stay visible at every width (icon-only
-              below md); page tabs, theme and language fully collapse into
-              the mobile-only "More" menu below md instead of just losing
-              their text labels — the header itself must always stay one
-              line (see .ct-header-bar/.ct-navstrip below). */}
+          {/* App switcher, language toggle and profile stay visible at every
+              width (icon-only below md); only page tabs and theme collapse
+              into the mobile-only "More" menu below md instead of just
+              losing their text labels — the header itself must always stay
+              one line (see .ct-header-bar/.ct-navstrip below). Order below
+              md: More, Products, theme, language, profile. */}
           <div className="ct-header-right" style={{ display: "flex", alignItems: "center", gap: 10, flexShrink: 0 }}>
-            <UniversalNav lang={lang} />
-
-            {/* Mobile-only overflow menu — page tabs + language + theme,
-                which don't fit the single-line header below md. Grouped
-                right next to Products (not stranded past the profile
-                avatar) since both are "more 20FIT/app navigation" controls,
-                not account controls. */}
+            {/* Mobile-only overflow menu — page tabs + theme, which don't
+                fit the single-line header below md. Comes first (before
+                Products/profile) per the requested icon order. */}
             <div ref={moreRef} className="flex md:hidden" style={{ position: "relative", flexShrink: 0 }}>
               <button
                 onClick={() => setMoreOpen((o) => !o)}
@@ -326,32 +323,6 @@ export function App() {
 
                   <hr style={{ border: "none", borderTop: "1px solid var(--border)", margin: "6px 0" }} />
 
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "6px 12px" }}>
-                    <span style={{ fontSize: 12, fontWeight: 600, color: "var(--text-soft)" }}>{nav.language}</span>
-                    <div className="ct-lang-toggle" style={{ display: "flex", background: "var(--track)", borderRadius: 10, padding: 3, gap: 2 }}>
-                      {(["id", "en"] as Lang[]).map((l) => (
-                        <button
-                          key={l}
-                          onClick={() => setLang(l)}
-                          style={{
-                            padding: "4px 10px",
-                            fontFamily: "Barlow Condensed, sans-serif",
-                            fontSize: 11,
-                            letterSpacing: ".06em",
-                            textTransform: "uppercase",
-                            borderRadius: 6,
-                            border: "none",
-                            background: l === lang ? "var(--text)" : "transparent",
-                            color: l === lang ? "var(--surface)" : "var(--text-subtle)",
-                            cursor: "pointer",
-                          }}
-                        >
-                          {l.toUpperCase()}
-                        </button>
-                      ))}
-                    </div>
-                  </div>
-
                   <button
                     onClick={() => {
                       toggleTheme();
@@ -380,6 +351,8 @@ export function App() {
               )}
             </div>
 
+            <UniversalNav lang={lang} />
+
             {/* Icon-only at every width (no text label) — matches the
                 Products button's treatment; the label still appears in the
                 mobile More menu's row above. */}
@@ -402,6 +375,7 @@ export function App() {
             >
               <Icon name={theme === "dark" ? "sun" : "moon"} size={16} />
             </button>
+            {/* Full ID/EN pill — desktop only, room for both buttons side by side. */}
             <div className="ct-lang-toggle hidden md:flex" style={{ background: "var(--track)", borderRadius: 10, padding: 3, gap: 2, flexShrink: 0 }}>
               {(["id", "en"] as Lang[]).map((l) => (
                 <button
@@ -424,6 +398,33 @@ export function App() {
                 </button>
               ))}
             </div>
+            {/* Compact single-button toggle — mobile only, same 32x32
+                footprint as the other icon buttons so the header still fits
+                on one line; taps straight to the other language. */}
+            <button
+              onClick={() => setLang(lang === "id" ? "en" : "id")}
+              aria-label={nav.language}
+              title={nav.language}
+              className="flex md:hidden"
+              style={{
+                alignItems: "center",
+                justifyContent: "center",
+                width: 32,
+                height: 32,
+                borderRadius: 8,
+                background: "var(--track)",
+                color: "var(--text-soft)",
+                border: "none",
+                cursor: "pointer",
+                flexShrink: 0,
+                fontFamily: "Barlow Condensed, sans-serif",
+                fontSize: 11,
+                fontWeight: 700,
+                letterSpacing: ".06em",
+              }}
+            >
+              {lang.toUpperCase()}
+            </button>
             <AuthNav lang={lang} isLoading={isLoading} isAuthenticated={isAuthenticated} user={user} />
           </div>
         </div>
