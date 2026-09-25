@@ -6,6 +6,7 @@ import { useAuth } from "../hooks/useAuth";
 import { TdeeCalculator } from "../components/TdeeCalculator";
 import { SiteFooter } from "../components/SiteFooter";
 import { getFeatured, CATEGORY_LABELS } from "../data/articles";
+import { useArticles } from "../hooks/useArticles";
 import { Icon } from "../components/Icon";
 
 const MAXW = 1100;
@@ -35,7 +36,8 @@ function Orbs() {
 export function LandingPage({ lang }: { lang: Lang }) {
   const c = cc(lang);
   const { isAuthenticated } = useAuth();
-  const featured = getFeatured(3);
+  const { articles } = useArticles();
+  const featured = getFeatured(articles, 3);
 
   return (
     <div style={{ background: "var(--bg)" }}>
