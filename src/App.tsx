@@ -208,9 +208,11 @@ export function App() {
               <img
                 src={LOGO[theme]}
                 alt="20FIT"
-                height={28}
+                height={34}
+                fetchPriority="high"
+                decoding="sync"
                 className="ct-header-logo"
-                style={{ height: 28, width: "auto", display: "block", objectFit: "contain" }}
+                style={{ height: 34, width: "auto", display: "block", objectFit: "contain" }}
               />
             </Link>
             <nav
@@ -456,11 +458,14 @@ export function App() {
           .ct-lang-toggle button { padding: 3px 7px !important; }
           /* The logo is a remote-hosted wordmark image of unknown width —
              cap it so it can never crowd out the other controls on the
-             right (same "logo shrinks first" priority the spec calls for). */
-          .ct-header-logo { max-width: 92px !important; }
+             right (same "logo shrinks first" priority the spec calls for).
+             Caps scaled up proportionally with the base logo size below
+             (34px, was 28px) so enlarging it doesn't get clipped back down
+             on mobile by these same safety caps. */
+          .ct-header-logo { max-width: 112px !important; }
         }
         @media (max-width: 360px) {
-          .ct-header-logo { height: 22px !important; max-width: 68px !important; }
+          .ct-header-logo { height: 27px !important; max-width: 83px !important; }
         }
       `}</style>
     </div>

@@ -32,6 +32,26 @@
           document.documentElement.style.colorScheme = t;
           var meta = document.querySelector('meta[name="theme-color"]');
           if (meta) meta.setAttribute("content", t === "dark" ? "#131410" : "#EFEDEA");
+
+          // Kick off the header logo's fetch here, before the JS bundle even
+          // loads, so it's already in flight (or served from HTTP cache) by
+          // the time App.tsx renders <img src={LOGO[theme]}> — this is the
+          // network-side mitigation for the "logo flashes in on reload"
+          // request; it's still a real network image (this app has no build
+          // step available in its sandbox to embed the actual PNG bytes as
+          // a data URI — ask if you'd rather send the two logo files
+          // directly so that can be done too). Must stay in sync with
+          // src/lib/theme.tsx's LOGO map.
+          var LOGO_URLS = {
+            light: "https://media.20fit.id/wp-content/uploads/2026/05/Logo-20fit.png",
+            dark: "https://media.20fit.id/wp-content/uploads/2026/07/Copy-of-new-logo-20fit-putih-3.png",
+          };
+          var preload = document.createElement("link");
+          preload.rel = "preload";
+          preload.as = "image";
+          preload.href = LOGO_URLS[t];
+          preload.fetchPriority = "high";
+          document.head.appendChild(preload);
         } catch (e) {}
       })();
     </script>
