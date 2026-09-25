@@ -97,8 +97,6 @@ export function MealPlanSection({ lang, target, profile, ssoTokens }: { lang: La
                         </div>
                         <a
                           href={recipeDetailUrl(it.key, ssoTokens)}
-                          target="_blank"
-                          rel="noopener noreferrer"
                           style={{ flex: "0 0 auto", fontSize: 12, fontWeight: 700, padding: "8px 13px", borderRadius: 999, background: "var(--brand)", color: "var(--on-brand)", textDecoration: "none", whiteSpace: "nowrap" }}
                         >
                           {mp.seeRecipe}
