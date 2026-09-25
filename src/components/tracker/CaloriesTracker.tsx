@@ -147,7 +147,7 @@ export function CaloriesTracker({ lang }: { lang: Lang }) {
   useEffect(() => {
     let cancelled = false;
     const rem = { p: Math.max(0, macroT.p - totals.p), c: Math.max(0, macroT.c - totals.c), f: Math.max(0, macroT.f - totals.f) };
-    getMenuRecommend(rem, 8, lang).then((r) => { if (!cancelled) setMenuRecs(r); });
+    getMenuRecommend(rem, 10, lang).then((r) => { if (!cancelled) setMenuRecs(r); });
     return () => { cancelled = true; };
   }, [macroT.p, macroT.c, macroT.f, totals.p, totals.c, totals.f, lang]);
 
@@ -442,8 +442,6 @@ export function CaloriesTracker({ lang }: { lang: Lang }) {
                 <a
                   key={i}
                   href={href}
-                  target={href ? "_blank" : undefined}
-                  rel={href ? "noopener noreferrer" : undefined}
                   style={{ border: `1px solid ${BORDER}`, borderRadius: 14, overflow: "hidden", display: "block", textDecoration: "none", color: "inherit", cursor: href ? "pointer" : "default" }}
                 >
                   {bareId ? (
@@ -543,8 +541,6 @@ function NutrientGapView({ lang, gap, foods, kc, ssoTokens }: { lang: Lang; gap:
               <a
                 key={i}
                 href={f.href}
-                target={f.href ? "_blank" : undefined}
-                rel={f.href ? "noopener noreferrer" : undefined}
                 style={{ display: "flex", alignItems: "center", gap: 10, padding: "7px 0", textDecoration: "none", color: "inherit", cursor: f.href ? "pointer" : "default" }}
               >
                 {f.id ? <RecipeThumb id={f.id} name={f.name} emoji={f.e} width={30} height={30} radius={9} fontSize={17} /> : (
