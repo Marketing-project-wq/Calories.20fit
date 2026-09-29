@@ -55,6 +55,7 @@ export function itemMeal(item: DailyFoodItem): MealType {
 export interface MemberProfile {
   auth_user_id: string | null;
   email: string | null;
+  phone: string | null;
   weight_kg: number | null;
   height_cm: number | null;
   age: number | null;
@@ -94,7 +95,7 @@ export async function getMemberProfile(): Promise<MemberProfile | null> {
   if (!uid) return null;
   const { data, error } = await supabase
     .from("my20fit_profile")
-    .select("auth_user_id, email, weight_kg, height_cm, age, gender, activity_level, main_goal, full_name, onboarding_completed")
+    .select("auth_user_id, email, phone, weight_kg, height_cm, age, gender, activity_level, main_goal, full_name, onboarding_completed")
     .eq("auth_user_id", uid)
     .maybeSingle();
   if (error) throw error;

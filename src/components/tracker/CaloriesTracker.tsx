@@ -22,6 +22,8 @@ import { RecipeThumb } from "../RecipeThumb";
 import { GoalRing } from "../GoalRing";
 import { ScanResultModal } from "./ScanResultModal";
 import { MealPlanSection } from "./MealPlanSection";
+import { TopUpModal } from "./TopUpModal";
+import { resumeAndSweep } from "../../lib/scanBuy";
 
 const BORDER = "var(--border)";
 const INK = "var(--text)";
@@ -118,6 +120,12 @@ export function CaloriesTracker({ lang }: { lang: Lang }) {
       }
       // quota is non-blocking
       apiClient.getQuota().then((q) => { if (!cancelled) setQuota(q); }).catch(() => {});
+      // Catch any top-up paid while this tab/app was closed (a checkout tab
+      // closed before it confirmed, or paid from a different device
+      // entirely) — same safety net my.20fit.id/calories runs on open.
+      resumeAndSweep().then((credited) => {
+        if (credited && !cancelled) apiClient.getQuota().then((q) => { if (!cancelled) setQuota(q); }).catch(() => {});
+      });
     })();
     return () => { cancelled = true; };
   }, []);
@@ -158,6 +166,12 @@ export function CaloriesTracker({ lang }: { lang: Lang }) {
   const [scanResult, setScanResult] = useState<ScanResult | null>(null);
   const [scanError, setScanError] = useState<string | null>(null);
 
+  // ---- top-up ----
+  const [topUpOpen, setTopUpOpen] = useState(false);
+  // The photo that got a 402 — stashed so a successful top-up can retry the
+  // SAME scan instead of making the person re-take/re-upload it.
+  const [pendingScanFile, setPendingScanFile] = useState<File | null>(null);
+
   const onScanFile = async (file: File) => {
     if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) { setScanError(tx(lang, "Use JPG, PNG, or WebP.", "Gunakan JPG, PNG, atau WebP.")); return; }
     if (file.size > 5 * 1024 * 1024) { setScanError(tx(lang, "Photo too large (max 5MB).", "Foto terlalu besar (maks 5MB).")); return; }
@@ -165,12 +179,31 @@ export function CaloriesTracker({ lang }: { lang: Lang }) {
     try {
       const res = await apiClient.scanPhoto(file, lang);
       setScanResult(res);
+      setPendingScanFile(null);
       apiClient.getQuota().then(setQuota).catch(() => {});
     } catch (err) {
       const msg = err instanceof Error ? err.message : "error";
-      setScanError(msg === "scan_limit" ? tx(lang, "Scan quota exhausted. Top up to continue.", "Kuota scan habis. Top-up untuk lanjut.") : tx(lang, "Failed to analyze photo.", "Gagal menganalisis foto."));
+      if (msg === "scan_limit") {
+        setScanError(tx(lang, "Scan quota exhausted. Top up to continue.", "Kuota scan habis. Top-up untuk lanjut."));
+        setPendingScanFile(file);
+        setTopUpOpen(true);
+      } else {
+        setScanError(msg === "login_required" ? tx(lang, "Please sign in again.", "Silakan masuk lagi.") : tx(lang, "Failed to analyze photo.", "Gagal menganalisis foto."));
+      }
     } finally {
       setScanning(false);
+    }
+  };
+
+  // After a top-up is confirmed paid: refresh the quota, close the modal,
+  // and if there was a photo waiting on a 402, retry that exact scan.
+  const onTopUpCredited = () => {
+    apiClient.getQuota().then(setQuota).catch(() => {});
+    setTopUpOpen(false);
+    if (pendingScanFile) {
+      const file = pendingScanFile;
+      setPendingScanFile(null);
+      onScanFile(file);
     }
   };
 
@@ -281,22 +314,43 @@ export function CaloriesTracker({ lang }: { lang: Lang }) {
             <input ref={camRef} type="file" accept="image/*" capture="environment" style={{ display: "none" }} onChange={(e) => e.target.files?.[0] && onScanFile(e.target.files[0])} />
             <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp" style={{ display: "none" }} onChange={(e) => e.target.files?.[0] && onScanFile(e.target.files[0])} />
 
-            {/* quota */}
-            <div style={{ marginTop: 10, fontSize: 12.5, color: MUTED, lineHeight: 1.5 }}>
+            {/* quota — shown before any photo is taken, so the number is
+                never a surprise; the top-up button stays visible even with
+                scans left, not just once it hits zero. */}
+            <div style={{ marginTop: 10, fontSize: 12.5, color: MUTED, lineHeight: 1.5, display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: 8 }}>
               {quota ? (
                 quota.remaining > 0 ? (
-                  <>
+                  <span>
                     {tx(lang, `${quota.remaining} scans left this month`, `${quota.remaining} scan tersisa bulan ini`)}
                     {quota.credits > 0 && <> ({tx(lang, `+${quota.credits} from your top-up`, `+${quota.credits} dari top-up`)})</>}
-                  </>
+                  </span>
                 ) : (
-                  <a href={URLS.TOPUP} style={{ color: "var(--brand)", fontWeight: 700 }}>
+                  <button
+                    onClick={() => setTopUpOpen(true)}
+                    style={{ border: "none", background: "none", padding: 0, color: "var(--brand)", fontWeight: 700, fontSize: 12.5, cursor: "pointer" }}
+                  >
                     ⚡ {tx(lang, "Out of scans — explore top-up deals", "Kuota habis — lihat paket top-up")}
-                  </a>
+                  </button>
                 )
-              ) : ""}
+              ) : <span />}
+              {quota && quota.remaining > 0 && (
+                <button
+                  onClick={() => setTopUpOpen(true)}
+                  style={{ border: "none", background: "none", padding: 0, color: "var(--brand)", fontWeight: 700, fontSize: 12, cursor: "pointer", whiteSpace: "nowrap" }}
+                >
+                  ⚡ {tx(lang, "Top-up", "Top-up")}
+                </button>
+              )}
             </div>
             {scanError && <div style={{ marginTop: 8, fontSize: 12, color: "var(--brand)" }}>{scanError}</div>}
+            {/* Kept as a plain link (not the modal) — a working fallback that
+                doesn't depend on this component's own JS if it ever fails
+                for someone. */}
+            <div style={{ marginTop: 4 }}>
+              <a href={URLS.TOPUP} style={{ fontSize: 10.5, color: MUTED }}>
+                {tx(lang, "Trouble buying here? Top up on my.20fit.id instead", "Ada masalah beli di sini? Top-up di my.20fit.id saja")}
+              </a>
+            </div>
 
             {/* type food + grams */}
             <div style={{ fontSize: 11, color: MUTED, margin: "14px 0 6px", textTransform: "uppercase", letterSpacing: 1 }}>
@@ -472,6 +526,15 @@ export function CaloriesTracker({ lang }: { lang: Lang }) {
           onLogged={(list) => { setItems(list); setScanResult(null); setScanError(null); apiClient.getQuota().then(setQuota).catch(() => {}); }}
           onClose={() => { setScanResult(null); setScanError(null); }}
           kc={kc}
+        />
+      )}
+
+      {topUpOpen && (
+        <TopUpModal
+          lang={lang}
+          phoneHint={profile?.phone ?? null}
+          onClose={() => setTopUpOpen(false)}
+          onCredited={onTopUpCredited}
         />
       )}
 

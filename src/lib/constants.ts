@@ -82,9 +82,32 @@ export const API = {
   SCAN_CORRECTION: "/api/scan/food-correction",
   SCAN_QUOTA: "/api/scan/quota",
   SCAN_BUY: "/api/scan/buy",
+  SCAN_VOUCHER_CHECK: "/api/scan/voucher-check",
+  SCAN_ORDER_STATUS: "/api/scan/order-status",
+  SCAN_RECONCILE: "/api/scan/reconcile",
 };
 
 export const SCAN_LIMITS = {
   FILE_SIZE_MB: 5,
   ALLOWED_TYPES: ["image/jpeg", "image/png", "image/webp"],
 };
+
+// Scan-quota top-up packages — same catalog my.20fit.id/calories sells
+// (its js/deals.js + server.js, repo PROFILE20FIT, out of scope here). Not
+// read from a live endpoint: no shared GET /api/scan/packages exists yet
+// (that's a follow-up for PROFILE20FIT, so both apps read one source
+// instead of two hardcoded lists drifting apart). Until then this is the
+// display list only — id/credits/price here are what the UI SHOWS before
+// checkout; /api/scan/buy's response is what actually gets charged and
+// credited, exactly like deals.js already treats its own hardcoded list.
+export interface ScanPackage {
+  id: string; // package_id sent to /api/scan/buy — my.20fit.id product ids
+  credits: number;
+  priceIDR: number;
+  best?: boolean;
+}
+export const SCAN_PACKAGES: ScanPackage[] = [
+  { id: "8477", credits: 10, priceIDR: 25000 },
+  { id: "8478", credits: 50, priceIDR: 75000, best: true },
+  { id: "8479", credits: 150, priceIDR: 150000 },
+];
