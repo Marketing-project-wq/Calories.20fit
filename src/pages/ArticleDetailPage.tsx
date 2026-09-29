@@ -7,12 +7,14 @@ import { useAuth } from "../hooks/useAuth";
 import { Markdown, clipMarkdown } from "../components/Markdown";
 import { SiteFooter } from "../components/SiteFooter";
 import { getArticle, getRelated, CATEGORY_LABELS } from "../data/articles";
+import { useArticles } from "../hooks/useArticles";
 import { Icon } from "../components/Icon";
 
 export function ArticleDetailPage({ lang, slug }: { lang: Lang; slug: string }) {
   const a = cc(lang).articles;
   const { isAuthenticated } = useAuth();
-  const art = getArticle(slug);
+  const { articles, loaded } = useArticles();
+  const art = getArticle(slug, articles);
   const barRef = useRef<HTMLDivElement>(null);
 
   // Reading-progress bar (updates a fixed bar's width directly, no re-renders).
@@ -36,6 +38,9 @@ export function ArticleDetailPage({ lang, slug }: { lang: Lang; slug: string }) 
   }, [slug]);
 
   if (!art) {
+    // Don't flash "not found" for an article that only exists in the DB
+    // (not in the static fallback) while the live fetch is still pending.
+    if (!loaded) return null;
     return (
       <div>
         <div style={{ maxWidth: 560, margin: "0 auto", padding: "72px 20px", textAlign: "center" }}>
@@ -53,7 +58,7 @@ export function ArticleDetailPage({ lang, slug }: { lang: Lang; slug: string }) 
   const showFull = !art.isPremium || isAuthenticated;
   const content = art.content[lang];
   const body = showFull ? content : clipMarkdown(content, 0.3);
-  const related = getRelated(slug, 3);
+  const related = getRelated(slug, articles, 3);
   const publishedLabel = new Date(art.publishedAt).toLocaleDateString(lang === "id" ? "id-ID" : "en-US", { day: "numeric", month: "long", year: "numeric" });
 
   return (

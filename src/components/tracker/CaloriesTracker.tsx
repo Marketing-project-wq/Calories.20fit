@@ -22,6 +22,7 @@ import { RecipeThumb } from "../RecipeThumb";
 import { GoalRing } from "../GoalRing";
 import { ScanResultModal } from "./ScanResultModal";
 import { MealPlanSection } from "./MealPlanSection";
+import { ArticleRecsSection } from "./ArticleRecsSection";
 
 const BORDER = "var(--border)";
 const INK = "var(--text)";
@@ -427,6 +428,19 @@ export function CaloriesTracker({ lang }: { lang: Lang }) {
 
       {/* Daily meal plan — folded in from the former standalone /meal-plan page */}
       <MealPlanSection lang={lang} target={baseGoal} profile={profile} ssoTokens={ssoTokens} />
+
+      {/* Nutrition articles relevant to today's tracked calories/macros */}
+      <ArticleRecsSection
+        lang={lang}
+        loggedToday={totals.n > 0}
+        macroT={macroT}
+        proteinConsumed={totals.p}
+        goal={goal}
+        left={left}
+        mainGoal={profile?.main_goal ?? null}
+        activityLevel={profile?.activity_level ?? null}
+        gap={gap}
+      />
 
       {/* bottom — menu recommendations */}
       {menuRecs.length > 0 && (
