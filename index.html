@@ -55,6 +55,11 @@
         } catch (e) {}
       })();
     </script>
+    <!-- 20FIT Universal Nav + SSO (shared dari my.20fit.id): bar app-switcher ikon 3D +
+         login lintas produk 20FIT tanpa form lagi. Standalone (bukan React); menyuntik
+         bar-nya sendiri di atas #root, dan auto-consume ?sso_token= saat load. -->
+    <script src="https://my.20fit.id/js/auth-sso.js" defer></script>
+    <script src="https://my.20fit.id/js/universal-nav.js" defer></script>
   </head>
   <body>
     <div id="root"></div>
